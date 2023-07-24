@@ -3,20 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#3772E7"
+    android:background="@color/main_activity_color"
     android:orientation="vertical"
     android:padding="16dp">
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_name"
             android:gravity="start"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:textSize="@dimen/main_text_size"/>
-    </FrameLayout>
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
@@ -71,6 +67,5 @@
             app:cornerRadius="@dimen/main_button_corner_radius"
             app:iconPadding="@dimen/main_padding_left_image"
             />
-
     </LinearLayout>
 </LinearLayout>

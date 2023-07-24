@@ -41,7 +41,7 @@
         android:clickable="true"
         android:focusable="true">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/main_button_height"
             android:layout_height="match_parent"
             android:text="@string/dark_theme_string"
             android:textColor="@color/black"
@@ -49,8 +49,7 @@
             android:layout_weight="1"
             android:layout_gravity="center"
             android:paddingLeft="@dimen/settings_padding_left_text"
-            android:paddingTop="@dimen/settings_padding_top"
-            android:paddingBottom="@dimen/settings_padding_bottom"/>
+            android:paddingVertical="@dimen/settings_padding_vertical"/>
         <Switch
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -65,7 +64,7 @@
         android:clickable="true"
         android:focusable="true">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/main_button_height"
             android:layout_height="wrap_content"
             android:text="@string/share_app"
             android:textColor="@color/black"
@@ -73,8 +72,7 @@
             android:layout_weight="1"
             android:layout_gravity="center"
             android:paddingLeft="@dimen/settings_padding_left_text"
-            android:paddingTop="@dimen/settings_padding_top"
-            android:paddingBottom="@dimen/settings_padding_bottom"/>
+            android:paddingVertical="@dimen/settings_padding_vertical"/>
 
         <ImageButton
             android:id="@+id/shareAppImage"
@@ -85,8 +83,7 @@
             android:src="@drawable/share"
             android:foreground="?attr/selectableItemBackground"
             android:paddingLeft="@dimen/main_padding_left_image"
-            android:paddingTop="@dimen/settings_padding_top"
-            android:paddingBottom="@dimen/settings_padding_bottom"/>
+            android:paddingVertical="@dimen/settings_padding_vertical"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/linearWriteToSupport"
@@ -96,7 +93,7 @@
         android:clickable="true"
         android:focusable="true">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/main_button_height"
             android:layout_height="wrap_content"
             android:text="@string/write_on_support"
             android:textColor="@color/black"
@@ -104,8 +101,7 @@
             android:layout_weight="1"
             android:layout_gravity="center"
             android:paddingLeft="@dimen/settings_padding_left_text"
-            android:paddingTop="@dimen/settings_padding_top"
-            android:paddingBottom="@dimen/settings_padding_bottom"/>
+            android:paddingVertical="@dimen/settings_padding_vertical"/>
 
         <ImageButton
             android:id="@+id/writeToSupportImage"
@@ -116,8 +112,7 @@
             android:src="@drawable/support"
             android:foreground="?attr/selectableItemBackground"
             android:paddingLeft="@dimen/main_padding_left_image"
-            android:paddingTop="@dimen/settings_padding_top"
-            android:paddingBottom="@dimen/settings_padding_bottom"/>
+            android:paddingVertical="@dimen/settings_padding_vertical"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/linearUserContract"
@@ -127,7 +122,7 @@
         android:clickable="true"
         android:focusable="true">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/main_button_height"
             android:layout_height="wrap_content"
             android:text="@string/user_contract"
             android:textColor="@color/black"
@@ -135,8 +130,7 @@
             android:layout_weight="1"
             android:layout_gravity="center"
             android:paddingLeft="@dimen/settings_padding_left_text"
-            android:paddingTop="@dimen/settings_padding_top"
-            android:paddingBottom="@dimen/settings_padding_bottom"/>
+            android:paddingVertical="@dimen/settings_padding_vertical"/>
         <ImageButton
             android:id="@+id/userContractImage"
             android:layout_width="wrap_content"
@@ -146,7 +140,6 @@
             android:src="@drawable/arrowforward"
             android:foreground="?attr/selectableItemBackground"
             android:paddingLeft="@dimen/main_padding_left_image"
-            android:paddingTop="@dimen/settings_padding_top"
-            android:paddingBottom="@dimen/settings_padding_bottom"/>
+            android:paddingVertical="@dimen/settings_padding_vertical"/>
     </LinearLayout>
 </LinearLayout>
