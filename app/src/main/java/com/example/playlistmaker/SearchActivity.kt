@@ -12,12 +12,14 @@ import android.widget.EditText
 import android.widget.ImageButton
 
 class SearchActivity : AppCompatActivity() {
+    var searchQueryText = ""
+    private lateinit var editTextSearch: EditText
+    private lateinit var buttonBack:ImageButton
+    private lateinit var clearButton: ImageButton
     companion object {
-        var searchQueryText = ""
-        const val SEARCH_STRING = "SEARCH_STRING"
+        private const val SEARCH_STRING = "SEARCH_STRING"
     }
     override fun onSaveInstanceState(outState: Bundle) {
-        val editTextSearch = findViewById<EditText>(R.id.editTextSearchActivity)
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_STRING, searchQueryText)
     }
@@ -31,9 +33,9 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-        val buttonBack = findViewById<ImageButton>(R.id.backToMainActivityViewButtonFromSearch)
-        val editTextSearch = findViewById<EditText>(R.id.editTextSearchActivity)
-        val clearButton = findViewById<ImageButton>(R.id.clearEditTextSearchActivity)
+        buttonBack = findViewById<ImageButton>(R.id.backToMainActivityViewButtonFromSearch)
+        editTextSearch = findViewById<EditText>(R.id.editTextSearchActivity)
+        clearButton = findViewById<ImageButton>(R.id.clearEditTextSearchActivity)
         clearButton.setOnClickListener {
             editTextSearch.setText("")
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
