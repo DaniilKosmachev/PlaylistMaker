@@ -7,4 +7,10 @@
     <string name="write_on_support" translatable="false">Написать в поддержку</string>
     <string name="user_contract" translatable="false">Пользовательское соглашение</string>
     <string name="dark_theme_string" translatable="false">Тёмная тема</string>
+    <string name="message_for_support" translatable="false">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="email_support" translatable="false">fame37@yandex.ru</string>
+    <string name="theme_support" translatable="false">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="user_contract_url">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="share_app_url">https://practicum.yandex.ru/android-developer/</string>
+    <string name="share_data_mailto">mailto:</string>
 </resources>

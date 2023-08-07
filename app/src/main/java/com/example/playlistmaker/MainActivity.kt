@@ -7,12 +7,15 @@ import android.view.View
 import android.widget.Button
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
+    private lateinit var buttonSettings:Button
+    private lateinit var buttonSearch:Button
+    private lateinit var buttonLibrary:Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val buttonSettings = findViewById<Button>(R.id.setting_window)
-        val buttonSearch = findViewById<Button>(R.id.search_window)
-        val buttonLibrary = findViewById<Button>(R.id.library_window)
+        buttonSettings = findViewById<Button>(R.id.setting_window)
+        buttonSearch = findViewById<Button>(R.id.search_window)
+        buttonLibrary = findViewById<Button>(R.id.library_window)
         val buttonClickListener: View.OnClickListener = object : View.OnClickListener {
             override fun onClick(button: View?) {
                 val openSettingsWindow = Intent(this@MainActivity, SettingsActivity::class.java)
