@@ -53,6 +53,15 @@
                 android:src="@drawable/close"
                 android:visibility="gone" />
         </FrameLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/track_recycle_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/track_view"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/main_padding_left_image"
+            android:paddingLeft="4dp"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,4 +7,7 @@
     <dimen name="main_text_size">22sp</dimen>
     <dimen name="main_button_corner_radius">15dp</dimen>
     <dimen name="main_button_height">0dp</dimen>
+    <dimen name="track_name_text_size">16sp</dimen>
+    <dimen name="track_artist_name_and_track_time_text_size">11sp</dimen>
+    <dimen name="image_artwork_corner_radius">2dp</dimen>
 </resources>
