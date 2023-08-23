@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="@dimen/main_padding_left_image"
-        tools:ignore="MissingConstraints">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:padding="@dimen/main_padding_left_image"
+    tools:ignore="MissingConstraints">
         <ImageView
             android:id="@+id/art_work_img100"
             android:layout_width="45dp"
@@ -29,33 +26,28 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:id="@+id/track_name"
-                android:text="Not Replyfdgjnjfdgnlfdgnlfdgnlfdgnfdgndfgndfg"
-                tools:ignore="HardcodedText"/>
+                tools:text="Not Reply (Sons Of Anarchy Remastered 2018)"/>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <TextView
                     style="@style/track_view_artist_name_and_track_time_text_style"
-                    android:text="The Beatles"
+                    tools:text="The Beatles"
+                    android:layout_width="0dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:id="@+id/artist_name"
-                    tools:ignore="HardcodedText"/>
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/dot"/>
-            <TextView
-                style="@style/track_view_artist_name_and_track_time_text_style"
-                android:text="5:12"
-                android:id="@+id/track_time"
-                tools:ignore="HardcodedText"/>
+                    android:layout_weight="1"
+                    app:drawableEndCompat="@drawable/dot"/>
+                <TextView
+                    style="@style/track_view_artist_name_and_track_time_text_style"
+                    tools:text="5:12"
+                    android:maxLines="1"
+                    android:id="@+id/track_time"/>
         </LinearLayout>
         </LinearLayout>
         <ImageButton
             style="@style/settings_activity_image_button_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:src="@drawable/arrowforward"/>
     </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
