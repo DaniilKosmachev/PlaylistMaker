@@ -45,6 +45,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:backgroundTint">@color/white</item>
+        <item name="tint">@color/YP_gray</item>
         <item name="android:scaleType">centerCrop</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:paddingLeft">@dimen/main_padding_left_image</item>
@@ -87,5 +88,20 @@
         <item name="tint">@color/YP_gray</item>
         <item name="android:layout_gravity">end|center</item>
         <item name="android:background">@android:color/transparent</item>
+    </style>
+    <style name="track_view_artist_name_and_track_time_text_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/track_artist_name_and_track_time_text_size</item>
+        <item name="android:textColor">@color/YP_gray</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="drawableTint">@color/YP_gray</item>
+    </style>
+    <style name="track_view_track_name_text_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/track_name_text_size</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 </resources>

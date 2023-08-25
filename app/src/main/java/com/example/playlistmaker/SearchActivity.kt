@@ -10,6 +10,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
+import androidx.recyclerview.widget.RecyclerView
 
 class SearchActivity : AppCompatActivity() {
     var searchQueryText = ""
@@ -67,5 +68,16 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         editTextSearch.addTextChangedListener(searchActivityTextWatcher)
+        val trackAdapter = TrackAdapter(
+            listOf(
+                Track(resources.getString(R.string.name_1_track),resources.getString(R.string.author_1_track),resources.getString(R.string.time_1_track),resources.getString(R.string.url_1_track)),
+                Track(resources.getString(R.string.name_2_track),resources.getString(R.string.author_2_track),resources.getString(R.string.time_2_track),resources.getString(R.string.url_2_track)),
+                Track(resources.getString(R.string.name_3_track),resources.getString(R.string.author_3_track),resources.getString(R.string.time_3_track),resources.getString(R.string.url_3_track)),
+                Track(resources.getString(R.string.name_4_track),resources.getString(R.string.author_4_track),resources.getString(R.string.time_4_track),resources.getString(R.string.url_4_track)),
+                Track(resources.getString(R.string.name_5_track),resources.getString(R.string.author_5_track),resources.getString(R.string.time_5_track),resources.getString(R.string.url_5_track))
+            )
+        )
+        val recycleViewTrack = findViewById<RecyclerView>(R.id.track_recycle_view)
+        recycleViewTrack.adapter = trackAdapter
     }
 }
