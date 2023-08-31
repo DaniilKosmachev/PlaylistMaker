@@ -27,6 +27,7 @@
                 android:id="@+id/track_name"
                 tools:text="Not Reply (Sons Of Anarchy Remastered 2018)"/>
             <LinearLayout
+                android:id="@+id/layout_artist_and_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
