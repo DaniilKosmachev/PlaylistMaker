@@ -103,13 +103,13 @@ class SearchActivity : AppCompatActivity() {
                                         trackAdapter.notifyDataSetChanged()
                                     }
                                     if (iTunesTrack.isEmpty()) {
-                                        Toast.makeText(applicationContext, "Ничего нет", Toast.LENGTH_SHORT)
+                                        Toast.makeText(applicationContext, "Ничего нет", Toast.LENGTH_SHORT).show()
                                     }
                                 }
                             }
 
                             override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
-                                Toast.makeText(applicationContext, "Что-то пошло не так - ${t.message.toString()}", Toast.LENGTH_SHORT)                            }
+                                Toast.makeText(applicationContext, "Что-то пошло не так - ${t.message.toString()}", Toast.LENGTH_SHORT).show()                            }
 
                         })
                 }

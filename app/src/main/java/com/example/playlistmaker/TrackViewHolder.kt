@@ -24,8 +24,6 @@ class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     private val artworkImage: ImageView = itemView.findViewById(R.id.art_work_img100)
     private val layoutArtistAndTime: LinearLayout = itemView.findViewById(R.id.layout_artist_and_time)
     fun bind(item: Track) {
-        //layoutArtistAndTime.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
-        //artistName.layoutParams.width = 0
         trackName.text = item.trackName
         artistName.text = item.artistName
         trackTime.text = SimpleDateFormat("mm:ss",Locale.getDefault()).format(item.trackTimeMillis)
@@ -35,6 +33,7 @@ class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
             .centerCrop()
             .transform(RoundedCorners(itemView.resources.getDimensionPixelSize(R.dimen.image_artwork_corner_radius)))
             .into(artworkImage)
+        artistName.updateLayoutParams { width = 0 }
     }
 
 }
