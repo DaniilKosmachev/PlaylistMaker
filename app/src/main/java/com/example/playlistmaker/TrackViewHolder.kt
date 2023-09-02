@@ -26,5 +26,4 @@ class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
             .transform(RoundedCorners(itemView.resources.getDimensionPixelSize(R.dimen.image_artwork_corner_radius)))
             .into(artworkImage)
     }
-
 }
