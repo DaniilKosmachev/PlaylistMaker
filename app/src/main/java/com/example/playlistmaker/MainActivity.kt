@@ -13,14 +13,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        buttonSettings = findViewById<Button>(R.id.setting_window)
-        buttonSearch = findViewById<Button>(R.id.search_window)
-        buttonLibrary = findViewById<Button>(R.id.library_window)
-        val buttonClickListener: View.OnClickListener = object : View.OnClickListener {
-            override fun onClick(button: View?) {
-                val openSettingsWindow = Intent(this@MainActivity, SettingsActivity::class.java)
-                startActivity(openSettingsWindow)
-            }
+        buttonSettings = findViewById(R.id.setting_window)
+        buttonSearch = findViewById(R.id.search_window)
+        buttonLibrary = findViewById(R.id.library_window)
+        val buttonClickListener: View.OnClickListener = View.OnClickListener {
+            val openSettingsWindow = Intent(this@MainActivity, SettingsActivity::class.java)
+            startActivity(openSettingsWindow)
         }
         buttonSearch.setOnClickListener {
             val openSearchWindow = Intent(this@MainActivity, SearchActivity::class.java)

@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.LinearLayout
-import androidx.core.app.ShareCompat.IntentReader
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var buttonBackFromMainActivity:ImageButton
@@ -16,10 +15,10 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-        buttonBackFromMainActivity = findViewById<ImageButton>(R.id.backToMainActivityViewButton)
-        linearLayoutWriteToSupport = findViewById<LinearLayout>(R.id.linearWriteToSupport)
-        linerLayoutUserContract = findViewById<LinearLayout>(R.id.linearUserContract)
-        linerLayoutShareApp = findViewById<LinearLayout>(R.id.linearShareApp)
+        buttonBackFromMainActivity = findViewById(R.id.backToMainActivityViewButton)
+        linearLayoutWriteToSupport = findViewById(R.id.linearWriteToSupport)
+        linerLayoutUserContract = findViewById(R.id.linearUserContract)
+        linerLayoutShareApp = findViewById(R.id.linearShareApp)
         buttonBackFromMainActivity.setOnClickListener {
             finish()
         }
@@ -40,8 +39,7 @@ class SettingsActivity : AppCompatActivity() {
         }
         linerLayoutShareApp.setOnClickListener {
         Intent(Intent.ACTION_SEND).apply {
-            setType("text/plain")
-            //setType(getString(R.string.share_app_url))
+            type = "text/plain"
             putExtra(Intent.EXTRA_TEXT,getString(R.string.share_app_url))
             startActivity(this)
         }
