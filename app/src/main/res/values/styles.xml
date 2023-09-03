@@ -122,9 +122,4 @@
         <item name="backgroundTint">@color/black</item>
         <item name="android:textColor">@color/white</item>
     </style>
-    <style name="empty_search_view_image_view">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:src">@drawable/emptysearchresultlight</item>
-    </style>
 </resources>
