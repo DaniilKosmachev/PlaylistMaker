@@ -68,14 +68,7 @@ companion object {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-        buttonBack = findViewById(R.id.backToMainActivityViewButtonFromSearch)
-        editTextSearch = findViewById(R.id.editTextSearchActivity)
-        clearButton = findViewById(R.id.clearEditTextSearchActivity)
-        recycleViewTrack = findViewById(R.id.track_recycle_view)
-        updateButtonClick = findViewById(R.id.updateQueryButton)
-        errorLayout = findViewById(R.id.search_activity_error_linear_layout)
-        errorImage = findViewById(R.id.search_activity_error_image)
-        errorText = findViewById(R.id.search_activity_error_text)
+        initializedViewElementSearchActivity()
         clickOnClearButton()
         clickOnButtonBack()
         setSearchActivityTextWatcher()
@@ -84,6 +77,18 @@ companion object {
         trackAdapter = TrackAdapter(iTunesTrack)
         recycleViewTrack.adapter = trackAdapter
     }
+
+    fun initializedViewElementSearchActivity() {
+        buttonBack = findViewById(R.id.backToMainActivityViewButtonFromSearch)
+        editTextSearch = findViewById(R.id.editTextSearchActivity)
+        clearButton = findViewById(R.id.clearEditTextSearchActivity)
+        recycleViewTrack = findViewById(R.id.track_recycle_view)
+        updateButtonClick = findViewById(R.id.updateQueryButton)
+        errorLayout = findViewById(R.id.search_activity_error_linear_layout)
+        errorImage = findViewById(R.id.search_activity_error_image)
+        errorText = findViewById(R.id.search_activity_error_text)
+    }
+
     private fun setSearchActivityTextWatcher() {
         val searchActivityTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -109,6 +114,7 @@ companion object {
         }
         editTextSearch.addTextChangedListener(searchActivityTextWatcher)
     }
+
     @SuppressLint("NotifyDataSetChanged")
     private fun clickOnClearButton() {
         clearButton.setOnClickListener {//кнопка очистки
@@ -120,11 +126,13 @@ companion object {
             errorLayout.isVisible = false
         }
     }
+
     private fun clickOnButtonBack() {
         buttonBack.setOnClickListener {
             finish()
         }
     }
+
     private fun clickOnButtonDoneSystemKeyboard() {
         editTextSearch.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -137,13 +145,16 @@ companion object {
             }
         }
     }
+
     private fun hideSystemKeyboard() {
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         inputMethodManager?.hideSoftInputFromWindow(editTextSearch.windowToken,0)
     }
+
     private fun isPortrainSystemOrientatin(): Boolean {//true - если портретная
         return resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 }
+
     private fun isNightModeOn(): Boolean {//если дневная - false, ночная - true
         return when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
             Configuration.UI_MODE_NIGHT_YES -> {
@@ -158,6 +169,7 @@ companion object {
             else -> true
         }
     }
+
     private fun setEmptyResponse() { //устанавливает в ErrorLinearLayout картинку и текст по ошибке - пустой ответ
         recycleViewTrack.isVisible = false
         errorLayout.isVisible = true
@@ -170,17 +182,20 @@ companion object {
         }
         updateButtonClick.isVisible = false
     }
+
     private fun dpToPx(dp: Float, context: Context): Int {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             dp,
             context.resources.displayMetrics).toInt()
     }
+
     private fun updateErrorlayoutParamsForLandscapeOrientation() {
         val params: LayoutParams =
             errorLayout.layoutParams as LayoutParams
         params.setMargins(0, dpToPx((if (isPortrainSystemOrientatin()) 102f else 8f),this),0,0)
     }
+
     private fun setNoConnectionError() { //устанавливает в ErrorLinearLayout картинку и текст по ошибке - отсутствует связь
         recycleViewTrack.isVisible = false
         errorLayout.isVisible = true
@@ -198,6 +213,7 @@ companion object {
         updateButtonClick.isVisible = true
         hideSystemKeyboard()
     }
+
     private fun startSearchTrack() {
         itunesService.search(searchQueryText)
             .enqueue(object : Callback<TracksResponse> {
@@ -232,6 +248,7 @@ companion object {
 
             })
     }
+
     private fun onUpdateButtonClickListener() {
         updateButtonClick.setOnClickListener {
             startSearchTrack()

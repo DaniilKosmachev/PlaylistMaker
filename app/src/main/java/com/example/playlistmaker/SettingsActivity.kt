@@ -12,23 +12,30 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var linearLayoutWriteToSupport:LinearLayout
     private lateinit var linerLayoutUserContract:LinearLayout
     private lateinit var linerLayoutShareApp:LinearLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-        buttonBackFromMainActivity = findViewById(R.id.backToMainActivityViewButton)
-        linearLayoutWriteToSupport = findViewById(R.id.linearWriteToSupport)
-        linerLayoutUserContract = findViewById(R.id.linearUserContract)
-        linerLayoutShareApp = findViewById(R.id.linearShareApp)
+        initializedViewElementSettingsActivity()
         backToMainActivityClickLisnter()
         writeToSupportLinearClickListener()
         shareAppLinearClickListener()
         userContractLinearClickListener()
     }
+
+    fun initializedViewElementSettingsActivity() {
+        buttonBackFromMainActivity = findViewById(R.id.backToMainActivityViewButton)
+        linearLayoutWriteToSupport = findViewById(R.id.linearWriteToSupport)
+        linerLayoutUserContract = findViewById(R.id.linearUserContract)
+        linerLayoutShareApp = findViewById(R.id.linearShareApp)
+    }
+
     private fun backToMainActivityClickLisnter() {
         buttonBackFromMainActivity.setOnClickListener {
             finish()
         }
     }
+
     private fun writeToSupportLinearClickListener() {
         linearLayoutWriteToSupport.setOnClickListener {
             Intent(Intent.ACTION_SENDTO).apply {
@@ -41,6 +48,7 @@ class SettingsActivity : AppCompatActivity() {
 
         }
     }
+
     private fun shareAppLinearClickListener() {
         linerLayoutShareApp.setOnClickListener {
             Intent(Intent.ACTION_SEND).apply {
@@ -50,6 +58,7 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun userContractLinearClickListener() {
         linerLayoutUserContract.setOnClickListener {
             Intent(Intent.ACTION_VIEW,Uri.parse(getString(R.string.user_contract_url))).apply {
