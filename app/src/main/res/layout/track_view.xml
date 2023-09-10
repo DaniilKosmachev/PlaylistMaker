@@ -5,7 +5,9 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:paddingLeft="@dimen/main_padding_left_image">
+    android:paddingLeft="@dimen/main_padding_left_image"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground">
         <ImageView
             android:id="@+id/art_work_img100"
             android:layout_width="45dp"
