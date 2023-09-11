@@ -5,13 +5,11 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 
 var darkTheme = false
-class App: Application() {
+
+class App : Application() {
     private lateinit var themeSwitchSharedPreferences: SharedPreferences
     private lateinit var classThemeSwitch: AppThemeSwitch
 
-    companion object {
-        const val THEME_SWITCH_FILE_NAME = "theme_shared_preferences"
-    }
     override fun onCreate() {
         super.onCreate()
         themeSwitchSharedPreferences = getSharedPreferences(THEME_SWITCH_FILE_NAME, MODE_PRIVATE)
@@ -28,6 +26,11 @@ class App: Application() {
                 AppCompatDelegate.MODE_NIGHT_NO
             }
         )
+        classThemeSwitch.writeStatusSwitchToShared(darkThemeEnabled)
+    }
+
+    companion object {
+        const val THEME_SWITCH_FILE_NAME = "theme_shared_preferences"
     }
 
 }

@@ -30,13 +30,8 @@ import retrofit2.Response
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
-companion object {
-    private const val SEARCH_STRING = "SEARCH_STRING"
-    const val ITUNES_BASE_URL = "https://itunes.apple.com"
-    const val SHARED_PREFERENCES_HISTORY_SEARCH_FILE_NAME = "history_search_track"
-}
 
-   private val retrofit: Retrofit = Retrofit.Builder()
+    private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(ITUNES_BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
@@ -51,7 +46,7 @@ companion object {
     private lateinit var trackHistoryAdapter: TrackAdapter
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var editTextSearch: EditText
-    private lateinit var buttonBack:ImageButton
+    private lateinit var buttonBack: ImageButton
     private lateinit var clearButton: ImageButton
     private lateinit var recycleViewTrack: RecyclerView
     private lateinit var updateButtonClick: Button
@@ -69,8 +64,8 @@ companion object {
         outState.putString(SEARCH_STRING, searchQueryText)
     }
 
-   override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-       val editTextSearch = findViewById<EditText>(R.id.editTextSearchActivity)
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        val editTextSearch = findViewById<EditText>(R.id.editTextSearchActivity)
         super.onRestoreInstanceState(savedInstanceState)
         editTextSearch.setText(searchQueryText)
     }
@@ -79,29 +74,34 @@ companion object {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-        initializedViewElementSearchActivity()
+        initializeViewElementSearchActivity()
         clickOnClearButton()
         clickOnButtonBack()
         setSearchActivityTextWatcher()
         clickOnButtonDoneSystemKeyboard()
         onUpdateButtonClickListener()
-        initizlizedComponents()
+        initializeComponents()
         setOnEditTextFocusLisneter()
         readOnHistoryTrackList()
         clickOnClearSearchHistoryButton()
     }
 
-    private fun initizlizedComponents() {
-        historySharedPreferences = getSharedPreferences(SHARED_PREFERENCES_HISTORY_SEARCH_FILE_NAME, MODE_PRIVATE)//инициализируем экземпляр SP
+    private fun initializeComponents() {
+        historySharedPreferences = getSharedPreferences(
+            SHARED_PREFERENCES_HISTORY_SEARCH_FILE_NAME,
+            MODE_PRIVATE
+        )//инициализируем экземпляр SP
         classHistorySearch = TrackSearchHistory(historySharedPreferences)
         trackAdapter = TrackAdapter(iTunesTrack) {//адаптер для текущего поискового запроса
-            addNewTrackInTrackHistory(it)
+            classHistorySearch.addNewTrackInTrackHistory(it, iTunesTrackSearchHistory)
         }
-        recycleViewTrack.adapter = trackAdapter//устанавливаем для RecyclerView текущего результата поиска адаптер
+        recycleViewTrack.adapter =
+            trackAdapter//устанавливаем для RecyclerView текущего результата поиска адаптер
         trackHistoryAdapter = TrackAdapter(iTunesTrackSearchHistory) {
             showToast(it)
         }//адптер для истории поиска
-        recyclerViewHistoryTrack.adapter=trackHistoryAdapter//устанавливаем для RecyclerView истории поиска адаптер
+        recyclerViewHistoryTrack.adapter =
+            trackHistoryAdapter//устанавливаем для RecyclerView истории поиска адаптер
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -111,34 +111,14 @@ companion object {
     }
 
     fun showToast(track: Track) {//просто тест на кликл истории поиска
-        Toast.makeText(this@SearchActivity, "Нажата в истории - ${track.artistName}, ${track.trackName}",Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            this@SearchActivity,
+            "Нажата в истории - ${track.artistName}, ${track.trackName}",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
-
-    private fun addNewTrackInTrackHistory(newTrack: Track) {
-        val temporaryTrackArray = ArrayList<Track>()
-        temporaryTrackArray.addAll(classHistorySearch.getTrackArrayFromShared())//получаем десериализованный список треков из SP во временный лист
-        if (temporaryTrackArray.isEmpty()) {//если он пуст, то просто добавляем новый трек на нулевой индекс
-            iTunesTrackSearchHistory.add(0,newTrack)
-        } else if (temporaryTrackArray.isNotEmpty()) {
-            if (temporaryTrackArray.size == 11) {
-                temporaryTrackArray.removeAt(10)
-            }
-            val iterator: MutableIterator<Track> = temporaryTrackArray.iterator()
-            while (iterator.hasNext()) {
-                val currentTrack = iterator.next()
-                if (currentTrack.trackId == newTrack.trackId) {
-                    iterator.remove()
-                }
-            }
-            temporaryTrackArray.add(0,newTrack)
-            iTunesTrackSearchHistory.clear()
-            iTunesTrackSearchHistory.addAll(temporaryTrackArray)
-        }
-        classHistorySearch.writeTrackArrayToShared(iTunesTrackSearchHistory)//записываем итоговый массив в SP
-    }
-
-    private fun initializedViewElementSearchActivity() {
+    private fun initializeViewElementSearchActivity() {
         buttonBack = findViewById(R.id.backToMainActivityViewButtonFromSearch)
         editTextSearch = findViewById(R.id.editTextSearchActivity)
         clearButton = findViewById(R.id.clearEditTextSearchActivity)
@@ -167,16 +147,17 @@ companion object {
             override fun afterTextChanged(s: Editable?) {
 
             }
-            fun clearButtonVisibility (s: CharSequence?): Int {
+
+            fun clearButtonVisibility(s: CharSequence?): Int {
                 return if (s.isNullOrEmpty()) {
-                    View. GONE
-                }
-                else {
+                    View.GONE
+                } else {
                     View.VISIBLE
                 }
             }
-            fun historyLinearLayoutVisibility (s: CharSequence?): Int {
-                return if (s.isNullOrEmpty()) {
+
+            fun historyLinearLayoutVisibility(s: CharSequence?): Int {
+                return if (s.isNullOrEmpty() && iTunesTrackSearchHistory.isNotEmpty()) {
                     View.VISIBLE
                 } else {
                     View.GONE
@@ -185,12 +166,14 @@ companion object {
         }
         editTextSearch.addTextChangedListener(searchActivityTextWatcher)
     }
+
     @SuppressLint("NotifyDataSetChanged")
     private fun setOnEditTextFocusLisneter() {
         editTextSearch.setOnFocusChangeListener { _, hasFocus ->
             if (iTunesTrackSearchHistory.isNotEmpty()) {
-            historyLayout.visibility = if (hasFocus && editTextSearch.text.isNullOrEmpty()) View.VISIBLE else View.GONE
-            trackHistoryAdapter.notifyDataSetChanged()
+                historyLayout.visibility =
+                    if (hasFocus && editTextSearch.text.isNullOrEmpty()) View.VISIBLE else View.GONE
+                trackHistoryAdapter.notifyDataSetChanged()
             }
         }
     }
@@ -239,20 +222,21 @@ companion object {
     }
 
     private fun hideSystemKeyboard() {
-        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        inputMethodManager?.hideSoftInputFromWindow(editTextSearch.windowToken,0)
+        val inputMethodManager =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        inputMethodManager?.hideSoftInputFromWindow(editTextSearch.windowToken, 0)
     }
 
     private fun isPortrainSystemOrientatin(): Boolean {//true - если портретная
         return resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-}
+    }
 
     private fun isNightModeOn(): Boolean {//если дневная - false, ночная - true
         return when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
             Configuration.UI_MODE_NIGHT_YES -> {
                 true
             }
-            Configuration.UI_MODE_NIGHT_NO ->  {
+            Configuration.UI_MODE_NIGHT_NO -> {
                 false
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {
@@ -279,13 +263,14 @@ companion object {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             dp,
-            context.resources.displayMetrics).toInt()
+            context.resources.displayMetrics
+        ).toInt()
     }
 
     private fun updateErrorlayoutParamsForLandscapeOrientation() {
         val params: LayoutParams =
             errorLayout.layoutParams as LayoutParams
-        params.setMargins(0, dpToPx((if (isPortrainSystemOrientatin()) 102f else 8f),this),0,0)
+        params.setMargins(0, dpToPx((if (isPortrainSystemOrientatin()) 102f else 8f), this), 0, 0)
     }
 
     private fun setNoConnectionError() { //устанавливает в ErrorLinearLayout картинку и текст по ошибке - отсутствует связь
@@ -293,7 +278,7 @@ companion object {
         errorLayout.isVisible = true
         updateErrorlayoutParamsForLandscapeOrientation()
         if (!isPortrainSystemOrientatin()) {//если не портретная ориентация, то заменяю все знаки новой строки, чтобы влезло в книжную ориентацию
-        errorText.text = getString(R.string.connection_error).replace("\n"," ")
+            errorText.text = getString(R.string.connection_error).replace("\n", " ")
         } else {
             errorText.text = getString(R.string.connection_error)
         }
@@ -347,4 +332,11 @@ companion object {
         }
 
     }
+
+    companion object {
+        private const val SEARCH_STRING = "SEARCH_STRING"
+        const val ITUNES_BASE_URL = "https://itunes.apple.com"
+        const val SHARED_PREFERENCES_HISTORY_SEARCH_FILE_NAME = "history_search_track"
+    }
+
 }
