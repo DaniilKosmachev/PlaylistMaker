@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="settings_padding_vertical">16dp</dimen>
-    <dimen name="settings_padding_left_text">16dp</dimen>
+    <dimen name="settings_padding_vertical_and_left_text">16dp</dimen>
     <dimen name="main_padding_left_image">8dp</dimen>
     <dimen name="settings_text_size">19sp</dimen>
     <dimen name="main_text_size">22sp</dimen>
@@ -10,4 +9,5 @@
     <dimen name="track_name_text_size">16sp</dimen>
     <dimen name="track_artist_name_and_track_time_text_size">11sp</dimen>
     <dimen name="image_artwork_corner_radius">2dp</dimen>
+    <dimen name="search_activity_history_text_view_padding_top">42dp</dimen>
 </resources>

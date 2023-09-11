@@ -5,7 +5,9 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:paddingLeft="@dimen/main_padding_left_image">
+    android:paddingStart="@dimen/main_padding_left_image"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground">
         <ImageView
             android:id="@+id/art_work_img100"
             android:layout_width="45dp"
@@ -48,7 +50,14 @@
                     android:id="@+id/track_time"/>
         </LinearLayout>
         </LinearLayout>
-        <ImageButton
-            style="@style/settings_activity_image_button_style"
+        <ImageView
+            style="@style/track_view_image_view"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="12dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
             android:src="@drawable/arrowforward"/>
     </LinearLayout>

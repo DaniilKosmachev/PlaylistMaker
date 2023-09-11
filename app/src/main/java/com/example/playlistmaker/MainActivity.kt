@@ -7,9 +7,9 @@ import android.view.View
 import android.widget.Button
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
-    private lateinit var buttonSettings:Button
-    private lateinit var buttonSearch:Button
-    private lateinit var buttonLibrary:Button
+    private lateinit var buttonSettings: Button
+    private lateinit var buttonSearch: Button
+    private lateinit var buttonLibrary: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -8,13 +8,14 @@
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Это ативити Медиатеки!"
-            android:textSize="25dp"
+            android:gravity="center"
+            android:text="Это активити Медиатеки!"
             android:textAlignment="center"
-            android:gravity="center"/>
+            android:textSize="25dp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
