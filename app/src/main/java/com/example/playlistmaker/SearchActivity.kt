@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +24,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import retrofit2.Retrofit
 import retrofit2.Call
 import retrofit2.Callback
@@ -70,6 +72,7 @@ class SearchActivity : AppCompatActivity() {
         editTextSearch.setText(searchQueryText)
     }
 
+
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,13 +95,19 @@ class SearchActivity : AppCompatActivity() {
             MODE_PRIVATE
         )//инициализируем экземпляр SP
         classHistorySearch = TrackSearchHistory(historySharedPreferences)
-        trackAdapter = TrackAdapter(iTunesTrack) {//адаптер для текущего поискового запроса
+        trackAdapter = TrackAdapter(iTunesTrack) {
+            openAudioPlayerAndReceiveTrackInfo(it)
             classHistorySearch.addNewTrackInTrackHistory(it, iTunesTrackSearchHistory)
-        }
+            trackHistoryAdapter.notifyDataSetChanged()
+        }//адаптер для текущего поискового запроса
         recycleViewTrack.adapter =
             trackAdapter//устанавливаем для RecyclerView текущего результата поиска адаптер
         trackHistoryAdapter = TrackAdapter(iTunesTrackSearchHistory) {
-            showToast(it)
+            openAudioPlayerAndReceiveTrackInfo(it)
+            classHistorySearch.updateHistoryListAfterSelectItemHistoryTrack(it)
+            iTunesTrackSearchHistory.clear()
+            iTunesTrackSearchHistory.addAll(classHistorySearch.getTrackArrayFromShared())
+            trackHistoryAdapter.notifyDataSetChanged()
         }//адптер для истории поиска
         recyclerViewHistoryTrack.adapter =
             trackHistoryAdapter//устанавливаем для RecyclerView истории поиска адаптер
@@ -108,14 +117,6 @@ class SearchActivity : AppCompatActivity() {
     fun readOnHistoryTrackList() {//читаем из sheared preferences файла историю поиска
         iTunesTrackSearchHistory.addAll(classHistorySearch.getTrackArrayFromShared())
         trackHistoryAdapter.notifyDataSetChanged()
-    }
-
-    fun showToast(track: Track) {//просто тест на кликл истории поиска
-        Toast.makeText(
-            this@SearchActivity,
-            "Нажата в истории - ${track.artistName}, ${track.trackName}",
-            Toast.LENGTH_SHORT
-        ).show()
     }
 
     private fun initializeViewElementSearchActivity() {
@@ -138,10 +139,20 @@ class SearchActivity : AppCompatActivity() {
 
             }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            override fun onTextChanged(
+                s: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {    //Видно основной поиск!
                 clearButton.visibility = clearButtonVisibility(s)
                 searchQueryText = editTextSearch.text.toString()
                 historyLayout.visibility = historyLinearLayoutVisibility(s)
+                recycleViewTrack.visibility = searchRecyclerlViewVisibility(s)
+                if (s.isNullOrEmpty()) {
+                    iTunesTrack.clear()
+                    trackAdapter.notifyDataSetChanged()
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -161,6 +172,15 @@ class SearchActivity : AppCompatActivity() {
                     View.VISIBLE
                 } else {
                     View.GONE
+                }
+            }
+
+            fun searchRecyclerlViewVisibility(s: CharSequence?): Int {  //возможно поправит баг, когда не скрывается поиск при удалении символов при пустой строке
+                return if (s.isNullOrEmpty() && iTunesTrackSearchHistory.isNotEmpty()) {
+                    View.GONE
+
+                } else {
+                    View.VISIBLE
                 }
             }
         }
@@ -200,6 +220,12 @@ class SearchActivity : AppCompatActivity() {
             errorLayout.isVisible = false
             trackHistoryAdapter.notifyDataSetChanged()//обновляем историю поиска
         }
+    }
+
+    fun openAudioPlayerAndReceiveTrackInfo(track: Track) {
+        intent = Intent(this, AudioPlayerActivity::class.java)
+        intent.putExtra(TrackAdapter.SELECTABLE_TRACK, Gson().toJson(track))
+        startActivity(intent)
     }
 
     private fun clickOnButtonBack() {
@@ -335,6 +361,7 @@ class SearchActivity : AppCompatActivity() {
 
     companion object {
         private const val SEARCH_STRING = "SEARCH_STRING"
+        const val CURRENT_TRACK = "selectable_track"
         const val ITUNES_BASE_URL = "https://itunes.apple.com"
         const val SHARED_PREFERENCES_HISTORY_SEARCH_FILE_NAME = "history_search_track"
     }

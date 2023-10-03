@@ -1,8 +1,10 @@
 package com.example.playlistmaker
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 
 class TrackAdapter(private val data: List<Track>, private val clickListener: trackClickListener) :
     RecyclerView.Adapter<TrackViewHolder>() {
@@ -21,7 +23,12 @@ class TrackAdapter(private val data: List<Track>, private val clickListener: tra
         }
     }
 
+
     fun interface trackClickListener {
         fun onTrackClickListener(track: Track)
+    }
+
+    companion object {
+        const val SELECTABLE_TRACK = "selectable_track"
     }
 }

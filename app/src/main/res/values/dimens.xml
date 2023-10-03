@@ -10,4 +10,7 @@
     <dimen name="track_artist_name_and_track_time_text_size">11sp</dimen>
     <dimen name="image_artwork_corner_radius">2dp</dimen>
     <dimen name="search_activity_history_text_view_padding_top">42dp</dimen>
+    <dimen name="audio_player_main_left_border">24dp</dimen>
+    <dimen name="track_name_size_audio_player_activity">26sp</dimen>
+    <dimen name="image_artwork_corner_radius_audio_player">8dp</dimen>
 </resources>
