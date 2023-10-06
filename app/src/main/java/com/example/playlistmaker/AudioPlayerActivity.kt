@@ -1,5 +1,7 @@
 package com.example.playlistmaker
 
+import android.os.Build
+import android.os.Build.VERSION
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.bumptech.glide.Glide
@@ -21,13 +23,18 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun initializeComponents() {
-        selectableTrack = intent.getParcelableExtra(TrackAdapter.SELECTABLE_TRACK)!!
+        if (VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            selectableTrack = intent.getParcelableExtra(TrackAdapter.SELECTABLE_TRACK, Track::class.java)!!
+        } else {
+            selectableTrack = intent.getParcelableExtra(TrackAdapter.SELECTABLE_TRACK)!!
+        }
         binding.backButton.setOnClickListener {
             finish()
         }
     }
 
     private fun setInActivityElementsValueOfTrack() {
+        binding.nameOfTrackAudioPlayerActivity.isSelected = true
         binding.nameOfTrackAudioPlayerActivity.text = selectableTrack.trackName
         binding.nameOfArtistAudioPlayerActovity.text = selectableTrack.artistName
         binding.trackTimeValueAudioPlayer.text =
