@@ -10,4 +10,15 @@
     <dimen name="track_artist_name_and_track_time_text_size">11sp</dimen>
     <dimen name="image_artwork_corner_radius">2dp</dimen>
     <dimen name="search_activity_history_text_view_padding_top">42dp</dimen>
+    <dimen name="audio_player_main_left_border">24dp</dimen>
+    <dimen name="track_name_size_audio_player_activity">26sp</dimen>
+    <dimen name="image_artwork_corner_radius_audio_player">8dp</dimen>
+    <dimen name="margin_Top_16">16dp</dimen>
+    <dimen name="margin_24">24dp</dimen>
+    <dimen name="margin_12">12dp</dimen>
+    <dimen name="margin_28">28dp</dimen>
+    <dimen name="margin_4">4dp</dimen>
+    <dimen name="additional_text_size_14">14sp</dimen>
+    <dimen name="additional_text_size_15">15sp</dimen>
+    <dimen name="margin_17">17dp</dimen>
 </resources>

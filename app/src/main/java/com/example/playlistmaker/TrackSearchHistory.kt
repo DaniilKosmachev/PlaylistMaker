@@ -2,8 +2,10 @@ package com.example.playlistmaker
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
+import java.io.Serializable
 
-class TrackSearchHistory(sharedPreferences: SharedPreferences) { //класс для работы с SharedPreferences истории поиска
+class TrackSearchHistory(sharedPreferences: SharedPreferences) :
+    Serializable { //класс для работы с SharedPreferences истории поиска
 
     private val sharedPreferencesHistory = sharedPreferences
 
@@ -46,6 +48,24 @@ class TrackSearchHistory(sharedPreferences: SharedPreferences) { //класс д
         }
         writeTrackArrayToShared(iTunesTrackSearchHistoryList)//записываем итоговый массив в SP
     }
+
+    fun updateHistoryListAfterSelectItemHistoryTrack(track: Track) {
+        val temporaryTrackArray = ArrayList<Track>()
+        temporaryTrackArray.addAll(getTrackArrayFromShared())
+        if (temporaryTrackArray.isNotEmpty()) {
+            val iterator: MutableIterator<Track> = temporaryTrackArray.iterator()
+            while (iterator.hasNext()) {
+                val currentTrack = iterator.next()
+                if (currentTrack.trackId == track.trackId) {
+                    iterator.remove()
+                }
+            }
+            temporaryTrackArray.add(0, track)
+            clearSearchHistory()
+            writeTrackArrayToShared(temporaryTrackArray)
+        }
+    }
+
 
     companion object {
         const val HISTORY_TRACK_LIST_KEY = "history_track_list"

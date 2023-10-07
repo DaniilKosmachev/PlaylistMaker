@@ -9,23 +9,20 @@ import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Switch
+import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 @SuppressLint("UseSwitchCompatOrMaterialCode")
 class SettingsActivity : AppCompatActivity() {
 
-    private lateinit var buttonBackFromMainActivity: ImageButton
-    private lateinit var linearLayoutWriteToSupport: LinearLayout
-    private lateinit var linerLayoutUserContract: LinearLayout
-    private lateinit var linerLayoutShareApp: LinearLayout
-    private lateinit var themeSwitch: Switch
+    private lateinit var binding: ActivitySettingsBinding
     private lateinit var sharePref: SharedPreferences
     private lateinit var classSwitchAppTheme: AppThemeSwitch
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
-        initializeViewElementSettingsActivity()
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         backToMainActivityClickListener()
         writeToSupportLinearClickListener()
         shareAppLinearClickListener()
@@ -36,7 +33,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun checkSwitchThemeStatus() {
-        themeSwitch.isChecked = classSwitchAppTheme.getStatusSwitchFromShared()
+        binding.themeSwitch.isChecked = classSwitchAppTheme.getStatusSwitchFromShared()
     }
 
     private fun initializeVariable() {
@@ -44,28 +41,21 @@ class SettingsActivity : AppCompatActivity() {
         classSwitchAppTheme = AppThemeSwitch(sharePref)
     }
 
-    private fun initializeViewElementSettingsActivity() {
-        buttonBackFromMainActivity = findViewById(R.id.backToMainActivityViewButton)
-        linearLayoutWriteToSupport = findViewById(R.id.linearWriteToSupport)
-        linerLayoutUserContract = findViewById(R.id.linearUserContract)
-        linerLayoutShareApp = findViewById(R.id.linearShareApp)
-        themeSwitch = findViewById(R.id.theme_Switch)
-    }
 
     private fun themeSwitchClickListener() {
-        themeSwitch.setOnCheckedChangeListener { _, checked ->
+        binding.themeSwitch.setOnCheckedChangeListener { _, checked ->
             (applicationContext as App).switchTheme(checked)
         }
     }
 
     private fun backToMainActivityClickListener() {
-        buttonBackFromMainActivity.setOnClickListener {
+        binding.backToMainActivityViewButton.setOnClickListener {
             finish()
         }
     }
 
     private fun writeToSupportLinearClickListener() {
-        linearLayoutWriteToSupport.setOnClickListener {
+        binding.linearWriteToSupport.setOnClickListener {
             Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse(getString(R.string.share_data_mailto))
                 putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.email_support)))
@@ -78,7 +68,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun shareAppLinearClickListener() {
-        linerLayoutShareApp.setOnClickListener {
+        binding.linearShareApp.setOnClickListener {
             Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.share_app_url))
@@ -88,7 +78,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun userContractLinearClickListener() {
-        linerLayoutUserContract.setOnClickListener {
+        binding.linearUserContract.setOnClickListener {
             Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.user_contract_url))).apply {
                 startActivity(this)
             }
