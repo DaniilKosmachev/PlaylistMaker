@@ -6,11 +6,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.Switch
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
-import com.google.android.material.switchmaterial.SwitchMaterial
 
 @SuppressLint("UseSwitchCompatOrMaterialCode")
 class SettingsActivity : AppCompatActivity() {

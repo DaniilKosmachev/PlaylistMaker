@@ -18,7 +18,8 @@ data class Track(
     val collectionName: String?,
     val releaseDate: String,
     val primaryGenreName: String,
-    val country: String
+    val country: String,
+    val previewUrl: String?
 ): Parcelable {
     fun getLocalDateTime(track: Track): String {
             return LocalDateTime.parse(track.releaseDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")).year.toString()
