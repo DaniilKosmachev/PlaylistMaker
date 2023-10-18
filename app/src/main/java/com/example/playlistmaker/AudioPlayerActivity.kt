@@ -17,8 +17,8 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAudioPlayerBinding
     private lateinit var selectableTrack: Track
-    private lateinit var mediaPlayer: MediaPlayer
-    private var playerState = PLAYER_DEFAULT_STATE
+    private var mediaPlayer: MediaPlayer? = null
+    private lateinit var playerState: PlayerState
     private var mainTreadHandler: Handler? = null
 
 
@@ -31,7 +31,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
+        mediaPlayer?.release()
         mainTreadHandler?.removeCallbacks(changePlaybackProgress())
     }
 
@@ -48,6 +48,8 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun initializeComponents() {
+        mediaPlayer = MediaPlayer()
+        playerState = PlayerState.DEFAULT
         mainTreadHandler = Handler(Looper.getMainLooper())
         mediaPlayer = MediaPlayer()
         selectableTrack = if (VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -60,15 +62,18 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
         binding.playButton.setOnClickListener {
             when(playerState) {
-                PLAYER_PLAYING_STATE -> {
+                PlayerState.PLAYING -> {
                     pausePreviewTrack()
                     mainTreadHandler?.post(changePlayButtonImage())
                     mainTreadHandler?.post(changePlaybackProgress())
                 }
-                PLAYER_PREPARED_STATE, PLAYER_PAUSE_STATE -> {
+                PlayerState.PAUSE, PlayerState.PREPARED -> {
                     startPreviewTrack()
                     mainTreadHandler?.post(changePlayButtonImage())
                     mainTreadHandler?.post(changePlaybackProgress())
+                }
+                PlayerState.DEFAULT -> {
+
                 }
             }
         }
@@ -77,11 +82,14 @@ class AudioPlayerActivity : AppCompatActivity() {
     private fun changePlayButtonImage(): Runnable {
         return Runnable {
             when (playerState) {
-                PLAYER_PLAYING_STATE -> {
+                PlayerState.PLAYING -> {
                     binding.playButton.setImageResource(R.drawable.button_pause)
                 }
-                PLAYER_PREPARED_STATE, PLAYER_PAUSE_STATE -> {
+                PlayerState.PAUSE , PlayerState.PREPARED -> {
                     binding.playButton.setImageResource(R.drawable.button_play)
+                }
+                PlayerState.DEFAULT -> {
+
                 }
             }
         }
@@ -91,15 +99,18 @@ class AudioPlayerActivity : AppCompatActivity() {
         return object : Runnable {
             override fun run() {
                 when (playerState) {
-                    PLAYER_PLAYING_STATE -> {
-                        binding.currentTrackTimeAudioPlayer.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
-                        mainTreadHandler?.postDelayed(this, DELAY_CURRENT_TIME_1000)
+                    PlayerState.PLAYING -> {
+                        binding.currentTrackTimeAudioPlayer.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer?.currentPosition)
+                        mainTreadHandler?.postDelayed(this, DELAY_CURRENT_TIME_1000_MILLIS)
                     }
-                    PLAYER_PAUSE_STATE -> {
+                    PlayerState.PAUSE -> {
                         mainTreadHandler?.removeCallbacks(this)
                     }
-                    PLAYER_PREPARED_STATE -> {
+                    PlayerState.PREPARED -> {
                         binding.currentTrackTimeAudioPlayer.text = "00:00"
+                    }
+                    PlayerState.DEFAULT -> {
+
                     }
                 }
             }
@@ -107,27 +118,27 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun prepareMediaPlayer() {
-        mediaPlayer.apply {
+        mediaPlayer?.apply {
             setDataSource(selectableTrack.previewUrl)
             prepareAsync()
             setOnPreparedListener {
-                playerState = PLAYER_PREPARED_STATE
+                playerState = PlayerState.PREPARED
             }
             setOnCompletionListener {
-                playerState = PLAYER_PREPARED_STATE
+                playerState = PlayerState.PREPARED
                 mainTreadHandler?.post(changePlayButtonImage())
             }
         }
     }
 
     private fun startPreviewTrack() {
-        mediaPlayer.start()
-        playerState = PLAYER_PLAYING_STATE
+        mediaPlayer?.start()
+        playerState = PlayerState.PLAYING
     }
 
    private fun pausePreviewTrack() {
-        mediaPlayer.pause()
-        playerState = PLAYER_PAUSE_STATE
+        mediaPlayer?.pause()
+        playerState = PlayerState.PAUSE
     }
 
     private fun setInActivityElementsValueOfTrack() {
@@ -149,12 +160,15 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.countryValueAudioPlayer.text = selectableTrack.country
     }
 
+    enum class PlayerState {
+        DEFAULT,
+        PREPARED,
+        PLAYING,
+        PAUSE
+    }
+
     companion object {
-        private const val DELAY_CURRENT_TIME_1000 = 1000L
-        private const val PLAYER_DEFAULT_STATE = 0
-        private const val PLAYER_PREPARED_STATE = 1
-        private const val PLAYER_PLAYING_STATE = 2
-        private const val PLAYER_PAUSE_STATE = 3
+        private const val DELAY_CURRENT_TIME_1000_MILLIS = 1000L
     }
 
 }

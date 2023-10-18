@@ -76,7 +76,6 @@ class SearchActivity : AppCompatActivity() {
         clickOnClearButton()
         clickOnButtonBack()
         setSearchActivityTextWatcher()
-        //clickOnButtonDoneSystemKeyboard()
         onUpdateButtonClickListener()
         initializeComponents()
         setOnEditTextFocusLisneter()
@@ -118,7 +117,7 @@ class SearchActivity : AppCompatActivity() {
         val current = isClickedAllowed
         if (isClickedAllowed) {
             isClickedAllowed = false
-            mainTreadHandler?.postDelayed({isClickedAllowed = true}, CLICK_ON_TRACK_DELAY)
+            mainTreadHandler?.postDelayed({isClickedAllowed = true}, CLICK_ON_TRACK_DELAY_MILLIS)
         }
         return current
     }
@@ -195,7 +194,7 @@ class SearchActivity : AppCompatActivity() {
         binding.searchActivityErrorLinearLayout.isVisible = false
         binding.searchActivityProgressBar.isVisible = true
         mainTreadHandler?.removeCallbacks(searchDebounce)
-        mainTreadHandler?.postDelayed(searchDebounce, SEARCH_DELAY_2000)
+        mainTreadHandler?.postDelayed(searchDebounce, SEARCH_DELAY_2000_MILLIS)
         if (iTunesTrack.isNotEmpty()) {
             iTunesTrack.clear()
             trackAdapter.notifyDataSetChanged()
@@ -251,19 +250,6 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    /*private fun clickOnButtonDoneSystemKeyboard() {
-        binding.editTextSearchActivity.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                if (searchQueryText.isNotEmpty()) {
-                    binding.searchActivityProgressBar.isVisible = true
-                    startSearchTrack()//запускаем метод поиска треков
-                }
-                true
-            } else {
-                false
-            }
-        }
-    }*/
 
     private fun hideSystemKeyboard() {
         val inputMethodManager =
@@ -345,7 +331,7 @@ class SearchActivity : AppCompatActivity() {
                     call: Call<TracksResponse>,
                     response: Response<TracksResponse>
                 ) {
-                    if (response.code() == 200) { //если код 200 - очищаем список items viewHolder'ов
+                    if (response.code() == RESPONSE_FROM_SERVER_200) { //если код 200 - очищаем список items viewHolder'ов
                         iTunesTrack.clear()//на всякий очищаем список треков
                         if (response.body()?.results?.isNotEmpty() == true) {
                             binding.searchActivityProgressBar.isVisible = false
@@ -384,8 +370,9 @@ class SearchActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val CLICK_ON_TRACK_DELAY = 1000L
-        private const val SEARCH_DELAY_2000 = 2000L
+        private const val RESPONSE_FROM_SERVER_200 = 200
+        private const val CLICK_ON_TRACK_DELAY_MILLIS = 1000L
+        private const val SEARCH_DELAY_2000_MILLIS = 2000L
         private const val SEARCH_STRING = "SEARCH_STRING"
         const val ITUNES_BASE_URL = "https://itunes.apple.com"
         const val SHARED_PREFERENCES_HISTORY_SEARCH_FILE_NAME = "history_search_track"
