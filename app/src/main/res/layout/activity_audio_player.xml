@@ -142,7 +142,7 @@
         android:id="@+id/current_track_time_audio_player"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        tools:text="0:30"
+        android:text="00:00"
         android:textSize="@dimen/additional_text_size_14"
         android:textAlignment="center"
         android:layout_marginBottom="28dp"

@@ -54,6 +54,14 @@
                 android:src="@drawable/close"
                 android:visibility="gone" />
         </FrameLayout>
+        <ProgressBar
+            android:id="@+id/searchActivityProgressBar"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="140dp"
+            android:indeterminateTint="@color/main_activity_color"
+            android:visibility="gone"/>
         <LinearLayout
             android:id="@+id/search_activity_error_linear_layout"
             android:layout_width="match_parent"
