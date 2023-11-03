@@ -1,28 +1,34 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data.local
 
+import android.app.Application
 import android.content.SharedPreferences
+import android.content.Context
+import android.os.Bundle
+import android.view.Display
+import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import java.io.Serializable
 
-class TrackSearchHistory(sharedPreferences: SharedPreferences) :
-    Serializable { //класс для работы с SharedPreferences истории поиска
 
-    private val sharedPreferencesHistory = sharedPreferences
+class TrackSearchHistory(var sharedPreferences: SharedPreferences) :
+    Serializable, Application() {
+    //класс для работы с SharedPreferences истории поиска
+
 
     fun getTrackArrayFromShared(): Array<Track> {
         val json =
-            sharedPreferencesHistory.getString(HISTORY_TRACK_LIST_KEY, null) ?: return emptyArray()
+            sharedPreferences.getString(HISTORY_TRACK_LIST_KEY, null) ?: return emptyArray()
         return Gson().fromJson(json, Array<Track>::class.java)
     }
 
     fun writeTrackArrayToShared(tracks: ArrayList<Track>) {
         val json = Gson().toJson(tracks)
-        sharedPreferencesHistory.edit()
+        sharedPreferences.edit()
             .putString(HISTORY_TRACK_LIST_KEY, json)
             .apply()
     }
 
-    fun clearSearchHistory() = sharedPreferencesHistory.edit()
+    fun clearSearchHistory() = sharedPreferences.edit()
         .clear()
         .apply()
 
@@ -68,6 +74,7 @@ class TrackSearchHistory(sharedPreferences: SharedPreferences) :
 
 
     companion object {
+        const val SHARED_PREFERENCES_HISTORY_SEARCH_FILE_NAME = "history_search_track"
         const val HISTORY_TRACK_LIST_KEY = "history_track_list"
         const val MAX_SIZE_OF_HISTORY_LIST = 11
         const val INDEX_OF_LAST_TRACK_IN_HISTORY_LIST = 10

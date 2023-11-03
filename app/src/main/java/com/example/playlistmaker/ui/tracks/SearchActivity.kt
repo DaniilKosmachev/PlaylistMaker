@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.tracks
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -17,22 +17,33 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout.GONE
 import android.widget.LinearLayout.LayoutParams
+import androidx.core.util.Consumer
 import androidx.core.view.isVisible
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.ui.audioplayer.AudioPlayerActivity
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.data.local.TrackSearchHistory
+import com.example.playlistmaker.data.dto.TracksResponse
+import com.example.playlistmaker.data.network.ITunesApi
 import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.domain.api.TracksInteractor
+import com.example.playlistmaker.domain.impl.TracksInteractorImpl
+import com.example.playlistmaker.presentation.TrackAdapter
 import retrofit2.Retrofit
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.converter.gson.GsonConverterFactory
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity(), java.util.function.Consumer<List<Track>> {
 
     private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(ITUNES_BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
-        .build()
+        .build()//*
 
-    private val itunesService = retrofit.create(ITunesApi::class.java)
+    private val itunesService = retrofit.create(ITunesApi::class.java)//*
 
     private val iTunesTrack = ArrayList<Track>()//список треков из iTunes
     private val iTunesTrackSearchHistory = ArrayList<Track>()//список истории поиска
@@ -43,12 +54,14 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var trackHistoryAdapter: TrackAdapter
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var historySharedPreferences: SharedPreferences
+    private lateinit var trackInteractor: TracksInteractor
     private lateinit var classHistorySearch: TrackSearchHistory
     private var mainTreadHandler: Handler? = null
     private var isClickedAllowed = true //маячек для повторного клика
     private val searchDebounce = Runnable {
         binding.searchActivityProgressBar.isVisible = true
-        startSearchTrack()
+        testSearch()
+        //startSearchTrack()
         hideSystemKeyboard()
     }
 
@@ -81,6 +94,7 @@ class SearchActivity : AppCompatActivity() {
         setOnEditTextFocusLisneter()
         readOnHistoryTrackList()
         clickOnClearSearchHistoryButton()
+        trackInteractor = Creator.provideTracksInteractor()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -112,6 +126,8 @@ class SearchActivity : AppCompatActivity() {
         binding.searchActivityHistoryRecyclerView.adapter =
             trackHistoryAdapter//устанавливаем для RecyclerView истории поиска адаптер
     }
+
+
 
     private fun onClickAllowed(): Boolean {
         val current = isClickedAllowed
@@ -323,7 +339,13 @@ class SearchActivity : AppCompatActivity() {
         hideSystemKeyboard()
     }
 
-    private fun startSearchTrack() {
+    fun testSearch() {
+        if (!binding.editTextSearchActivity.text.isNullOrEmpty()) {
+            trackInteractor.searchTracks(binding.editTextSearchActivity.text.toString(), this)
+        }
+    }
+
+    /*private fun startSearchTrack() {
         itunesService.search(searchQueryText)
             .enqueue(object : Callback<TracksResponse> {
                 @SuppressLint("NotifyDataSetChanged")
@@ -358,13 +380,14 @@ class SearchActivity : AppCompatActivity() {
                 }
 
             })
-    }
+    }*/
 
     private fun onUpdateButtonClickListener() {
         binding.updateQueryButton.setOnClickListener {
             binding.searchActivityErrorLinearLayout.isVisible = false
             binding.searchActivityProgressBar.isVisible = true
-            startSearchTrack()
+            testSearch()
+        //startSearchTrack()
         }
 
     }
@@ -374,8 +397,39 @@ class SearchActivity : AppCompatActivity() {
         private const val CLICK_ON_TRACK_DELAY_MILLIS = 1000L
         private const val SEARCH_DELAY_2000_MILLIS = 2000L
         private const val SEARCH_STRING = "SEARCH_STRING"
-        const val ITUNES_BASE_URL = "https://itunes.apple.com"
+        const val ITUNES_BASE_URL = "https://itunes.apple.com"//*
         const val SHARED_PREFERENCES_HISTORY_SEARCH_FILE_NAME = "history_search_track"
+    }
+
+    fun consume(foundTracks: List<Track>) {
+        runOnUiThread {
+            iTunesTrack.clear()
+            if(foundTracks.isNotEmpty()) {
+                iTunesTrack.addAll(foundTracks)
+                binding.searchActivityProgressBar.isVisible = false
+                trackAdapter.notifyDataSetChanged()
+            }
+            else {
+                binding.searchActivityProgressBar.isVisible = false
+                setEmptyResponse()
+            }
+        }
+    }
+
+
+    override fun accept(t: List<Track>) {
+        runOnUiThread {
+            iTunesTrack.clear()
+            if(t.isNotEmpty()) {
+                iTunesTrack.addAll(t)
+                binding.searchActivityProgressBar.isVisible = false
+                trackAdapter.notifyDataSetChanged()
+            }
+            else {
+                binding.searchActivityProgressBar.isVisible = false
+                setEmptyResponse()
+            }
+        }
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.audioplayer
 
 import android.media.MediaPlayer
 import android.os.Build
@@ -9,6 +9,9 @@ import android.os.Handler
 import android.os.Looper
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.TrackAdapter
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -85,7 +88,7 @@ class AudioPlayerActivity : AppCompatActivity() {
                 PlayerState.PLAYING -> {
                     binding.playButton.setImageResource(R.drawable.button_pause)
                 }
-                PlayerState.PAUSE , PlayerState.PREPARED -> {
+                PlayerState.PAUSE, PlayerState.PREPARED -> {
                     binding.playButton.setImageResource(R.drawable.button_play)
                 }
                 PlayerState.DEFAULT -> {

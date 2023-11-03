@@ -1,6 +1,5 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.domain.models
 
-import android.os.Parcel
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import java.text.SimpleDateFormat
@@ -19,7 +18,7 @@ data class Track(
     val releaseDate: String,
     val primaryGenreName: String,
     val country: String,
-    val previewUrl: String?
+    val previewUrl: String
 ): Parcelable {
     fun getLocalDateTime(track: Track): String {
             return LocalDateTime.parse(track.releaseDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")).year.toString()
