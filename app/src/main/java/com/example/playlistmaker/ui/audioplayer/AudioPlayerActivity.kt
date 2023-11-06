@@ -14,7 +14,7 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.TrackAdapter
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
 

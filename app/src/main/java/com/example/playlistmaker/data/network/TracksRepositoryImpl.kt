@@ -23,7 +23,7 @@ class TracksRepositoryImpl (private val networkClient: NetworkClient): TracksRep
                     country = it.country,
                     previewUrl = it.previewUrl
                 )
-            } //as List<Track>
+            }
         } else {
             return emptyList()
         }

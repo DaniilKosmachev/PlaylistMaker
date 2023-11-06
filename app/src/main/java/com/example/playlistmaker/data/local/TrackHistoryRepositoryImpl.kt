@@ -1,38 +1,37 @@
 package com.example.playlistmaker.data.local
 
 import android.app.Application
-import android.content.SharedPreferences
-import android.content.Context
-import android.os.Bundle
-import android.view.Display
+import com.example.playlistmaker.App
+import com.example.playlistmaker.domain.api.TrackHistoryRepository
 import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import java.io.Serializable
 
+class TrackHistoryRepositoryImpl(app: App): TrackHistoryRepository, Serializable, Application() {
+     var sharedPreferences = app.getSharedPreferences("history_search_track", MODE_PRIVATE)
 
-class TrackSearchHistory(var sharedPreferences: SharedPreferences) :
-    Serializable, Application() {
-    //класс для работы с SharedPreferences истории поиска
-
-
-    fun getTrackArrayFromShared(): Array<Track> {
-        val json =
-            sharedPreferences.getString(HISTORY_TRACK_LIST_KEY, null) ?: return emptyArray()
+    override fun getTrackArrayFromShared(): Array<Track> {
+        val json = sharedPreferences.getString(HISTORY_TRACK_LIST_KEY, null) ?: return emptyArray()
         return Gson().fromJson(json, Array<Track>::class.java)
     }
 
-    fun writeTrackArrayToShared(tracks: ArrayList<Track>) {
+    override fun writeTrackArrayToShared(tracks: ArrayList<Track>) {
         val json = Gson().toJson(tracks)
         sharedPreferences.edit()
             .putString(HISTORY_TRACK_LIST_KEY, json)
             .apply()
     }
 
-    fun clearSearchHistory() = sharedPreferences.edit()
-        .clear()
-        .apply()
+    override fun clearSearchHistory() {
+        sharedPreferences.edit()
+            .clear()
+            .apply()
+    }
 
-    fun addNewTrackInTrackHistory(newTrack: Track, iTunesTrackSearchHistoryList: ArrayList<Track>) {
+    override fun addNewTrackInTrackHistory(
+        newTrack: Track,
+        iTunesTrackSearchHistoryList: ArrayList<Track>
+    ) {
         val temporaryTrackArray = ArrayList<Track>()
         temporaryTrackArray.addAll(getTrackArrayFromShared())//получаем десериализованный список треков из SP во временный лист
         if (temporaryTrackArray.isEmpty()) {//если он пуст, то просто добавляем новый трек на нулевой индекс
@@ -52,10 +51,10 @@ class TrackSearchHistory(var sharedPreferences: SharedPreferences) :
             iTunesTrackSearchHistoryList.clear()
             iTunesTrackSearchHistoryList.addAll(temporaryTrackArray)
         }
-        writeTrackArrayToShared(iTunesTrackSearchHistoryList)//записываем итоговый массив в SP
+        writeTrackArrayToShared(iTunesTrackSearchHistoryList)
     }
 
-    fun updateHistoryListAfterSelectItemHistoryTrack(track: Track) {
+    override fun updateHistoryListAfterSelectItemHistoryTrack(track: Track) {
         val temporaryTrackArray = ArrayList<Track>()
         temporaryTrackArray.addAll(getTrackArrayFromShared())
         if (temporaryTrackArray.isNotEmpty()) {
@@ -72,12 +71,10 @@ class TrackSearchHistory(var sharedPreferences: SharedPreferences) :
         }
     }
 
-
     companion object {
-        const val SHARED_PREFERENCES_HISTORY_SEARCH_FILE_NAME = "history_search_track"
+       const val SHARED_PREFERENCES_HISTORY_SEARCH_FILE_NAME = "history_search_track"
         const val HISTORY_TRACK_LIST_KEY = "history_track_list"
         const val MAX_SIZE_OF_HISTORY_LIST = 11
         const val INDEX_OF_LAST_TRACK_IN_HISTORY_LIST = 10
     }
 }
-

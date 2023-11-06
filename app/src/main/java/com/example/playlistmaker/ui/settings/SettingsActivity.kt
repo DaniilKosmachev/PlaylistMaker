@@ -7,7 +7,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.playlistmaker.App
-import com.example.playlistmaker.AppThemeSwitch
+import com.example.playlistmaker.domain.models.AppThemeSwitch
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 
