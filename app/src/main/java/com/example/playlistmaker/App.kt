@@ -1,23 +1,20 @@
 package com.example.playlistmaker
 
 import android.app.Application
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.domain.models.AppThemeSwitch
+import com.example.playlistmaker.domain.api.app_theme.AppThemeInteractor
 
 var darkTheme = false
 
 class App : Application() {
-    private lateinit var themeSwitchSharedPreferences: SharedPreferences
-    lateinit var trackHistorySharedPreferences: SharedPreferences//*
-    private lateinit var classThemeSwitch: AppThemeSwitch
+
+    private lateinit var themeSwitch: AppThemeInteractor
 
     override fun onCreate() {
         super.onCreate()
-        trackHistorySharedPreferences = getSharedPreferences("history_search_track", MODE_PRIVATE)//*
-        themeSwitchSharedPreferences = getSharedPreferences(THEME_SWITCH_FILE_NAME, MODE_PRIVATE)
-        classThemeSwitch = AppThemeSwitch(themeSwitchSharedPreferences)
-        switchTheme(classThemeSwitch.getStatusSwitchFromShared())
+        Creator.initApplication(this)
+        themeSwitch = Creator.provideAppThemeInteractor()
+        switchTheme(themeSwitch.getStatusSwitchFromShared())
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {
@@ -29,11 +26,7 @@ class App : Application() {
                 AppCompatDelegate.MODE_NIGHT_NO
             }
         )
-        classThemeSwitch.writeStatusSwitchToShared(darkThemeEnabled)
-    }
-
-    companion object {
-        const val THEME_SWITCH_FILE_NAME = "theme_shared_preferences"
+        themeSwitch.writeStatusSwitchToShared(darkThemeEnabled)
     }
 
 }

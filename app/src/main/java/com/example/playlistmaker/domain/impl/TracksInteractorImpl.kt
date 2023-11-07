@@ -1,7 +1,7 @@
 package com.example.playlistmaker.domain.impl
 
-import com.example.playlistmaker.domain.api.TracksInteractor
-import com.example.playlistmaker.domain.api.TracksRepository
+import com.example.playlistmaker.domain.api.track.TracksInteractor
+import com.example.playlistmaker.domain.api.track.TracksRepository
 import com.example.playlistmaker.domain.models.Track
 import java.util.concurrent.Executors
 import java.util.function.Consumer

@@ -17,16 +17,13 @@ import android.widget.EditText
 import android.widget.LinearLayout.GONE
 import android.widget.LinearLayout.LayoutParams
 import androidx.core.view.isVisible
-import com.example.playlistmaker.App
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.ui.audioplayer.AudioPlayerActivity
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.local.TrackHistoryRepositoryImpl
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.domain.api.TrackHistoryInteractor
-import com.example.playlistmaker.domain.api.TracksInteractor
-import com.example.playlistmaker.domain.impl.TrackHistoryInteractorImpl
+import com.example.playlistmaker.domain.api.track_history.TrackHistoryInteractor
+import com.example.playlistmaker.domain.api.track.TracksInteractor
 import com.example.playlistmaker.presentation.TrackAdapter
 
 class SearchActivity : AppCompatActivity(), java.util.function.Consumer<List<Track>>{
@@ -71,7 +68,7 @@ class SearchActivity : AppCompatActivity(), java.util.function.Consumer<List<Tra
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        trackHistoryInteractor = TrackHistoryInteractorImpl(TrackHistoryRepositoryImpl(applicationContext as App))
+        trackHistoryInteractor = Creator.provideTrackHistoryInteractor()
         clickOnClearButton()
         clickOnButtonBack()
         setSearchActivityTextWatcher()

@@ -1,10 +1,11 @@
 package com.example.playlistmaker.domain.impl
 
-import com.example.playlistmaker.domain.api.TrackHistoryInteractor
-import com.example.playlistmaker.domain.api.TrackHistoryRepository
+import com.example.playlistmaker.domain.api.track_history.TrackHistoryInteractor
+import com.example.playlistmaker.domain.api.track_history.TrackHistoryRepository
 import com.example.playlistmaker.domain.models.Track
 
-class TrackHistoryInteractorImpl(private val historySharedRepository: TrackHistoryRepository): TrackHistoryInteractor {
+class TrackHistoryInteractorImpl(private val historySharedRepository: TrackHistoryRepository):
+    TrackHistoryInteractor {
     override fun getTrackArrayFromShared(): Array<Track> {
         return historySharedRepository.getTrackArrayFromShared()
     }

@@ -2,13 +2,13 @@ package com.example.playlistmaker.data.local
 
 import android.app.Application
 import com.example.playlistmaker.App
-import com.example.playlistmaker.domain.api.TrackHistoryRepository
+import com.example.playlistmaker.domain.api.track_history.TrackHistoryRepository
 import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import java.io.Serializable
 
-class TrackHistoryRepositoryImpl(app: App): TrackHistoryRepository, Serializable, Application() {
-     var sharedPreferences = app.getSharedPreferences("history_search_track", MODE_PRIVATE)
+class TrackHistoryRepositoryImpl(app: Application): TrackHistoryRepository, Serializable, Application() {
+     var sharedPreferences = app.getSharedPreferences(SHARED_PREFERENCES_HISTORY_SEARCH_FILE_NAME, MODE_PRIVATE)
 
     override fun getTrackArrayFromShared(): Array<Track> {
         val json = sharedPreferences.getString(HISTORY_TRACK_LIST_KEY, null) ?: return emptyArray()
