@@ -18,10 +18,10 @@ class TracksRepositoryImpl (private val networkClient: NetworkClient): TracksRep
                     artworkUrl100 = it.artworkUrl100,
                     trackId = it.trackId,
                     collectionName = it.collectionName,
-                    releaseDate = it.releaseDate,
+                    releaseDate = if (it.releaseDate.isNullOrEmpty()) {"Нет данных"} else it.releaseDate,
                     primaryGenreName = it.primaryGenreName,
                     country = it.country,
-                    previewUrl = it.previewUrl
+                    previewUrl = if (it.previewUrl.isNullOrEmpty()) {"Нет данных"} else it.previewUrl
                 )
             }
         } else {

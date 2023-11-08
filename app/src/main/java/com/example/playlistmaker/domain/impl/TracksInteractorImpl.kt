@@ -8,6 +8,7 @@ import java.util.function.Consumer
 
 class TracksInteractorImpl(private val repository: TracksRepository) : TracksInteractor {
     private val executor = Executors.newCachedThreadPool()
+
     override fun searchTracks(expression: String, consumer: Consumer<List<Track>>) {
         executor.execute {
             consumer.accept(repository.searchTracks(expression))

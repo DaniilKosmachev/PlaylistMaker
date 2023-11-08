@@ -325,11 +325,18 @@ class SearchActivity : AppCompatActivity(), java.util.function.Consumer<List<Tra
 
     fun testSearch() {
         if (!binding.editTextSearchActivity.text.isNullOrEmpty()) {
-            trackInteractor.searchTracks(binding.editTextSearchActivity.text.toString(), this)
+            try {
+                trackInteractor.searchTracks(binding.editTextSearchActivity.text.toString(), this)
+            } catch (e: Error) {
+                iTunesTrack.clear()//при ошибке - очищаем список треков
+                trackAdapter.notifyDataSetChanged()
+                binding.searchActivityProgressBar.isVisible = false
+                setNoConnectionError()
+            }
         }
     }
 
-    /*private fun startSearchTrack() {
+   /* private fun startSearchTrack() {
         itunesService.search(searchQueryText)
             .enqueue(object : Callback<TracksResponse> {
                 @SuppressLint("NotifyDataSetChanged")
@@ -377,11 +384,9 @@ class SearchActivity : AppCompatActivity(), java.util.function.Consumer<List<Tra
     }
 
     companion object {
-        private const val RESPONSE_FROM_SERVER_200 = 200
         private const val CLICK_ON_TRACK_DELAY_MILLIS = 1000L
         private const val SEARCH_DELAY_2000_MILLIS = 2000L
         private const val SEARCH_STRING = "SEARCH_STRING"
-        const val SHARED_PREFERENCES_HISTORY_SEARCH_FILE_NAME = "history_search_track"
     }
 
     override fun accept(t: List<Track>) {

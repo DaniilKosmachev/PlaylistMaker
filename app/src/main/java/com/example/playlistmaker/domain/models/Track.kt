@@ -15,17 +15,8 @@ data class Track(
     val artworkUrl100: String,
     val trackId: Int,
     val collectionName: String?,
-    val releaseDate: String,
+    val releaseDate: String?,
     val primaryGenreName: String,
     val country: String,
-    val previewUrl: String
-): Parcelable {
-    fun getLocalDateTime(track: Track): String {
-            return LocalDateTime.parse(track.releaseDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")).year.toString()
-    }
-
-    fun getSimpleDateFormat(track: Track): String {
-        return SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-    }
-    fun getCoverArtWork() = artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
-}
+    val previewUrl: String?
+): Parcelable

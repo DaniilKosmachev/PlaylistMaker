@@ -1,18 +1,23 @@
 package com.example.playlistmaker.ui.audioplayer
 
-import android.media.MediaPlayer
 import android.os.Build
 import android.os.Build.VERSION
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.TrackAdapter
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.example.playlistmaker.domain.api.PlayerInteractor
+import com.example.playlistmaker.domain.models.PlayerParams
+import com.example.playlistmaker.domain.models.PlayerState
+import com.example.playlistmaker.presentation.mapper.TrackMapper
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -20,22 +25,22 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAudioPlayerBinding
     private lateinit var selectableTrack: Track
-    private var mediaPlayer: MediaPlayer? = null
-    private lateinit var playerState: PlayerState
     private var mainTreadHandler: Handler? = null
+    private lateinit var playerInterator: PlayerInteractor
+    private lateinit var playerParams: PlayerParams
 
 
     override fun onPause() {
         super.onPause()
-        pausePreviewTrack()
-        mainTreadHandler?.post(changePlayButtonImage())
-        changePlaybackProgress()
+        playerInterator.pausePreviewTrack()
+        mainTreadHandler?.post(changeProgressAndImage())
+        changeProgressAndImage()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer?.release()
-        mainTreadHandler?.removeCallbacks(changePlaybackProgress())
+        mainTreadHandler?.removeCallbacks(changeProgressAndImage())
+        playerInterator.destroyPlayer()
     }
 
 
@@ -43,117 +48,91 @@ class AudioPlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        initializeComponents()
-        setInActivityElementsValueOfTrack()
-        prepareMediaPlayer()
-        mainTreadHandler?.post(changePlayButtonImage())
-        mainTreadHandler?.post(changePlaybackProgress())
-    }
-
-    private fun initializeComponents() {
-        mediaPlayer = MediaPlayer()
-        playerState = PlayerState.DEFAULT
-        mainTreadHandler = Handler(Looper.getMainLooper())
-        mediaPlayer = MediaPlayer()
         selectableTrack = if (VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(TrackAdapter.SELECTABLE_TRACK, Track::class.java)!!
         } else {
             intent.getParcelableExtra(TrackAdapter.SELECTABLE_TRACK)!!
         }
+        playerInterator = Creator.providePlayerInteractor()
+        initializeComponents()
+        setInActivityElementsValueOfTrack()
+    }
+
+    private fun initializeComponents() {
+        mainTreadHandler = Handler(Looper.getMainLooper())
+
         binding.backButton.setOnClickListener {
             finish()
         }
+
         binding.playButton.setOnClickListener {
-            when(playerState) {
-                PlayerState.PLAYING -> {
-                    pausePreviewTrack()
-                    mainTreadHandler?.post(changePlayButtonImage())
-                    mainTreadHandler?.post(changePlaybackProgress())
-                }
-                PlayerState.PAUSE, PlayerState.PREPARED -> {
-                    startPreviewTrack()
-                    mainTreadHandler?.post(changePlayButtonImage())
-                    mainTreadHandler?.post(changePlaybackProgress())
-                }
-                PlayerState.DEFAULT -> {
+            if (selectableTrack.previewUrl.equals("Нет данных")) {
+                Toast.makeText(this, "Воспроизведение не поддерживается", Toast.LENGTH_LONG).show()
+            } else {
+                playerParams = playerInterator.changePlaybackProgress()
+                when (playerParams.playerState) {
+                    PlayerState.PLAYING -> {
+                        playerInterator.pausePreviewTrack()
+                        mainTreadHandler?.post(changeProgressAndImage())
+                    }
 
+                    PlayerState.PAUSE, PlayerState.PREPARED -> {
+                        playerInterator.startPreviewTrack()
+                        mainTreadHandler?.post(changeProgressAndImage())
+                    }
+
+                    PlayerState.DEFAULT -> {
+                        playerInterator.prepareMediaPlayer(selectableTrack)
+                        playerInterator.startPreviewTrack()
+                        mainTreadHandler?.post(changeProgressAndImage())
+                    }
                 }
             }
         }
+
     }
 
-    private fun changePlayButtonImage(): Runnable {
-        return Runnable {
-            when (playerState) {
-                PlayerState.PLAYING -> {
-                    binding.playButton.setImageResource(R.drawable.button_pause)
-                }
-                PlayerState.PAUSE, PlayerState.PREPARED -> {
-                    binding.playButton.setImageResource(R.drawable.button_play)
-                }
-                PlayerState.DEFAULT -> {
-
-                }
-            }
-        }
-    }
-
-    private fun changePlaybackProgress(): Runnable {
+    fun changeProgressAndImage(): Runnable {
         return object : Runnable {
             override fun run() {
-                when (playerState) {
+                playerParams = playerInterator.changePlaybackProgress()
+                when (playerParams.playerState) {
                     PlayerState.PLAYING -> {
-                        binding.currentTrackTimeAudioPlayer.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer?.currentPosition)
+                        binding.currentTrackTimeAudioPlayer.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(playerParams.currentPosition)
+                        binding.playButton.setImageResource(R.drawable.button_pause)
                         mainTreadHandler?.postDelayed(this, DELAY_CURRENT_TIME_1000_MILLIS)
                     }
                     PlayerState.PAUSE -> {
+                        binding.playButton.setImageResource(R.drawable.button_play)
                         mainTreadHandler?.removeCallbacks(this)
                     }
                     PlayerState.PREPARED -> {
+                        binding.playButton.setImageResource(R.drawable.button_play)
                         binding.currentTrackTimeAudioPlayer.text = "00:00"
                     }
                     PlayerState.DEFAULT -> {
-
+                        binding.playButton.setImageResource(R.drawable.button_play)
                     }
+
                 }
             }
         }
-    }
-
-    private fun prepareMediaPlayer() {
-        mediaPlayer?.apply {
-            setDataSource(selectableTrack.previewUrl)
-            prepareAsync()
-            setOnPreparedListener {
-                playerState = PlayerState.PREPARED
-            }
-            setOnCompletionListener {
-                playerState = PlayerState.PREPARED
-                mainTreadHandler?.post(changePlayButtonImage())
-            }
-        }
-    }
-
-    private fun startPreviewTrack() {
-        mediaPlayer?.start()
-        playerState = PlayerState.PLAYING
-    }
-
-   private fun pausePreviewTrack() {
-        mediaPlayer?.pause()
-        playerState = PlayerState.PAUSE
     }
 
     private fun setInActivityElementsValueOfTrack() {
         binding.nameOfTrackAudioPlayerActivity.isSelected = true
         binding.nameOfTrackAudioPlayerActivity.text = selectableTrack.trackName
         binding.nameOfArtistAudioPlayerActovity.text = selectableTrack.artistName
-        binding.trackTimeValueAudioPlayer.text =
-            selectableTrack.getSimpleDateFormat(selectableTrack)
-        binding.yearValueAudioPlayer.text = selectableTrack.getLocalDateTime(selectableTrack)
+        binding.trackTimeValueAudioPlayer.text = TrackMapper.getSimpleDateFormat(selectableTrack)
+
+        binding.yearValueAudioPlayer.text = if (selectableTrack.releaseDate.equals("Нет данных")) {
+            "Нет данных"
+        } else {
+            TrackMapper.getLocalDateTime(selectableTrack)
+        }
 
         Glide.with(binding.coverArtWorkImage)
-            .load(selectableTrack.getCoverArtWork())
+            .load(TrackMapper.getCoverArtWork(selectableTrack))
             .placeholder(R.drawable.placeholder)
             .centerCrop()
             .transform(RoundedCorners(binding.coverArtWorkImage.resources.getDimensionPixelSize(R.dimen.image_artwork_corner_radius_audio_player)))
@@ -163,12 +142,6 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.countryValueAudioPlayer.text = selectableTrack.country
     }
 
-    enum class PlayerState {
-        DEFAULT,
-        PREPARED,
-        PLAYING,
-        PAUSE
-    }
 
     companion object {
         private const val DELAY_CURRENT_TIME_1000_MILLIS = 1000L

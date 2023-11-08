@@ -1,0 +1,12 @@
+package com.example.playlistmaker.domain.api
+
+import com.example.playlistmaker.domain.models.PlayerParams
+import com.example.playlistmaker.domain.models.Track
+
+interface PlayerRepository {
+    fun prepareMediaPlayer(track: Track)
+    fun startPreviewTrack()
+    fun pausePreviewTrack()
+    fun changePlaybackProgress(): PlayerParams
+    fun destroyPlayer()
+}
