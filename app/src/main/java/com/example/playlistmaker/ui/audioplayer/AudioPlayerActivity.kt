@@ -14,7 +14,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.TrackAdapter
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
-import com.example.playlistmaker.domain.api.PlayerInteractor
+import com.example.playlistmaker.domain.api.media_player.PlayerInteractor
 import com.example.playlistmaker.domain.models.PlayerParams
 import com.example.playlistmaker.domain.models.PlayerState
 import com.example.playlistmaker.presentation.mapper.TrackMapper

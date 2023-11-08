@@ -1,7 +1,7 @@
 package com.example.playlistmaker.data.network
 
 import android.media.MediaPlayer
-import com.example.playlistmaker.domain.api.PlayerRepository
+import com.example.playlistmaker.domain.api.media_player.PlayerRepository
 import com.example.playlistmaker.domain.models.PlayerParams
 import com.example.playlistmaker.domain.models.PlayerState
 import com.example.playlistmaker.domain.models.Track

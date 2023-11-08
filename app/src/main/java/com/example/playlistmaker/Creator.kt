@@ -6,8 +6,8 @@ import com.example.playlistmaker.data.local.TrackHistoryRepositoryImpl
 import com.example.playlistmaker.data.network.PlayerRepositoryImpl
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
 import com.example.playlistmaker.data.network.TracksRepositoryImpl
-import com.example.playlistmaker.domain.api.PlayerInteractor
-import com.example.playlistmaker.domain.api.PlayerRepository
+import com.example.playlistmaker.domain.api.media_player.PlayerInteractor
+import com.example.playlistmaker.domain.api.media_player.PlayerRepository
 import com.example.playlistmaker.domain.api.app_theme.AppThemeInteractor
 import com.example.playlistmaker.domain.api.app_theme.AppThemeRepository
 import com.example.playlistmaker.domain.api.track.TracksInteractor
