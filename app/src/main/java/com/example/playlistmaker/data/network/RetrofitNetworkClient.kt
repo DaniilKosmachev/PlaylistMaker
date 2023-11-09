@@ -3,6 +3,7 @@ package com.example.playlistmaker.data.network
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.dto.Response
 import com.example.playlistmaker.data.dto.TrackSearchRequest
+import com.example.playlistmaker.domain.models.ResponceStatus
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -15,23 +16,23 @@ class RetrofitNetworkClient: NetworkClient {
 
     private val itunesService = retrofit.create(ITunesApi::class.java)
 
-    override fun doRequest(dto: Any): Response {
-        return if (dto is TrackSearchRequest) {
+    override fun doTrackSearchRequest(dto: TrackSearchRequest): Response {
+        if (dto is TrackSearchRequest) {
+            try {
                 val response = itunesService.search(dto.request).execute()
                 val bodyResponse = response.body() ?: Response()
-                bodyResponse.apply {
-                    resultResponse = response.code()
-                }
-            } else {
-            return Response().apply {
-                resultResponse = BAD_RESPONSE_CODE
+                return bodyResponse.apply { resultResponse = ResponceStatus.OK }
+            } catch (e: Exception) {
+
             }
         }
-
+            return Response().apply {
+                resultResponse = ResponceStatus.BAD
+            }
     }
+
 
     companion object {
         const val ITUNES_BASE_URL = "https://itunes.apple.com"
-        const val BAD_RESPONSE_CODE = 400
     }
 }

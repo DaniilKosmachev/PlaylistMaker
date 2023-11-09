@@ -5,12 +5,14 @@ import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.dto.TrackSearchRequest
 import com.example.playlistmaker.data.dto.TracksResponse
 import com.example.playlistmaker.domain.api.track.TracksRepository
+import com.example.playlistmaker.domain.models.ResponceStatus
+import com.example.playlistmaker.domain.models.TrackSearchResponceParams
 
 class TracksRepositoryImpl (private val networkClient: NetworkClient): TracksRepository {
-    override fun searchTracks(expression: String): List<Track> {
-        val response = networkClient.doRequest(TrackSearchRequest(expression))
-        if (response.resultResponse == OK_RESPONCE_CODE) {
-            return (response as TracksResponse).results.map {
+    override fun searchTracks(expression: String): TrackSearchResponceParams {
+        val response = networkClient.doTrackSearchRequest(TrackSearchRequest(expression))
+        if (response.resultResponse == ResponceStatus.OK) {
+            var trackList: List<Track> = (response as TracksResponse).results.map {
                 Track(
                     trackName = it.trackName,
                     artistName = it.artistName,
@@ -24,12 +26,14 @@ class TracksRepositoryImpl (private val networkClient: NetworkClient): TracksRep
                     previewUrl = if (it.previewUrl.isNullOrEmpty()) {"Нет данных"} else it.previewUrl
                 )
             }
+            var responceParams: TrackSearchResponceParams = TrackSearchResponceParams(trackList)
+            responceParams.resultResponse = ResponceStatus.OK
+            return responceParams
         } else {
-            return emptyList()
+            var responceParams: TrackSearchResponceParams = TrackSearchResponceParams(emptyList())
+            responceParams.resultResponse = ResponceStatus.BAD
+            return responceParams
         }
     }
 
-    companion object {
-        const val OK_RESPONCE_CODE = 200
-    }
 }

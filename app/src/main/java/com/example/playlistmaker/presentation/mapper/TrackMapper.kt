@@ -14,5 +14,6 @@ object TrackMapper {
     fun getSimpleDateFormat(track: Track): String {
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
     }
+
     fun getCoverArtWork(track: Track): String = track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
 }

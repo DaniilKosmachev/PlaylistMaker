@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.audioplayer
+package com.example.playlistmaker.presentation.ui.audioplayer
 
 import android.os.Build
 import android.os.Build.VERSION
@@ -43,7 +43,6 @@ class AudioPlayerActivity : AppCompatActivity() {
         playerInterator.destroyPlayer()
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
@@ -66,8 +65,8 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
 
         binding.playButton.setOnClickListener {
-            if (selectableTrack.previewUrl.equals("Нет данных")) {
-                Toast.makeText(this, "Воспроизведение не поддерживается", Toast.LENGTH_LONG).show()
+            if (selectableTrack.previewUrl.equals(getString(R.string.no_data))) {
+                Toast.makeText(this, getString(R.string.can_not_play), Toast.LENGTH_LONG).show()
             } else {
                 playerParams = playerInterator.changePlaybackProgress()
                 when (playerParams.playerState) {
@@ -92,7 +91,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     }
 
-    fun changeProgressAndImage(): Runnable {
+    private fun changeProgressAndImage(): Runnable {
         return object : Runnable {
             override fun run() {
                 playerParams = playerInterator.changePlaybackProgress()
@@ -108,12 +107,12 @@ class AudioPlayerActivity : AppCompatActivity() {
                     }
                     PlayerState.PREPARED -> {
                         binding.playButton.setImageResource(R.drawable.button_play)
-                        binding.currentTrackTimeAudioPlayer.text = "00:00"
+                        binding.currentTrackTimeAudioPlayer.text =
+                            getString(R.string.zero_playback_progress)
                     }
                     PlayerState.DEFAULT -> {
                         binding.playButton.setImageResource(R.drawable.button_play)
                     }
-
                 }
             }
         }
@@ -125,12 +124,11 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.nameOfArtistAudioPlayerActovity.text = selectableTrack.artistName
         binding.trackTimeValueAudioPlayer.text = TrackMapper.getSimpleDateFormat(selectableTrack)
 
-        binding.yearValueAudioPlayer.text = if (selectableTrack.releaseDate.equals("Нет данных")) {
-            "Нет данных"
+        binding.yearValueAudioPlayer.text = if (selectableTrack.releaseDate.equals(getString(R.string.no_data))) {
+            getString(R.string.no_data)
         } else {
             TrackMapper.getLocalDateTime(selectableTrack)
         }
-
         Glide.with(binding.coverArtWorkImage)
             .load(TrackMapper.getCoverArtWork(selectableTrack))
             .placeholder(R.drawable.placeholder)
