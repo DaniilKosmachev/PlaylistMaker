@@ -23,4 +23,7 @@
     <string name="year_audio_player">Год</string>
     <string name="artwork_audio_player">Альбом</string>
     <string name="track_time_audio_player">Длительность</string>
+    <string name="no_data">Нет данных</string>
+    <string name="can_not_play">Воспроизведение не поддерживается</string>
+    <string name="zero_playback_progress">00:00</string>
 </resources>

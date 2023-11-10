@@ -1,10 +1,10 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.Track
 
 class TrackAdapter(private val data: List<Track>, private val clickListener: trackClickListener) :
     RecyclerView.Adapter<TrackViewHolder>() {

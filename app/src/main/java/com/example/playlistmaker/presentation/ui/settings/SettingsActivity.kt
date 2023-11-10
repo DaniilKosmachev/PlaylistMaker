@@ -1,42 +1,38 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui.settings
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.playlistmaker.App
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
+import com.example.playlistmaker.domain.api.app_theme.AppThemeInteractor
 
 @SuppressLint("UseSwitchCompatOrMaterialCode")
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
-    private lateinit var sharePref: SharedPreferences
-    private lateinit var classSwitchAppTheme: AppThemeSwitch
+    private lateinit var appThemeSwitch: AppThemeInteractor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        appThemeSwitch = Creator.provideAppThemeInteractor()
         backToMainActivityClickListener()
         writeToSupportLinearClickListener()
         shareAppLinearClickListener()
         userContractLinearClickListener()
         themeSwitchClickListener()
-        initializeVariable()
         checkSwitchThemeStatus()
     }
 
     private fun checkSwitchThemeStatus() {
-        binding.themeSwitch.isChecked = classSwitchAppTheme.getStatusSwitchFromShared()
+        binding.themeSwitch.isChecked = appThemeSwitch.getStatusSwitchFromShared()
     }
-
-    private fun initializeVariable() {
-        sharePref = getSharedPreferences(THEME_SWITCH_FILE_NAME, MODE_PRIVATE)
-        classSwitchAppTheme = AppThemeSwitch(sharePref)
-    }
-
 
     private fun themeSwitchClickListener() {
         binding.themeSwitch.setOnCheckedChangeListener { _, checked ->
@@ -79,9 +75,5 @@ class SettingsActivity : AppCompatActivity() {
                 startActivity(this)
             }
         }
-    }
-
-    companion object {
-        const val THEME_SWITCH_FILE_NAME = "theme_shared_preferences"
     }
 }
