@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.ui.library.LibraryActivity">
+    tools:context=".ui.library.activity.LibraryActivity">
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent">
