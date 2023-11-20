@@ -31,12 +31,12 @@ class TrackHistoryRepositoryImpl(app: Application): TrackHistoryRepository {
 
     override fun addNewTrackInTrackHistory(
         newTrack: Track,
-        iTunesTrackSearchHistoryList: ArrayList<Track>
+        iTunesTrackSearchHistoryList: List<Track>
     ) {
         val temporaryTrackArray = ArrayList<Track>()
-        temporaryTrackArray.addAll(getTrackArrayFromShared())//получаем десериализованный список треков из SP во временный лист
-        if (temporaryTrackArray.isEmpty()) {//если он пуст, то просто добавляем новый трек на нулевой индекс
-            iTunesTrackSearchHistoryList.add(newTrack)
+        temporaryTrackArray.addAll(iTunesTrackSearchHistoryList)//получаем десериализованный список треков из SP во временный лист
+            if (temporaryTrackArray.isEmpty()) {//если он пуст, то просто добавляем новый трек на нулевой индекс
+            temporaryTrackArray.add(newTrack)
         } else if (temporaryTrackArray.isNotEmpty()) {
             val iterator: MutableIterator<Track> = temporaryTrackArray.iterator()
             while (iterator.hasNext()) {
@@ -49,10 +49,10 @@ class TrackHistoryRepositoryImpl(app: Application): TrackHistoryRepository {
             if (temporaryTrackArray.size == MAX_SIZE_OF_HISTORY_LIST) {
                 temporaryTrackArray.removeAt(INDEX_OF_LAST_TRACK_IN_HISTORY_LIST)
             }
-            iTunesTrackSearchHistoryList.clear()
-            iTunesTrackSearchHistoryList.addAll(temporaryTrackArray)
+//            iTunesTrackSearchHistoryList.clear()
+//            iTunesTrackSearchHistoryList.addAll(temporaryTrackArray)
         }
-        writeTrackArrayToShared(iTunesTrackSearchHistoryList)
+        writeTrackArrayToShared(temporaryTrackArray)
     }
 
     override fun updateHistoryListAfterSelectItemHistoryTrack(track: Track) {

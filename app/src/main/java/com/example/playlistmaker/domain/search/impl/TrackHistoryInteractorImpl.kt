@@ -1,7 +1,7 @@
 package com.example.playlistmaker.domain.search.impl
 
-import com.example.playlistmaker.domain.search.TrackHistoryInteractor
 import com.example.playlistmaker.data.search.TrackHistoryRepository
+import com.example.playlistmaker.domain.search.TrackHistoryInteractor
 import com.example.playlistmaker.domain.search.model.Track
 
 class TrackHistoryInteractorImpl(private val historySharedRepository: TrackHistoryRepository):
@@ -18,7 +18,7 @@ class TrackHistoryInteractorImpl(private val historySharedRepository: TrackHisto
 
     override fun addNewTrackInTrackHistory(
         newTrack: Track,
-        iTunesTrackSearchHistoryList: ArrayList<Track>
+        iTunesTrackSearchHistoryList: List<Track>
     ) {
         historySharedRepository.addNewTrackInTrackHistory(newTrack, iTunesTrackSearchHistoryList)
     }

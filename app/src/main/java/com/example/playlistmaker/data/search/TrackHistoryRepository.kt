@@ -6,6 +6,6 @@ interface TrackHistoryRepository {
     fun getTrackArrayFromShared(): Array<Track>
     fun writeTrackArrayToShared(tracks: ArrayList<Track>)
     fun clearSearchHistory()
-    fun addNewTrackInTrackHistory(newTrack: Track, iTunesTrackSearchHistoryList: ArrayList<Track>)
+    fun addNewTrackInTrackHistory(newTrack: Track, iTunesTrackSearchHistoryList: List<Track>)
     fun updateHistoryListAfterSelectItemHistoryTrack(track: Track)
 }
