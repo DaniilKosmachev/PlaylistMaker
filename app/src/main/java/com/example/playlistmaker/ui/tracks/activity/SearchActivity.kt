@@ -41,6 +41,11 @@ class SearchActivity : AppCompatActivity() {
         viewModel.removeCallbackSearch()
     }
 
+    override fun onResume() {
+        super.onResume()
+        trackHistoryAdapter.notifyDataSetChanged()
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_STRING, searchQueryText)
@@ -72,9 +77,7 @@ class SearchActivity : AppCompatActivity() {
 
     fun observeOnHistorySearchLiveData() {
         viewModel.getHistoryListTrack().observe(this) {
-            if (iTunesTrackSearchHistory.isNotEmpty()) {
-                iTunesTrackSearchHistory.clear()
-            }
+            iTunesTrackSearchHistory.clear()
             iTunesTrackSearchHistory.addAll(it)
         }
     }
@@ -117,6 +120,7 @@ class SearchActivity : AppCompatActivity() {
                     trackAdapter.notifyDataSetChanged()
                     binding.searchActivityErrorLinearLayout.isVisible = false
                     binding.searchActivityProgressBar.isVisible = true
+                    binding.searchActivityHistoryRecyclerView.isVisible = false
                 }
                 is SearchActivityStatus.ShowHistory -> {
                     if (iTunesTrackSearchHistory.isNotEmpty()) {
@@ -126,7 +130,7 @@ class SearchActivity : AppCompatActivity() {
                         iTunesTrack.clear()
                         trackAdapter.notifyDataSetChanged()
                         trackHistoryAdapter.notifyDataSetChanged()
-                        binding.trackRecycleView.isVisible = false
+                        binding.searchActivityHistoryRecyclerView.isVisible = true
                     }
                 }
                 else -> {
@@ -154,25 +158,15 @@ class SearchActivity : AppCompatActivity() {
             trackAdapter//устанавливаем для RecyclerView текущего результата поиска адаптер
         trackHistoryAdapter = TrackAdapter(iTunesTrackSearchHistory) {
             if (isClickedAllowed!!) {
-                viewModel.updateHistoryListAfterSelectItemHistoryTrack(it)
-                trackHistoryAdapter.notifyDataSetChanged()
                 viewModel.openAudioPlayerAndReceiveTrackInfo(it)
+                viewModel.updateHistoryListAfterSelectItemHistoryTrack(it)
+                //trackHistoryAdapter.notifyDataSetChanged()
+
             }
         }//адптер для истории поиска
         binding.searchActivityHistoryRecyclerView.adapter =
             trackHistoryAdapter//устанавливаем для RecyclerView истории поиска адаптер
-    }//ВОЗМОЖНО ПОТОКИ - ВО ВЬЮМОДЕЛЬ
-
-
-//    private fun onClickAllowed(): Boolean {
-//        val current = isClickedAllowed
-//        if (isClickedAllowed) {
-//            isClickedAllowed = false
-//            mainTreadHandler?.postDelayed({ isClickedAllowed = true }, CLICK_ON_TRACK_DELAY_MILLIS)
-//        }
-//        return current
-//    }
-
+    }
 
     private fun setSearchActivityTextWatcher() {
         val searchActivityTextWatcher = object : TextWatcher {
@@ -204,6 +198,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
+
 
             }
 
@@ -259,6 +254,7 @@ class SearchActivity : AppCompatActivity() {
             viewModel.removeCallbackSearch()//кнопка очистки
             binding.editTextSearchActivity.text.clear()//устанавливает текст пустой //полностью перерисовываем адаптер
             hideSystemKeyboard()
+            binding.searchActivityHistoryRecyclerView.isVisible = true
             binding.trackRecycleView.isVisible = false
             binding.searchActivityErrorLinearLayout.isVisible = false //обновляем историю поиска
         }
@@ -279,7 +275,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun isPortrainSystemOrientatin(): Boolean {//true - если портретная
         return resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-    }//ВЫНЕСТИ В ОТДЕЛЬНЫЙ КЛАСС?
+    }
 
     private fun isNightModeOn(): Boolean {//если дневная - false, ночная - true
         return when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) { //ВОЗМОЖНО ВО ВЬЮМОДЕЛЬ!
@@ -297,7 +293,7 @@ class SearchActivity : AppCompatActivity() {
 
             else -> true
         }
-    }//ВЫНЕСТИ В ОТДЕЛЬНЫЙ КЛАСС?
+    }
 
     private fun setEmptyResponse() { //устанавливает в ErrorLinearLayout картинку и текст по ошибке - пустой ответ
         binding.searchActivityProgressBar.isVisible = false
@@ -319,13 +315,13 @@ class SearchActivity : AppCompatActivity() {
             dp,
             context.resources.displayMetrics
         ).toInt()
-    }//ВЫНЕСТИ В ОТДЕЛЬНЫЙ КЛАСС?
+    }
 
     private fun updateErrorlayoutParamsForLandscapeOrientation() {
         val params: LayoutParams =
             binding.searchActivityErrorLinearLayout.layoutParams as LayoutParams
         params.setMargins(0, dpToPx((if (isPortrainSystemOrientatin()) 102f else 8f), this), 0, 0)
-    } //ВЫНЕСТИ В ОТДЕЛЬНЫЙ КЛАСС?
+    }
 
     private fun setNoConnectionError() { //устанавливает в ErrorLinearLayout картинку и текст по ошибке - отсутствует связь
         binding.searchActivityProgressBar.isVisible = false
@@ -351,7 +347,7 @@ class SearchActivity : AppCompatActivity() {
             binding.searchActivityErrorLinearLayout.isVisible = false
             binding.searchActivityProgressBar.isVisible = true
             viewModel.searchQuery = searchQueryText
-            viewModel.searchTracks()
+            viewModel.startDelaySearch()
         }
 
     }

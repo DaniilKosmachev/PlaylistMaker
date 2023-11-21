@@ -28,11 +28,18 @@ class SearchActivityViewModel (
     private var mutableListTracks = MutableLiveData<List<Track>>(emptyList())
     private var mutableStatusActivity = MutableLiveData<SearchActivityStatus>()
     private var mutableHistoryListTrack = MutableLiveData(readHistorySearchFromShared())
-    private var mutableIsClickAllowed = MutableLiveData<Boolean>(true)
+    private var mutableIsClickAllowed = MutableLiveData(true)
 
     private var mainTreadHandler = Handler(Looper.getMainLooper())
 
-    fun getIsClickAllowed(): LiveData<Boolean> = mutableIsClickAllowed
+    private var startMainSearch = Runnable {
+        startSearchTracks(searchQuery)
+    }
+
+    fun getIsClickAllowed(): LiveData<Boolean> {
+        onClickAllowed()
+        return mutableIsClickAllowed
+    }
     fun getHistoryListTrack(): LiveData<List<Track>> = mutableHistoryListTrack
     fun getListTrack(): LiveData<List<Track>> = mutableListTracks
     fun getStatusScreen(): LiveData<SearchActivityStatus> = mutableStatusActivity
@@ -49,7 +56,6 @@ class SearchActivityViewModel (
     }
 
     fun onClickAllowed() {
-        val current = mutableIsClickAllowed
        if (mutableIsClickAllowed.value!!) {
            mutableIsClickAllowed.postValue(false)
            mainTreadHandler.postDelayed({ mutableIsClickAllowed.postValue(true) }, CLICK_ON_TRACK_DELAY_MILLIS)
@@ -58,23 +64,22 @@ class SearchActivityViewModel (
 
     fun startDelaySearch() {
         mutableStatusActivity.postValue(SearchActivityStatus.Loading())
-        mainTreadHandler.removeCallbacks(searchTracks())
-        mainTreadHandler.postDelayed(searchTracks(), SEARCH_DELAY_2000_MILLIS)
+        mainTreadHandler.removeCallbacks(startMainSearch)
+        mainTreadHandler.postDelayed(startMainSearch, SEARCH_DELAY_2000_MILLIS)
     }
 
     fun removeCallbackSearch() {
-        mainTreadHandler.removeCallbacks(searchTracks())
+        mainTreadHandler.removeCallbacks(startMainSearch)
         mutableStatusActivity.postValue(SearchActivityStatus.ShowHistory())
         searchQuery = ""
     }
 
-    fun searchTracks() : Runnable {
-        return Runnable {
-                if (!searchQuery.isNullOrEmpty()) {
-                    tracksInteractor.searchTracks(searchQuery,this)
-                }
-            }
+    fun startSearchTracks(query: String) {
+        if (!query.isNullOrEmpty()) {
+            tracksInteractor.searchTracks(query,this@SearchActivityViewModel)
         }
+    }
+
 
     fun clearSearchHistory() {
         trackHistoryInteractor.clearSearchHistory()
@@ -97,10 +102,12 @@ class SearchActivityViewModel (
 
   fun addNewTrackInTrackHistory(track: Track) {
         trackHistoryInteractor.addNewTrackInTrackHistory(track,readHistorySearchFromShared())
+        mutableHistoryListTrack.postValue(readHistorySearchFromShared())
     }
 
     fun updateHistoryListAfterSelectItemHistoryTrack(track: Track) {
         trackHistoryInteractor.updateHistoryListAfterSelectItemHistoryTrack(track)
+        mutableHistoryListTrack.postValue(readHistorySearchFromShared())
     }
 
     companion object {

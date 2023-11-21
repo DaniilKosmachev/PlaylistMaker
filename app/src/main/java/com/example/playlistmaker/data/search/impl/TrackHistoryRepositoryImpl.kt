@@ -49,8 +49,6 @@ class TrackHistoryRepositoryImpl(app: Application): TrackHistoryRepository {
             if (temporaryTrackArray.size == MAX_SIZE_OF_HISTORY_LIST) {
                 temporaryTrackArray.removeAt(INDEX_OF_LAST_TRACK_IN_HISTORY_LIST)
             }
-//            iTunesTrackSearchHistoryList.clear()
-//            iTunesTrackSearchHistoryList.addAll(temporaryTrackArray)
         }
         writeTrackArrayToShared(temporaryTrackArray)
     }
