@@ -160,7 +160,6 @@ class SearchActivity : AppCompatActivity() {
             if (isClickedAllowed!!) {
                 viewModel.openAudioPlayerAndReceiveTrackInfo(it)
                 viewModel.updateHistoryListAfterSelectItemHistoryTrack(it)
-                //trackHistoryAdapter.notifyDataSetChanged()
 
             }
         }//адптер для истории поиска
@@ -243,7 +242,6 @@ class SearchActivity : AppCompatActivity() {
     private fun clickOnClearSearchHistoryButton() {
         binding.clearSearchHistory.setOnClickListener {
             viewModel.clearSearchHistory()
-            iTunesTrackSearchHistory.clear()
             trackHistoryAdapter.notifyDataSetChanged()
             binding.searchActivityHistoryTrackLinearLayout.visibility = GONE
         }

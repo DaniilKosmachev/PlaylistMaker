@@ -47,7 +47,6 @@
                 android:maxLength="50"
                 android:imeOptions="actionDone"
                 android:maxLines="1"/>
-
             <ImageButton
                 android:id="@+id/clearEditTextSearchActivity"
                 style="@style/search_activity_image_buttom"
