@@ -10,7 +10,6 @@ class SearchActivityViewModelFactory(var context: Context): ViewModelProvider.Fa
         return SearchActivityViewModel(
             Creator.provideTracksInteractor(),
             Creator.provideTrackHistoryInteractor(),
-            context = context
         ) as T
     }
 }

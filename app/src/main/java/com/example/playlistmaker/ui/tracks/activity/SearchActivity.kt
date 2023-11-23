@@ -1,6 +1,7 @@
 package com.example.playlistmaker.ui.tracks.activity
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
@@ -17,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.search.model.Track
+import com.example.playlistmaker.ui.audioplayer.activity.AudioPlayerActivity
 import com.example.playlistmaker.ui.tracks.TrackAdapter
 import com.example.playlistmaker.ui.tracks.model.SearchActivityStatus
 import com.example.playlistmaker.ui.tracks.view_model.SearchActivityViewModel
@@ -98,6 +100,8 @@ class SearchActivity : AppCompatActivity() {
                     iTunesTrack.clear()
                     iTunesTrack.addAll(it.data)
                     binding.searchActivityProgressBar.isVisible = false
+                    binding.searchActivityHistoryTrackLinearLayout.isVisible = false
+                    binding.trackRecycleView.isVisible = true
                     hideSystemKeyboard()
                     trackAdapter.notifyDataSetChanged()
                 }
@@ -149,7 +153,7 @@ class SearchActivity : AppCompatActivity() {
     private fun initializeComponents() {
         trackAdapter = TrackAdapter(iTunesTrack) {
             if (isClickedAllowed!!) {
-                viewModel.openAudioPlayerAndReceiveTrackInfo(it)
+                openAudioPlayerAndReceiveTrackInfo(it)
                 viewModel.addNewTrackInTrackHistory(it)
                 trackHistoryAdapter.notifyDataSetChanged()
             }
@@ -158,7 +162,7 @@ class SearchActivity : AppCompatActivity() {
             trackAdapter//устанавливаем для RecyclerView текущего результата поиска адаптер
         trackHistoryAdapter = TrackAdapter(iTunesTrackSearchHistory) {
             if (isClickedAllowed!!) {
-                viewModel.openAudioPlayerAndReceiveTrackInfo(it)
+                openAudioPlayerAndReceiveTrackInfo(it)
                 viewModel.updateHistoryListAfterSelectItemHistoryTrack(it)
 
             }
@@ -343,9 +347,17 @@ class SearchActivity : AppCompatActivity() {
     private fun onUpdateButtonClickListener() {
         binding.updateQueryButton.setOnClickListener {
             binding.searchActivityErrorLinearLayout.isVisible = false
-            binding.searchActivityProgressBar.isVisible = true
             viewModel.searchQuery = searchQueryText
+            iTunesTrack.clear()
             viewModel.startDelaySearch()
+        }
+
+    }
+
+    private fun openAudioPlayerAndReceiveTrackInfo(track: Track) {
+        Intent(this, AudioPlayerActivity::class.java).apply {
+            putExtra(TrackAdapter.SELECTABLE_TRACK, track)
+            startActivity(this)
         }
 
     }

@@ -1,7 +1,5 @@
 package com.example.playlistmaker.ui.tracks.view_model
 
-import android.content.Context
-import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
@@ -12,15 +10,12 @@ import com.example.playlistmaker.domain.search.TracksInteractor
 import com.example.playlistmaker.domain.search.model.ResponceStatus
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.domain.search.model.TrackSearchResponceParams
-import com.example.playlistmaker.ui.audioplayer.activity.AudioPlayerActivity
-import com.example.playlistmaker.ui.tracks.TrackAdapter
 import com.example.playlistmaker.ui.tracks.model.SearchActivityStatus
 import java.util.function.Consumer
 
 class SearchActivityViewModel (
     var tracksInteractor: TracksInteractor,
     var trackHistoryInteractor: TrackHistoryInteractor,
-    var context: Context
 ): ViewModel(), Consumer<TrackSearchResponceParams> {
 
     var searchQuery: String = ""
@@ -48,15 +43,9 @@ class SearchActivityViewModel (
         return trackHistoryInteractor.getTrackArrayFromShared().toList()
     }
 
-    fun openAudioPlayerAndReceiveTrackInfo(track: Track) {
-        Intent(context, AudioPlayerActivity::class.java).apply {
-            putExtra(TrackAdapter.SELECTABLE_TRACK, track)
-            context.startActivity(this)
-        }
-    }
 
     fun onClickAllowed() {
-       if (mutableIsClickAllowed.value!!) {
+       if (mutableIsClickAllowed.value != null) {
            mutableIsClickAllowed.postValue(false)
            mainTreadHandler.postDelayed({ mutableIsClickAllowed.postValue(true) }, CLICK_ON_TRACK_DELAY_MILLIS)
        }
@@ -75,7 +64,7 @@ class SearchActivityViewModel (
     }
 
     fun startSearchTracks(query: String) {
-        if (!query.isNullOrEmpty()) {
+        if (query.isNotEmpty()) {
             tracksInteractor.searchTracks(query,this@SearchActivityViewModel)
         }
     }
@@ -88,15 +77,22 @@ class SearchActivityViewModel (
 
     override fun accept(t: TrackSearchResponceParams) {
        mutableListTracks.postValue(emptyList())
-        if (t.tracks.isNotEmpty() && t.resultResponse == ResponceStatus.OK) {
-            mutableListTracks.postValue(t.tracks)
-            mutableStatusActivity.postValue(SearchActivityStatus.Data(t.tracks))
-        } else if (t.tracks.isEmpty() && t.resultResponse == ResponceStatus.OK) {
-            mutableListTracks.postValue(emptyList())
-            mutableStatusActivity.postValue(SearchActivityStatus.EmptyData())
-        } else if (t.tracks.isEmpty() && t.resultResponse == ResponceStatus.BAD) {
-            mutableListTracks.postValue(emptyList())
-            mutableStatusActivity.postValue(SearchActivityStatus.ErrorConnection())
+        when (t.tracks.isNotEmpty()) {
+            true -> {
+                if (t.resultResponse == ResponceStatus.OK) {
+                    mutableListTracks.postValue(t.tracks)
+                    mutableStatusActivity.postValue(SearchActivityStatus.Data(t.tracks))
+                }
+            }
+            false -> {
+                if (t.resultResponse == ResponceStatus.OK) {
+                    mutableListTracks.postValue(emptyList())
+                    mutableStatusActivity.postValue(SearchActivityStatus.EmptyData())
+                } else if (t.resultResponse == ResponceStatus.BAD) {
+                    mutableListTracks.postValue(emptyList())
+                    mutableStatusActivity.postValue(SearchActivityStatus.ErrorConnection())
+                }
+            }
         }
     }
 

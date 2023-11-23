@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.settings.ExternalSettingsRepository
+import com.example.playlistmaker.domain.settings.ExternalSettingsRepository
 
 class ExternalSettingsRepositoryImpl(private val context: Context): ExternalSettingsRepository {
     override fun shareApp() {

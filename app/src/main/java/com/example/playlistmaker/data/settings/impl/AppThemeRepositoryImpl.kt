@@ -3,7 +3,7 @@ package com.example.playlistmaker.data.settings.impl
 import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import com.example.playlistmaker.App
-import com.example.playlistmaker.data.settings.AppThemeRepository
+import com.example.playlistmaker.domain.settings.AppThemeRepository
 import java.io.Serializable
 
 class AppThemeRepositoryImpl(app: Application): AppThemeRepository, Serializable {

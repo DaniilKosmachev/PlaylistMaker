@@ -2,15 +2,15 @@ package com.example.playlistmaker.creator
 
 import android.app.Application
 import android.content.Context
-import com.example.playlistmaker.data.player.PlayerRepository
+import com.example.playlistmaker.domain.player.PlayerRepository
 import com.example.playlistmaker.data.player.impl.PlayerRepositoryImpl
-import com.example.playlistmaker.data.search.TrackHistoryRepository
-import com.example.playlistmaker.data.search.TracksRepository
+import com.example.playlistmaker.domain.search.TrackHistoryRepository
+import com.example.playlistmaker.domain.search.TracksRepository
 import com.example.playlistmaker.data.search.impl.RetrofitNetworkClient
 import com.example.playlistmaker.data.search.impl.TrackHistoryRepositoryImpl
 import com.example.playlistmaker.data.search.impl.TracksRepositoryImpl
-import com.example.playlistmaker.data.settings.AppThemeRepository
-import com.example.playlistmaker.data.settings.ExternalSettingsRepository
+import com.example.playlistmaker.domain.settings.AppThemeRepository
+import com.example.playlistmaker.domain.settings.ExternalSettingsRepository
 import com.example.playlistmaker.data.settings.impl.AppThemeRepositoryImpl
 import com.example.playlistmaker.data.settings.impl.ExternalSettingsRepositoryImpl
 import com.example.playlistmaker.domain.player.PlayerInteractor

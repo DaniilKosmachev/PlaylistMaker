@@ -1,6 +1,6 @@
 package com.example.playlistmaker.domain.settings.impl
 
-import com.example.playlistmaker.data.settings.AppThemeRepository
+import com.example.playlistmaker.domain.settings.AppThemeRepository
 import com.example.playlistmaker.domain.settings.AppThemeInteractor
 
 class AppThemeInteractorImpl(private val appThemeSharedPreferences: AppThemeRepository):
