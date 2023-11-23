@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.ui.tracks.SearchActivity">
+    tools:context=".ui.tracks.activity.SearchActivity">
 
     <LinearLayout
         style="@style/settings_activity_linear_layout_style_main"
@@ -47,7 +47,6 @@
                 android:maxLength="50"
                 android:imeOptions="actionDone"
                 android:maxLines="1"/>
-
             <ImageButton
                 android:id="@+id/clearEditTextSearchActivity"
                 style="@style/search_activity_image_buttom"

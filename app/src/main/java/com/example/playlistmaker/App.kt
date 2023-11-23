@@ -2,7 +2,8 @@ package com.example.playlistmaker
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.domain.api.app_theme.AppThemeInteractor
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.domain.settings.AppThemeInteractor
 
 var darkTheme = false
 
@@ -26,7 +27,6 @@ class App : Application() {
                 AppCompatDelegate.MODE_NIGHT_NO
             }
         )
-        themeSwitch.writeStatusSwitchToShared(darkThemeEnabled)
     }
 
 }
