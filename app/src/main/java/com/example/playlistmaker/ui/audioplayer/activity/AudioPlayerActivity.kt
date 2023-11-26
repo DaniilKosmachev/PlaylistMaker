@@ -35,9 +35,10 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         viewModel.removeCallback()
         viewModel.destroyPlayer()
+        super.onDestroy()
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

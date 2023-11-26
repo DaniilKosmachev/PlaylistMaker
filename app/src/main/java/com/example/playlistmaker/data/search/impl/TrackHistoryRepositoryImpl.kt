@@ -1,23 +1,25 @@
 package com.example.playlistmaker.data.search.impl
 
-import android.app.Application
-import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import com.example.playlistmaker.domain.search.TrackHistoryRepository
 import com.example.playlistmaker.domain.search.model.Track
 import com.google.gson.Gson
+import org.koin.core.qualifier.named
+import org.koin.java.KoinJavaComponent.getKoin
 
-class TrackHistoryRepositoryImpl(app: Application): TrackHistoryRepository {
-     var sharedPreferences: SharedPreferences = app.getSharedPreferences(
-         SHARED_PREFERENCES_HISTORY_SEARCH_FILE_NAME, MODE_PRIVATE)
+class TrackHistoryRepositoryImpl: TrackHistoryRepository {
+
+        var sharedPreferences: SharedPreferences = getKoin().get(named("historyShared"))
+
+        var gson: Gson = getKoin().get()
 
     override fun getTrackArrayFromShared(): Array<Track> {
         val json = sharedPreferences.getString(HISTORY_TRACK_LIST_KEY, null) ?: return emptyArray()
-        return Gson().fromJson(json, Array<Track>::class.java)
+        return gson.fromJson(json, Array<Track>::class.java)
     }
 
     override fun writeTrackArrayToShared(tracks: ArrayList<Track>) {
-        val json = Gson().toJson(tracks)
+        val json = gson.toJson(tracks)
         sharedPreferences.edit()
             .putString(HISTORY_TRACK_LIST_KEY, json)
             .apply()
@@ -71,7 +73,6 @@ class TrackHistoryRepositoryImpl(app: Application): TrackHistoryRepository {
     }
 
     companion object {
-       const val SHARED_PREFERENCES_HISTORY_SEARCH_FILE_NAME = "history_search_track"
         const val HISTORY_TRACK_LIST_KEY = "history_track_list"
         const val MAX_SIZE_OF_HISTORY_LIST = 11
         const val INDEX_OF_LAST_TRACK_IN_HISTORY_LIST = 10

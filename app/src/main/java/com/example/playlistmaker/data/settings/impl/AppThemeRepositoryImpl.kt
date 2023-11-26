@@ -1,16 +1,18 @@
 package com.example.playlistmaker.data.settings.impl
 
 import android.app.Application
-import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import com.example.playlistmaker.App
 import com.example.playlistmaker.domain.settings.AppThemeRepository
+import org.koin.core.qualifier.named
+import org.koin.java.KoinJavaComponent.getKoin
 import java.io.Serializable
 
 class AppThemeRepositoryImpl(app: Application): AppThemeRepository, Serializable {
 
     var app = app as App
 
-    var sharedPreferences = app.getSharedPreferences(APP_THEME_SHARED_FILE_NAME, MODE_PRIVATE)
+    var sharedPreferences: SharedPreferences = getKoin().get(named("themeShared"))
 
     override fun getStatusSwitchFromShared(): Boolean {
         return sharedPreferences.getBoolean(APP_THEME_SWITCH_SETTINGS, false)
@@ -25,7 +27,6 @@ class AppThemeRepositoryImpl(app: Application): AppThemeRepository, Serializable
     }
 
     companion object {
-        const val APP_THEME_SHARED_FILE_NAME = "theme_shared_preferences"
         const val APP_THEME_SWITCH_SETTINGS = "theme_switch_status"
     }
 

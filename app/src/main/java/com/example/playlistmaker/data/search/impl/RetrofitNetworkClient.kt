@@ -5,34 +5,26 @@ import com.example.playlistmaker.data.search.ITunesApi
 import com.example.playlistmaker.data.search.dto.Response
 import com.example.playlistmaker.data.search.dto.TrackSearchRequest
 import com.example.playlistmaker.domain.search.model.ResponceStatus
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import org.koin.java.KoinJavaComponent.getKoin
 
 class RetrofitNetworkClient: NetworkClient {
 
-    private val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(ITUNES_BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    private val retrofit: ITunesApi = getKoin().get()
 
-    private val itunesService = retrofit.create(ITunesApi::class.java)
+    var emptyResponse: Response = getKoin().get()
 
     override fun doTrackSearchRequest(dto: TrackSearchRequest): Response {
         if (dto is TrackSearchRequest) {
             try {
-                val response = itunesService.search(dto.request).execute()
-                val bodyResponse = response.body() ?: Response()
+                val response = retrofit.search(dto.request).execute()
+                val bodyResponse = response.body() ?: emptyResponse
                 return bodyResponse.apply { resultResponse = ResponceStatus.OK }
             } catch (e: Exception) {
 
             }
         }
-            return Response().apply {
+            return emptyResponse.apply {
                 resultResponse = ResponceStatus.BAD
             }
-    }
-
-    companion object {
-        const val ITUNES_BASE_URL = "https://itunes.apple.com"
     }
 }
