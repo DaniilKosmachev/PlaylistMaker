@@ -2,6 +2,7 @@ package com.example.playlistmaker.di
 
 import android.content.Context
 import android.media.MediaPlayer
+import com.example.playlistmaker.App
 import com.example.playlistmaker.data.search.ITunesApi
 import com.example.playlistmaker.domain.player.model.PlayerStatus
 import com.example.playlistmaker.domain.search.model.ResponceStatus
@@ -56,6 +57,10 @@ val dataModule = module {
 
     factory {
         com.example.playlistmaker.data.search.dto.Response()
+    }
+
+    single(named("context")) {
+        App()
     }
 
 

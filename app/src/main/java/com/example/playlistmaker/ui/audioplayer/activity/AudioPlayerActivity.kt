@@ -5,7 +5,6 @@ import android.os.Build.VERSION
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
@@ -13,9 +12,9 @@ import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.domain.player.model.PlayerStatus
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.audioplayer.view_model.PlayerActivityViewModel
-import com.example.playlistmaker.ui.audioplayer.view_model.PlayerActivityViewModelFactory
 import com.example.playlistmaker.ui.mapper.TrackMapper
 import com.example.playlistmaker.ui.tracks.TrackAdapter
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -25,7 +24,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private lateinit var selectableTrack: Track
 
-    private lateinit var viewModel: PlayerActivityViewModel
+    private val viewModel by viewModel<PlayerActivityViewModel>()
 
 
     override fun onPause() {
@@ -45,7 +44,6 @@ class AudioPlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        viewModel = ViewModelProvider(this, PlayerActivityViewModelFactory(this))[PlayerActivityViewModel::class.java]
         selectableTrack = if (VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(TrackAdapter.SELECTABLE_TRACK, Track::class.java)!!
         } else {

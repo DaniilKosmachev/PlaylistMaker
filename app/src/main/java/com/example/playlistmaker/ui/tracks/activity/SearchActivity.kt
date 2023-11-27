@@ -14,7 +14,6 @@ import android.widget.LinearLayout.GONE
 import android.widget.LinearLayout.LayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.search.model.Track
@@ -22,17 +21,24 @@ import com.example.playlistmaker.ui.audioplayer.activity.AudioPlayerActivity
 import com.example.playlistmaker.ui.tracks.TrackAdapter
 import com.example.playlistmaker.ui.tracks.model.SearchActivityStatus
 import com.example.playlistmaker.ui.tracks.view_model.SearchActivityViewModel
-import com.example.playlistmaker.ui.tracks.view_model.SearchActivityViewModelFactory
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: SearchActivityViewModel
+    private val viewModel by viewModel<SearchActivityViewModel>()
+    private val tracksAdapter: TrackAdapter by inject {
+        parametersOf(iTunesTrack)
+    }
+
     private val iTunesTrack = ArrayList<Track>()//список треков из iTunes
     private val iTunesTrackSearchHistory = ArrayList<Track>()//список истории поиска
 
     var searchQueryText = ""
 
     private lateinit var binding: ActivitySearchBinding
+
     private lateinit var trackHistoryAdapter: TrackAdapter
     private lateinit var trackAdapter: TrackAdapter
     private var isClickedAllowed: Boolean? = null //маячек для повторного клика
@@ -63,7 +69,6 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        viewModel = ViewModelProvider(this, SearchActivityViewModelFactory(this))[SearchActivityViewModel::class.java]
         clickOnClearButton()
         clickOnButtonBack()
         setSearchActivityTextWatcher()
@@ -158,17 +163,14 @@ class SearchActivity : AppCompatActivity() {
                 trackHistoryAdapter.notifyDataSetChanged()
             }
         }//адаптер для текущего поискового запроса
-        binding.trackRecycleView.adapter =
-            trackAdapter//устанавливаем для RecyclerView текущего результата поиска адаптер
+        binding.trackRecycleView.adapter = trackAdapter//устанавливаем для RecyclerView текущего результата поиска адаптер
         trackHistoryAdapter = TrackAdapter(iTunesTrackSearchHistory) {
             if (isClickedAllowed!!) {
                 openAudioPlayerAndReceiveTrackInfo(it)
                 viewModel.updateHistoryListAfterSelectItemHistoryTrack(it)
-
             }
         }//адптер для истории поиска
-        binding.searchActivityHistoryRecyclerView.adapter =
-            trackHistoryAdapter//устанавливаем для RecyclerView истории поиска адаптер
+        binding.searchActivityHistoryRecyclerView.adapter = trackHistoryAdapter//устанавливаем для RecyclerView истории поиска адаптер
     }
 
     private fun setSearchActivityTextWatcher() {

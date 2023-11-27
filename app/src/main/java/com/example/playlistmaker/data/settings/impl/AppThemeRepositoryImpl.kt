@@ -1,6 +1,5 @@
 package com.example.playlistmaker.data.settings.impl
 
-import android.app.Application
 import android.content.SharedPreferences
 import com.example.playlistmaker.App
 import com.example.playlistmaker.domain.settings.AppThemeRepository
@@ -8,9 +7,9 @@ import org.koin.core.qualifier.named
 import org.koin.java.KoinJavaComponent.getKoin
 import java.io.Serializable
 
-class AppThemeRepositoryImpl(app: Application): AppThemeRepository, Serializable {
+class AppThemeRepositoryImpl: AppThemeRepository, Serializable {
 
-    var app = app as App
+    var app: App= getKoin().get(named("context"))
 
     var sharedPreferences: SharedPreferences = getKoin().get(named("themeShared"))
 

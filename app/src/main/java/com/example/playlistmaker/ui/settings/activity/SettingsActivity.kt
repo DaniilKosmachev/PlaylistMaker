@@ -2,23 +2,19 @@ package com.example.playlistmaker.ui.settings.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
-import com.example.playlistmaker.ui.settings.view_model.SettingsViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class SettingsActivity : AppCompatActivity() { //не меняет тему вьюхи если наследутеся от ComponentActivity()
-
-    private lateinit var viewModel: SettingsViewModel
+class SettingsActivity : AppCompatActivity() {
+    private val viewModel by viewModel<SettingsViewModel>()
     private lateinit var binding: ActivitySettingsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        viewModel = ViewModelProvider(this, SettingsViewModelFactory(this))[SettingsViewModel::class.java]
         backToMainActivityClickListener()
         writeToSupportLinearClickListener()
         shareAppLinearClickListener()
