@@ -9,7 +9,7 @@ import java.io.Serializable
 
 class AppThemeRepositoryImpl: AppThemeRepository, Serializable {
 
-    var app: App= getKoin().get(named("context"))
+    var app: App = getKoin().get(named("context"))
 
     var sharedPreferences: SharedPreferences = getKoin().get(named("themeShared"))
 

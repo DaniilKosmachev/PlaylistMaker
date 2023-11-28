@@ -1,8 +1,6 @@
 package com.example.playlistmaker.di
 
-import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.player.impl.PlayerRepositoryImpl
-import com.example.playlistmaker.data.search.impl.RetrofitNetworkClient
 import com.example.playlistmaker.data.search.impl.TrackHistoryRepositoryImpl
 import com.example.playlistmaker.data.search.impl.TracksRepositoryImpl
 import com.example.playlistmaker.data.settings.impl.AppThemeRepositoryImpl
@@ -27,10 +25,6 @@ var repositoryModule = module {
 
     factory<TracksRepository> {
         TracksRepositoryImpl(get())
-    }
-
-    factory<NetworkClient> {
-        RetrofitNetworkClient()
     }
 
     factory<AppThemeRepository> {

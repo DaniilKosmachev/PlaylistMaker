@@ -11,6 +11,7 @@ import com.example.playlistmaker.domain.settings.ExternalSettingsInteractor
 import com.example.playlistmaker.domain.settings.impl.AppThemeInteractorImpl
 import com.example.playlistmaker.domain.settings.impl.ExternalSettingsInteractorImpl
 import org.koin.dsl.module
+import java.util.concurrent.Executors
 
 val interactorModule = module {
 
@@ -19,7 +20,7 @@ val interactorModule = module {
     }
 
     factory<TracksInteractor> {
-        TracksInteractorImpl(get())
+        TracksInteractorImpl(get(), get())
     }
 
     factory<ExternalSettingsInteractor> {
@@ -32,6 +33,10 @@ val interactorModule = module {
 
     factory<PlayerInteractor> {
         PlayerInteractorImpl(get())
+    }
+
+    factory {
+        Executors.newCachedThreadPool()
     }
 
 }

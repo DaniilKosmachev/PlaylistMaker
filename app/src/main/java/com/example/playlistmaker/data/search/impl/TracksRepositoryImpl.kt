@@ -27,13 +27,13 @@ class TracksRepositoryImpl (private val networkClient: NetworkClient): TracksRep
                     previewUrl = if (it.previewUrl.isNullOrEmpty()) {"Нет данных"} else it.previewUrl
                 )
             }
-            var responceParams = TrackSearchResponceParams(trackList)
-            responceParams.resultResponse = ResponceStatus.OK
-            return responceParams
+            return TrackSearchResponceParams(trackList).apply {
+                resultResponse = ResponceStatus.OK
+            }
         } else {
-            var responceParams = TrackSearchResponceParams(emptyList())
-            responceParams.resultResponse = ResponceStatus.BAD
-            return responceParams
+            return TrackSearchResponceParams(emptyList()).apply {
+                resultResponse = ResponceStatus.BAD
+            }
         }
     }
 

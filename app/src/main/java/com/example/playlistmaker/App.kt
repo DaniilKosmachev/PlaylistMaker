@@ -2,7 +2,6 @@ package com.example.playlistmaker
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.di.activityModule
 import com.example.playlistmaker.di.dataModule
 import com.example.playlistmaker.di.interactorModule
 import com.example.playlistmaker.di.repositoryModule
@@ -22,7 +21,7 @@ class App : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@App)
-            modules(dataModule, interactorModule, repositoryModule, viewModelModel, activityModule)
+            modules(dataModule, interactorModule, repositoryModule, viewModelModel)
         }
         themeSwitch = getKoin().get()
         switchTheme(themeSwitch.getStatusSwitchFromShared())

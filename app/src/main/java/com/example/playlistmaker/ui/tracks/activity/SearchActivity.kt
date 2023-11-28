@@ -9,7 +9,6 @@ import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.LinearLayout.GONE
 import android.widget.LinearLayout.LayoutParams
 import androidx.appcompat.app.AppCompatActivity
@@ -21,16 +20,11 @@ import com.example.playlistmaker.ui.audioplayer.activity.AudioPlayerActivity
 import com.example.playlistmaker.ui.tracks.TrackAdapter
 import com.example.playlistmaker.ui.tracks.model.SearchActivityStatus
 import com.example.playlistmaker.ui.tracks.view_model.SearchActivityViewModel
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 
 class SearchActivity : AppCompatActivity() {
 
     private val viewModel by viewModel<SearchActivityViewModel>()
-    private val tracksAdapter: TrackAdapter by inject {
-        parametersOf(iTunesTrack)
-    }
 
     private val iTunesTrack = ArrayList<Track>()//список треков из iTunes
     private val iTunesTrackSearchHistory = ArrayList<Track>()//список истории поиска
@@ -60,9 +54,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        val editTextSearch = findViewById<EditText>(R.id.editTextSearchActivity)
         super.onRestoreInstanceState(savedInstanceState)
-        editTextSearch.setText(searchQueryText)
+        binding.editTextSearchActivity.setText(searchQueryText)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
