@@ -5,26 +5,16 @@ import com.example.playlistmaker.data.search.ITunesApi
 import com.example.playlistmaker.data.search.dto.Response
 import com.example.playlistmaker.data.search.dto.TrackSearchRequest
 import com.example.playlistmaker.domain.search.model.ResponceStatus
-import org.koin.java.KoinJavaComponent.getKoin
 
-class RetrofitNetworkClient: NetworkClient {
-
-    private val retrofit: ITunesApi = getKoin().get()
-
-    var emptyResponse: Response = getKoin().get()
+class RetrofitNetworkClient(private val retrofit: ITunesApi): NetworkClient {
 
     override fun doTrackSearchRequest(dto: TrackSearchRequest): Response {
-        if (dto is TrackSearchRequest) {
-            try {
-                val response = retrofit.search(dto.request).execute()
-                val bodyResponse = response.body() ?: emptyResponse
-                return bodyResponse.apply { resultResponse = ResponceStatus.OK }
-            } catch (e: Exception) {
-
-            }
+        return try {
+            retrofit.search(dto.request).execute().body()?.apply {
+                resultResponse = ResponceStatus.OK
+            } ?: Response(ResponceStatus.BAD)
+        } catch (e: Exception) {
+            Response(ResponceStatus.BAD)
         }
-            return emptyResponse.apply {
-                resultResponse = ResponceStatus.BAD
-            }
     }
 }

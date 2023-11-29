@@ -6,8 +6,6 @@ import com.example.playlistmaker.App
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.search.ITunesApi
 import com.example.playlistmaker.data.search.impl.RetrofitNetworkClient
-import com.example.playlistmaker.domain.player.model.PlayerStatus
-import com.example.playlistmaker.domain.search.model.ResponceStatus
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
@@ -44,19 +42,7 @@ val dataModule = module {
     }
 
     factory<NetworkClient> {
-        RetrofitNetworkClient()
-    }
-
-    factory {
-        PlayerStatus.DEFAULT//добавлено!
-    }
-
-    factory {
-        ResponceStatus.DEFAULT//добавлено!
-    }
-
-    factory {
-        com.example.playlistmaker.data.search.dto.Response()
+        RetrofitNetworkClient(get())
     }
 
     single(named("context")) {

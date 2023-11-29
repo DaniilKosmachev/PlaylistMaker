@@ -11,16 +11,17 @@ import com.example.playlistmaker.domain.search.TracksRepository
 import com.example.playlistmaker.domain.settings.AppThemeRepository
 import com.example.playlistmaker.domain.settings.ExternalSettingsRepository
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 var repositoryModule = module {
 
     factory<PlayerRepository> {
-        PlayerRepositoryImpl()
+        PlayerRepositoryImpl(get()/*,get()*/)
     }
 
     factory<TrackHistoryRepository> {
-        TrackHistoryRepositoryImpl()
+        TrackHistoryRepositoryImpl(get(named("historyShared")), get())
     }
 
     factory<TracksRepository> {
@@ -28,7 +29,7 @@ var repositoryModule = module {
     }
 
     factory<AppThemeRepository> {
-        AppThemeRepositoryImpl()
+        AppThemeRepositoryImpl(get(named("context")), get(named("themeShared")))
     }
 
     factory<ExternalSettingsRepository> {

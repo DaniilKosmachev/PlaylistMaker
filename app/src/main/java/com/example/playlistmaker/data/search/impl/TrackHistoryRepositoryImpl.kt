@@ -1,17 +1,12 @@
 package com.example.playlistmaker.data.search.impl
 
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import com.example.playlistmaker.domain.search.TrackHistoryRepository
 import com.example.playlistmaker.domain.search.model.Track
 import com.google.gson.Gson
-import org.koin.core.qualifier.named
-import org.koin.java.KoinJavaComponent.getKoin
 
-class TrackHistoryRepositoryImpl: TrackHistoryRepository {
-
-        var sharedPreferences: SharedPreferences = getKoin().get(named("historyShared"))
-
-        var gson: Gson = getKoin().get()
+class TrackHistoryRepositoryImpl(private var sharedPreferences: SharedPreferences, private var gson: Gson): TrackHistoryRepository {
 
     override fun getTrackArrayFromShared(): Array<Track> {
         val json = sharedPreferences.getString(HISTORY_TRACK_LIST_KEY, null) ?: return emptyArray()
@@ -20,15 +15,15 @@ class TrackHistoryRepositoryImpl: TrackHistoryRepository {
 
     override fun writeTrackArrayToShared(tracks: ArrayList<Track>) {
         val json = gson.toJson(tracks)
-        sharedPreferences.edit()
-            .putString(HISTORY_TRACK_LIST_KEY, json)
-            .apply()
+        sharedPreferences.edit {
+            putString(HISTORY_TRACK_LIST_KEY, json)
+        }
     }
 
     override fun clearSearchHistory() {
-        sharedPreferences.edit()
-            .clear()
-            .apply()
+        sharedPreferences.edit {
+            clear()
+        }
     }
 
     override fun addNewTrackInTrackHistory(

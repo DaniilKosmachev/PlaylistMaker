@@ -5,12 +5,8 @@ import com.example.playlistmaker.domain.player.PlayerRepository
 import com.example.playlistmaker.domain.player.model.PlayerParams
 import com.example.playlistmaker.domain.player.model.PlayerStatus
 import com.example.playlistmaker.domain.search.model.Track
-import org.koin.java.KoinJavaComponent.getKoin
 
-class PlayerRepositoryImpl: PlayerRepository {
-
-    private var mediaPlayer: MediaPlayer = getKoin().get()
-    private var playerState: PlayerStatus = getKoin().get()
+class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer, private var playerState: PlayerStatus = PlayerStatus.DEFAULT): PlayerRepository {
 
     override fun prepareMediaPlayer(track: Track) {
             mediaPlayer.apply {

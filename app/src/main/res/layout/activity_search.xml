@@ -38,6 +38,7 @@
 
             <EditText
                 style="@style/search_activity_edit_text"
+                android:backgroundTint="@android:color/transparent"
                 android:id="@+id/editTextSearchActivity"
                 android:drawableStart="@drawable/search"
                 android:drawablePadding="@dimen/main_padding_left_image"
