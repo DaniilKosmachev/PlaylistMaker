@@ -1,14 +1,15 @@
 package com.example.playlistmaker.data.search.impl
 
-import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.search.dto.TrackSearchRequest
 import com.example.playlistmaker.data.search.dto.TracksResponse
 import com.example.playlistmaker.domain.search.TracksRepository
 import com.example.playlistmaker.domain.search.model.ResponceStatus
+import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.domain.search.model.TrackSearchResponceParams
 
 class TracksRepositoryImpl (private val networkClient: NetworkClient): TracksRepository {
+
     override fun searchTracks(expression: String): TrackSearchResponceParams {
         val response = networkClient.doTrackSearchRequest(TrackSearchRequest(expression))
         if (response.resultResponse == ResponceStatus.OK) {
@@ -26,13 +27,13 @@ class TracksRepositoryImpl (private val networkClient: NetworkClient): TracksRep
                     previewUrl = if (it.previewUrl.isNullOrEmpty()) {"Нет данных"} else it.previewUrl
                 )
             }
-            var responceParams = TrackSearchResponceParams(trackList)
-            responceParams.resultResponse = ResponceStatus.OK
-            return responceParams
+            return TrackSearchResponceParams(trackList).apply {
+                resultResponse = ResponceStatus.OK
+            }
         } else {
-            var responceParams = TrackSearchResponceParams(emptyList())
-            responceParams.resultResponse = ResponceStatus.BAD
-            return responceParams
+            return TrackSearchResponceParams(emptyList()).apply {
+                resultResponse = ResponceStatus.BAD
+            }
         }
     }
 

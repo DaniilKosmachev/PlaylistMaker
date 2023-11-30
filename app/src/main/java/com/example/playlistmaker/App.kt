@@ -2,8 +2,14 @@ package com.example.playlistmaker
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.di.dataModule
+import com.example.playlistmaker.di.interactorModule
+import com.example.playlistmaker.di.repositoryModule
+import com.example.playlistmaker.di.viewModelModel
 import com.example.playlistmaker.domain.settings.AppThemeInteractor
+import org.koin.android.ext.android.getKoin
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 var darkTheme = false
 
@@ -13,8 +19,11 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Creator.initApplication(this)
-        themeSwitch = Creator.provideAppThemeInteractor()
+        startKoin {
+            androidContext(this@App)
+            modules(dataModule, interactorModule, repositoryModule, viewModelModel)
+        }
+        themeSwitch = getKoin().get()
         switchTheme(themeSwitch.getStatusSwitchFromShared())
     }
 

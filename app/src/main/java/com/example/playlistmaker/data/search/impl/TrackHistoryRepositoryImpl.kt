@@ -1,32 +1,29 @@
 package com.example.playlistmaker.data.search.impl
 
-import android.app.Application
-import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import com.example.playlistmaker.domain.search.TrackHistoryRepository
 import com.example.playlistmaker.domain.search.model.Track
 import com.google.gson.Gson
 
-class TrackHistoryRepositoryImpl(app: Application): TrackHistoryRepository {
-     var sharedPreferences: SharedPreferences = app.getSharedPreferences(
-         SHARED_PREFERENCES_HISTORY_SEARCH_FILE_NAME, MODE_PRIVATE)
+class TrackHistoryRepositoryImpl(private var sharedPreferences: SharedPreferences, private var gson: Gson): TrackHistoryRepository {
 
     override fun getTrackArrayFromShared(): Array<Track> {
         val json = sharedPreferences.getString(HISTORY_TRACK_LIST_KEY, null) ?: return emptyArray()
-        return Gson().fromJson(json, Array<Track>::class.java)
+        return gson.fromJson(json, Array<Track>::class.java)
     }
 
     override fun writeTrackArrayToShared(tracks: ArrayList<Track>) {
-        val json = Gson().toJson(tracks)
-        sharedPreferences.edit()
-            .putString(HISTORY_TRACK_LIST_KEY, json)
-            .apply()
+        val json = gson.toJson(tracks)
+        sharedPreferences.edit {
+            putString(HISTORY_TRACK_LIST_KEY, json)
+        }
     }
 
     override fun clearSearchHistory() {
-        sharedPreferences.edit()
-            .clear()
-            .apply()
+        sharedPreferences.edit {
+            clear()
+        }
     }
 
     override fun addNewTrackInTrackHistory(
@@ -71,7 +68,6 @@ class TrackHistoryRepositoryImpl(app: Application): TrackHistoryRepository {
     }
 
     companion object {
-       const val SHARED_PREFERENCES_HISTORY_SEARCH_FILE_NAME = "history_search_track"
         const val HISTORY_TRACK_LIST_KEY = "history_track_list"
         const val MAX_SIZE_OF_HISTORY_LIST = 11
         const val INDEX_OF_LAST_TRACK_IN_HISTORY_LIST = 10

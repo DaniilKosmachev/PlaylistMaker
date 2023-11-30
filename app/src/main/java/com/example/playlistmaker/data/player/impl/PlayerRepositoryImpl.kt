@@ -6,10 +6,7 @@ import com.example.playlistmaker.domain.player.model.PlayerParams
 import com.example.playlistmaker.domain.player.model.PlayerStatus
 import com.example.playlistmaker.domain.search.model.Track
 
-class PlayerRepositoryImpl: PlayerRepository {
-
-    private var mediaPlayer: MediaPlayer = MediaPlayer()
-    private var playerState: PlayerStatus = PlayerStatus.DEFAULT
+class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer, private var playerState: PlayerStatus = PlayerStatus.DEFAULT): PlayerRepository {
 
     override fun prepareMediaPlayer(track: Track) {
             mediaPlayer.apply {
@@ -35,21 +32,35 @@ class PlayerRepositoryImpl: PlayerRepository {
     }
 
     override fun changePlaybackProgress(): PlayerParams {
-        return when (playerState) {
-            PlayerStatus.PLAYING -> {
-                PlayerParams(playerState = PlayerStatus.PLAYING, currentPosition = mediaPlayer.currentPosition)
-            }
-            PlayerStatus.PAUSE -> {
-                PlayerParams(playerState = PlayerStatus.PAUSE, currentPosition = mediaPlayer.currentPosition)
-            }
-            PlayerStatus.PREPARED -> {
-                PlayerParams(playerState = PlayerStatus.PREPARED, currentPosition = mediaPlayer.currentPosition)
-            }
-            PlayerStatus.DEFAULT -> {
-                PlayerParams(playerState = PlayerStatus.DEFAULT, currentPosition = mediaPlayer.currentPosition)
-            }
-        }
+            return when (playerState) {
+                PlayerStatus.PLAYING -> {
+                    PlayerParams(
+                        playerState = PlayerStatus.PLAYING,
+                        currentPosition = mediaPlayer.currentPosition
+                    )
+                }
 
+                PlayerStatus.PAUSE -> {
+                    PlayerParams(
+                        playerState = PlayerStatus.PAUSE,
+                        currentPosition = mediaPlayer.currentPosition
+                    )
+                }
+
+                PlayerStatus.PREPARED -> {
+                    PlayerParams(
+                        playerState = PlayerStatus.PREPARED,
+                        currentPosition = mediaPlayer.currentPosition
+                    )
+                }
+
+                PlayerStatus.DEFAULT -> {
+                    PlayerParams(
+                        playerState = PlayerStatus.DEFAULT,
+                        currentPosition = mediaPlayer.currentPosition
+                    )
+                }
+            }
     }
 
     override fun destroyPlayer() {
