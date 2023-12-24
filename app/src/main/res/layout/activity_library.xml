@@ -1,21 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    style="@style/settings_activity_linear_layout_style_main"
     tools:context=".ui.library.activity.LibraryActivity">
     <LinearLayout
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        style="@style/settings_activity_linear_layout_style_top"
+        android:padding="5dp">
+
+        <ImageButton
+            android:id="@+id/backToMainActivityViewButton"
+            style="@style/settings_activity_linear_layout_style_top_image_and_text"
+            android:foreground="?attr/selectableItemBackground"
+            android:src="@drawable/arrowback" />
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Это активити Медиатеки!"
-            android:textAlignment="center"
-            android:textSize="25dp" />
+            style="@style/settings_activity_linear_layout_style_top_image_and_text"
+            android:fontFamily="@font/ys_display_medium"
+            android:gravity="top"
+            android:padding="9dp"
+            android:text="@string/mediatech"
+            android:textSize="22sp" />
     </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    
+    <com.google.android.material.tabs.TabLayout
+        style="@style/tab_layout_mediatech_activity"
+        android:id="@+id/tabLayoutMediatech"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_Top_16"
+        app:tabTextAppearance="@style/custom_text_tab"
+        android:textAlignment="center"
+        />
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>
