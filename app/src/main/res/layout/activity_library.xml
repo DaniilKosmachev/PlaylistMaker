@@ -30,7 +30,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_Top_16"
-        app:tabMode="fixed"
         app:tabTextAppearance="@style/custom_text_tab"
         android:textAlignment="center"
         />

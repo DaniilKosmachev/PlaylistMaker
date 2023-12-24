@@ -9,7 +9,7 @@ import com.example.playlistmaker.databinding.LibraryActivityFragmentFavoriteTrac
 import com.example.playlistmaker.ui.library.view_model.FavoriteTrackFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class LibActivityFavoriteTracksFragment: Fragment() {
+class FavoriteTracksFragment: Fragment() {
 
     private var _binding: LibraryActivityFragmentFavoriteTracksBinding? = null
     private val binding get() = _binding!!
@@ -35,6 +35,6 @@ class LibActivityFavoriteTracksFragment: Fragment() {
     }
 
     companion object {
-        fun newInstance() = LibActivityFavoriteTracksFragment()
+        fun newInstance() = FavoriteTracksFragment()
     }
 }
