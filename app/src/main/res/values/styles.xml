@@ -19,7 +19,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:orientation">vertical</item>
-        <item name="android:background">@color/main_activity_color</item>
+        <item name="android:background">@color/white</item>
     </style>
     <style name="settings_activity_linear_layout_style">
         <item name="android:layout_width">match_parent</item>

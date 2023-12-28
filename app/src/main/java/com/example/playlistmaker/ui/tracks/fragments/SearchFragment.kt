@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.tracks.activity
+package com.example.playlistmaker.ui.tracks.fragments
 
 import android.content.Context
 import android.content.Intent
@@ -7,36 +7,60 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.LinearLayout.GONE
-import android.widget.LinearLayout.LayoutParams
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.LinearLayout
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.audioplayer.activity.AudioPlayerActivity
 import com.example.playlistmaker.ui.tracks.TrackAdapter
 import com.example.playlistmaker.ui.tracks.model.SearchActivityStatus
-import com.example.playlistmaker.ui.tracks.view_model.SearchActivityViewModel
+import com.example.playlistmaker.ui.tracks.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment: Fragment() {
 
-    private val viewModel by viewModel<SearchActivityViewModel>()
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
 
     private val iTunesTrack = ArrayList<Track>()//список треков из iTunes
     private val iTunesTrackSearchHistory = ArrayList<Track>()//список истории поиска
 
     var searchQueryText = ""
 
-    private lateinit var binding: ActivitySearchBinding
-
     private lateinit var trackHistoryAdapter: TrackAdapter
     private lateinit var trackAdapter: TrackAdapter
     private var isClickedAllowed: Boolean? = null //маячек для повторного клика
 
+    private val viewModel by viewModel<SearchViewModel>()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View?  {
+        _binding = FragmentSearchBinding.inflate(inflater,container,false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        clickOnClearButton()
+        setSearchFragmentTextWatcher()
+        onUpdateButtonClickListener()
+        initializeComponents()
+        setOnEditTextFocusLisneter()
+        clickOnClearSearchHistoryButton()
+        observeOnHistorySearchLiveData()
+        observeOnSearchLiveData()
+        observeOnStatusScreen()
+        observeOnIsClickAllowed()
+    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -53,37 +77,20 @@ class SearchActivity : AppCompatActivity() {
         outState.putString(SEARCH_STRING, searchQueryText)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
         binding.editTextSearchActivity.setText(searchQueryText)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        clickOnClearButton()
-        clickOnButtonBack()
-        setSearchActivityTextWatcher()
-        onUpdateButtonClickListener()
-        initializeComponents()
-        setOnEditTextFocusLisneter()
-        clickOnClearSearchHistoryButton()
-        observeOnHistorySearchLiveData()
-        observeOnSearchLiveData()
-        observeOnStatusScreen()
-        observeOnIsClickAllowed()
-    }
-
     fun observeOnHistorySearchLiveData() {
-        viewModel.getHistoryListTrack().observe(this) {
+        viewModel.getHistoryListTrack().observe(viewLifecycleOwner) {
             iTunesTrackSearchHistory.clear()
             iTunesTrackSearchHistory.addAll(it)
         }
     }
 
     fun observeOnSearchLiveData() {
-        viewModel.getListTrack().observe(this) {
+        viewModel.getListTrack().observe(viewLifecycleOwner) {
             if (iTunesTrack.isNotEmpty()) {
                 iTunesTrack.clear()
             }
@@ -92,7 +99,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     fun observeOnStatusScreen() {
-        viewModel.getStatusScreen().observe(this) {
+        viewModel.getStatusScreen().observe(viewLifecycleOwner) {
             when (it) {
                 is SearchActivityStatus.Data -> {
                     iTunesTrack.clear()
@@ -143,7 +150,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     fun observeOnIsClickAllowed() {
-        viewModel.getIsClickAllowed().observe(this) {
+        viewModel.getIsClickAllowed().observe(viewLifecycleOwner) {
             isClickedAllowed = it
         }
     }
@@ -166,7 +173,7 @@ class SearchActivity : AppCompatActivity() {
         binding.searchActivityHistoryRecyclerView.adapter = trackHistoryAdapter//устанавливаем для RecyclerView истории поиска адаптер
     }
 
-    private fun setSearchActivityTextWatcher() {
+    private fun setSearchFragmentTextWatcher() {
         val searchActivityTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
@@ -242,7 +249,7 @@ class SearchActivity : AppCompatActivity() {
         binding.clearSearchHistory.setOnClickListener {
             viewModel.clearSearchHistory()
             trackHistoryAdapter.notifyDataSetChanged()
-            binding.searchActivityHistoryTrackLinearLayout.visibility = GONE
+            binding.searchActivityHistoryTrackLinearLayout.visibility = LinearLayout.GONE
         }
     }
 
@@ -257,16 +264,8 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun clickOnButtonBack() {
-        binding.backToMainActivityViewButtonFromSearch.setOnClickListener {
-            finish()
-        }
-    }
-
-
     private fun hideSystemKeyboard() {
-        val inputMethodManager =
-            getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        val inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         inputMethodManager?.hideSoftInputFromWindow(binding.editTextSearchActivity.windowToken, 0)
     }
 
@@ -315,9 +314,9 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun updateErrorlayoutParamsForLandscapeOrientation() {
-        val params: LayoutParams =
-            binding.searchActivityErrorLinearLayout.layoutParams as LayoutParams
-        params.setMargins(0, dpToPx((if (isPortrainSystemOrientatin()) 102f else 8f), this), 0, 0)
+        val params: LinearLayout.LayoutParams =
+            binding.searchActivityErrorLinearLayout.layoutParams as LinearLayout.LayoutParams
+        params.setMargins(0, dpToPx((if (isPortrainSystemOrientatin()) 102f else 8f), requireContext()), 0, 0)
     }
 
     private fun setNoConnectionError() { //устанавливает в ErrorLinearLayout картинку и текст по ошибке - отсутствует связь
@@ -350,7 +349,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun openAudioPlayerAndReceiveTrackInfo(track: Track) {
-        Intent(this, AudioPlayerActivity::class.java).apply {
+        Intent(requireContext(), AudioPlayerActivity::class.java).apply {
             putExtra(TrackAdapter.SELECTABLE_TRACK, track)
             startActivity(this)
         }
