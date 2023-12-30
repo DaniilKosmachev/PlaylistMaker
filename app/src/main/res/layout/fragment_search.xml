@@ -14,7 +14,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingVertical="@dimen/main_padding_left_image">
+            android:paddingVertical="@dimen/main_padding_left_image"
+            android:paddingStart="@dimen/main_padding_left_image">
             <TextView
                 style="@style/settings_activity_linear_layout_style_top_image_and_text"
                 android:fontFamily="@font/ys_display_medium"

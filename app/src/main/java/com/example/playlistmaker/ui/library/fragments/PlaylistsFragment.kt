@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.playlistmaker.databinding.LibraryActivityFragmentPlaylistsBinding
+import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.ui.library.view_model.PlaylistsFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment: Fragment() {
 
-    private var _binding: LibraryActivityFragmentPlaylistsBinding? = null
+    private var _binding: FragmentPlaylistsBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel by viewModel<PlaylistsFragmentViewModel>()
@@ -21,7 +21,7 @@ class PlaylistsFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = LibraryActivityFragmentPlaylistsBinding.inflate(inflater,container,false)
+        _binding = FragmentPlaylistsBinding.inflate(inflater,container,false)
         return binding.root
     }
 

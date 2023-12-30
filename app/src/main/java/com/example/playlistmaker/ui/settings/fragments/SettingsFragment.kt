@@ -61,8 +61,9 @@ class SettingsFragment: Fragment() {
         }
     }
 
-    companion object {
-        fun newInstance() = SettingsFragment()
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

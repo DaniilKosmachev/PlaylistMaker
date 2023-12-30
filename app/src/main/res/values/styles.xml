@@ -170,4 +170,9 @@
         <item name="android:textSize">22sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
+    <style name="nav_button_style">
+        <item name="android:background">@color/white</item>
+        <item name="itemTextColor">@drawable/nav_view_item</item>
+        <item name="itemIconTint">@drawable/nav_view_item</item>
+    </style>
 </resources>

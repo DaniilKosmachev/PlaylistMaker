@@ -65,6 +65,7 @@ class SearchFragment: Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.removeCallbackSearch()
+        _binding = null
     }
 
     override fun onResume() {

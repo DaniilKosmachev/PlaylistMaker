@@ -43,5 +43,6 @@ class LibraryFragment: Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         tabLayoutMediator.detach()
+        _binding = null
     }
 }
