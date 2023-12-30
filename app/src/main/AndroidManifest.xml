@@ -16,8 +16,9 @@
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"
         tools:targetApi="31">
         <activity
-            android:name=".ui.main.activity.MainActivity"
-            android:exported="true">
+            android:name=".ui.root.RootActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,13 +26,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.library.activity.LibraryActivity"
+            android:name=".ui.library.fragments.LibraryFragment"
             android:exported="false" />
         <activity
-            android:name=".ui.tracks.activity.SearchActivity"
+            android:name=".ui.tracks.fragments.SearchFragment"
             android:exported="false" />
         <activity
-            android:name=".ui.settings.activity.SettingsActivity"
+            android:name=".ui.settings.fragments.SettingsFragment"
             android:exported="false" />
         <activity
             android:name=".ui.audioplayer.activity.AudioPlayerActivity"

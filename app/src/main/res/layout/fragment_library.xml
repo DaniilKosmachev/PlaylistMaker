@@ -4,16 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/settings_activity_linear_layout_style_main"
-    tools:context=".ui.library.activity.LibraryActivity">
+    tools:context=".ui.library.fragments.LibraryFragment">
     <LinearLayout
         style="@style/settings_activity_linear_layout_style_top"
         android:padding="5dp">
-
-        <ImageButton
-            android:id="@+id/backToMainActivityViewButton"
-            style="@style/settings_activity_linear_layout_style_top_image_and_text"
-            android:foreground="?attr/selectableItemBackground"
-            android:src="@drawable/arrowback" />
 
         <TextView
             style="@style/settings_activity_linear_layout_style_top_image_and_text"
