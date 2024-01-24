@@ -13,7 +13,7 @@ import com.example.playlistmaker.domain.search.model.TrackSearchResponceParams
 import com.example.playlistmaker.ui.tracks.model.SearchActivityStatus
 import java.util.function.Consumer
 
-class SearchActivityViewModel (
+class SearchViewModel (
     var tracksInteractor: TracksInteractor,
     var trackHistoryInteractor: TrackHistoryInteractor,
 ): ViewModel(), Consumer<TrackSearchResponceParams> {
@@ -65,7 +65,7 @@ class SearchActivityViewModel (
 
     fun startSearchTracks(query: String) {
         if (query.isNotEmpty()) {
-            tracksInteractor.searchTracks(query,this@SearchActivityViewModel)
+            tracksInteractor.searchTracks(query,this@SearchViewModel)
         }
     }
 
