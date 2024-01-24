@@ -16,7 +16,6 @@ class PlayerActivityViewModel(
     var playerInteractor: PlayerInteractor
 ): ViewModel() {
 
-    //ТОЛЬКО ПРИ ВТОРОМ НАЖАТИИ ЗАПУСКАЕТ ПЛЕЕР
     private var progressJob: Job? = null
 
     private lateinit var playerParams: PlayerParams

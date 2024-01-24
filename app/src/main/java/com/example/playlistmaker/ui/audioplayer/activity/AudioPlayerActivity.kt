@@ -52,6 +52,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         initializeComponents()
         setInActivityElementsValueOfTrack()
         observeOnPlayerStatusLiveData()
+        viewModel.prepareMediaPlayer(selectableTrack)
     }
 
     fun observeOnPlayerStatusLiveData() {
