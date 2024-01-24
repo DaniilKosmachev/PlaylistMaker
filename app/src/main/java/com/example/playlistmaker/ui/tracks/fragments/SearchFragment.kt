@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -45,7 +46,9 @@ class SearchFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View?  {
         _binding = FragmentSearchBinding.inflate(inflater,container,false)
+        Log.d(TEST,"Search Fragment - onCreateView")
         return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,11 +63,18 @@ class SearchFragment: Fragment() {
         observeOnSearchLiveData()
         observeOnStatusScreen()
         observeOnIsClickAllowed()
+        Log.d(TEST,"Search Fragment - onViewCreated")
     }
 
     override fun onDestroy() {
         super.onDestroy()
         viewModel.removeCallbackSearch()
+        Log.d(TEST,"Search Fragment - onDestroy")
+    }
+
+    override fun onDestroyView() {
+        Log.d(TEST,"Search Fragment - onDestroyView")
+        super.onDestroyView()
         _binding = null
     }
 
@@ -75,6 +85,7 @@ class SearchFragment: Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        Log.d(TEST,"Search Fragment - onSaveInstanceState")
         outState.putString(SEARCH_STRING, searchQueryText)
     }
 
@@ -130,7 +141,7 @@ class SearchFragment: Fragment() {
                     trackAdapter.notifyDataSetChanged()
                     binding.searchActivityErrorLinearLayout.isVisible = false
                     binding.searchActivityProgressBar.isVisible = true
-                    binding.searchActivityHistoryRecyclerView.isVisible = false
+                    binding.searchActivityHistoryTrackLinearLayout.isVisible = false
                 }
                 is SearchActivityStatus.ShowHistory -> {
                     if (iTunesTrackSearchHistory.isNotEmpty()) {
@@ -158,7 +169,7 @@ class SearchFragment: Fragment() {
 
     private fun initializeComponents() {
         trackAdapter = TrackAdapter(iTunesTrack) {
-            if (isClickedAllowed!!) {
+            if (isClickedAllowed != false) {
                 openAudioPlayerAndReceiveTrackInfo(it)
                 viewModel.addNewTrackInTrackHistory(it)
                 trackHistoryAdapter.notifyDataSetChanged()
@@ -166,7 +177,7 @@ class SearchFragment: Fragment() {
         }//адаптер для текущего поискового запроса
         binding.trackRecycleView.adapter = trackAdapter//устанавливаем для RecyclerView текущего результата поиска адаптер
         trackHistoryAdapter = TrackAdapter(iTunesTrackSearchHistory) {
-            if (isClickedAllowed!!) {
+            if (isClickedAllowed != false) {
                 openAudioPlayerAndReceiveTrackInfo(it)
                 viewModel.updateHistoryListAfterSelectItemHistoryTrack(it)
             }
@@ -196,10 +207,10 @@ class SearchFragment: Fragment() {
                     binding.searchActivityProgressBar.isVisible = false
                     iTunesTrack.clear()
                     trackAdapter.notifyDataSetChanged()
-                    viewModel.removeCallbackSearch()
+                    viewModel.removeCallbackSearch()//*
                 }
                 else {
-                    viewModel.startDelaySearch()
+                    viewModel.startDelaySearch()//*
                 }
             }
 
@@ -359,5 +370,6 @@ class SearchFragment: Fragment() {
 
     companion object {
         private const val SEARCH_STRING = "SEARCH_STRING"
+        private const val TEST = "test"
     }
 }

@@ -1,16 +1,18 @@
 package com.example.playlistmaker.ui.tracks.view_model
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.search.TrackHistoryInteractor
 import com.example.playlistmaker.domain.search.TracksInteractor
 import com.example.playlistmaker.domain.search.model.ResponceStatus
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.domain.search.model.TrackSearchResponceParams
 import com.example.playlistmaker.ui.tracks.model.SearchActivityStatus
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.function.Consumer
 
 class SearchViewModel (
@@ -25,11 +27,8 @@ class SearchViewModel (
     private var mutableHistoryListTrack = MutableLiveData(readHistorySearchFromShared())
     private var mutableIsClickAllowed = MutableLiveData(true)
 
-    private var mainTreadHandler = Handler(Looper.getMainLooper())
-
-    private var startMainSearch = Runnable {
-        startSearchTracks(searchQuery)
-    }
+    private var clickJob: Job? = null
+    private var searchJob: Job? = null
 
     fun getIsClickAllowed(): LiveData<Boolean> {
         onClickAllowed()
@@ -46,19 +45,25 @@ class SearchViewModel (
 
     fun onClickAllowed() {
        if (mutableIsClickAllowed.value != null) {
-           mutableIsClickAllowed.postValue(false)
-           mainTreadHandler.postDelayed({ mutableIsClickAllowed.postValue(true) }, CLICK_ON_TRACK_DELAY_MILLIS)
+           clickJob = viewModelScope.launch {
+               mutableIsClickAllowed.postValue(false)
+               delay(CLICK_ON_TRACK_DELAY_MILLIS)
+               mutableIsClickAllowed.postValue(true)
+           }
        }
     }
 
     fun startDelaySearch() {
         mutableStatusActivity.postValue(SearchActivityStatus.Loading())
-        mainTreadHandler.removeCallbacks(startMainSearch)
-        mainTreadHandler.postDelayed(startMainSearch, SEARCH_DELAY_2000_MILLIS)
+        searchJob = viewModelScope.launch {
+            searchJob?.cancel()
+            delay(SEARCH_DELAY_2000_MILLIS)
+            startSearchTracks(searchQuery)
+        }
     }
 
     fun removeCallbackSearch() {
-        mainTreadHandler.removeCallbacks(startMainSearch)
+        searchJob?.cancel()
         mutableStatusActivity.postValue(SearchActivityStatus.ShowHistory())
         searchQuery = ""
     }
