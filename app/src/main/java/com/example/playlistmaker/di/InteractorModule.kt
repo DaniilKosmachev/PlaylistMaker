@@ -20,7 +20,7 @@ val interactorModule = module {
     }
 
     factory<TracksInteractor> {
-        TracksInteractorImpl(get(), get())
+        TracksInteractorImpl(get())
     }
 
     factory<ExternalSettingsInteractor> {

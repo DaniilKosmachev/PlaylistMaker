@@ -17,7 +17,7 @@ import org.koin.dsl.module
 var repositoryModule = module {
 
     factory<PlayerRepository> {
-        PlayerRepositoryImpl(get()/*,get()*/)
+        PlayerRepositoryImpl(get())
     }
 
     factory<TrackHistoryRepository> {

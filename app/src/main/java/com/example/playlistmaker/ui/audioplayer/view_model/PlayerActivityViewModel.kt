@@ -1,22 +1,24 @@
 package com.example.playlistmaker.ui.audioplayer.view_model
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.model.PlayerParams
 import com.example.playlistmaker.domain.player.model.PlayerStatus
 import com.example.playlistmaker.domain.search.model.Track
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class PlayerActivityViewModel(
     var playerInteractor: PlayerInteractor
 ): ViewModel() {
 
-    private lateinit var playerParams: PlayerParams
+    private var progressJob: Job? = null
 
-    private var mainTreadHandler = Handler(Looper.getMainLooper())
+    private var playerParams: PlayerParams? = null
 
     private var mutableStatusPlayer = MutableLiveData(PlayerParams(PlayerStatus.DEFAULT,null))
 
@@ -36,7 +38,7 @@ class PlayerActivityViewModel(
     }
 
     fun removeCallback() {
-        mainTreadHandler.removeCallbacks(checkPlaybackProgressAndStatus())
+        progressJob?.cancel()
     }
 
     fun destroyPlayer() {
@@ -45,52 +47,49 @@ class PlayerActivityViewModel(
 
     fun clickOnPlayButton(track: Track) {
         playerParams = playerInteractor.changePlaybackProgress()
-        when (playerParams.playerState) {
+        when (playerParams!!.playerState) {
             PlayerStatus.PLAYING -> {
                 pausePlay()
-                mainTreadHandler.post(checkPlaybackProgressAndStatus())
+                checkPlaybackProgressAndStatus()
             }
 
             PlayerStatus.PAUSE, PlayerStatus.PREPARED -> {
                 startPlay()
-                mainTreadHandler.post(checkPlaybackProgressAndStatus())
+                checkPlaybackProgressAndStatus()
             }
 
             PlayerStatus.DEFAULT -> {
                 prepareMediaPlayer(track)
                 startPlay()
-                mainTreadHandler.post(checkPlaybackProgressAndStatus())
+                checkPlaybackProgressAndStatus()
             }
         }
     }
 
-    fun checkPlaybackProgressAndStatus(): Runnable {
-        return object : Runnable {
-            override fun run() {
-                playerParams = playerInteractor.changePlaybackProgress()
-                when (playerParams.playerState) {
-                    PlayerStatus.PLAYING -> {
-                        mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.PLAYING, playerParams.currentPosition))
-                        mainTreadHandler.postDelayed(this,
-                            DELAY_CURRENT_TIME_1000_MILLIS
-                        )
-                    }
-                    PlayerStatus.PAUSE -> {
-                        mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.PAUSE, playerParams.currentPosition))
-                        mainTreadHandler.removeCallbacks(this)
-                    }
-                    PlayerStatus.PREPARED -> {
-                        mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.PREPARED, null))
-                    }
-                    PlayerStatus.DEFAULT -> {
-                        mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.DEFAULT, null))
-                    }
+    fun checkPlaybackProgressAndStatus() {
+        playerParams = playerInteractor.changePlaybackProgress()
+        when (playerParams!!.playerState) {
+            PlayerStatus.PLAYING -> {
+                mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.PLAYING, playerParams!!.currentPosition))
+                progressJob = viewModelScope.launch {
+                    delay(DELAY_CURRENT_TIME_300_MILLIS)
+                    checkPlaybackProgressAndStatus()
                 }
+            }
+            PlayerStatus.PAUSE -> {
+                mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.PAUSE, playerParams!!.currentPosition))
+                progressJob?.cancel()
+            }
+            PlayerStatus.PREPARED -> {
+                mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.PREPARED, null))
+            }
+            PlayerStatus.DEFAULT -> {
+                mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.DEFAULT, null))
             }
         }
     }
 
     companion object {
-        private const val DELAY_CURRENT_TIME_1000_MILLIS = 1000L
+        private const val DELAY_CURRENT_TIME_300_MILLIS = 300L
     }
 }

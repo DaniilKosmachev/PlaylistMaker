@@ -1,22 +1,22 @@
 package com.example.playlistmaker.ui.tracks.view_model
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.search.TrackHistoryInteractor
 import com.example.playlistmaker.domain.search.TracksInteractor
 import com.example.playlistmaker.domain.search.model.ResponceStatus
 import com.example.playlistmaker.domain.search.model.Track
-import com.example.playlistmaker.domain.search.model.TrackSearchResponceParams
 import com.example.playlistmaker.ui.tracks.model.SearchActivityStatus
-import java.util.function.Consumer
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchViewModel (
     var tracksInteractor: TracksInteractor,
     var trackHistoryInteractor: TrackHistoryInteractor,
-): ViewModel(), Consumer<TrackSearchResponceParams> {
+): ViewModel() {
 
     var searchQuery: String = ""
 
@@ -25,11 +25,8 @@ class SearchViewModel (
     private var mutableHistoryListTrack = MutableLiveData(readHistorySearchFromShared())
     private var mutableIsClickAllowed = MutableLiveData(true)
 
-    private var mainTreadHandler = Handler(Looper.getMainLooper())
-
-    private var startMainSearch = Runnable {
-        startSearchTracks(searchQuery)
-    }
+    private var clickJob: Job? = null
+    private var searchJob: Job? = null
 
     fun getIsClickAllowed(): LiveData<Boolean> {
         onClickAllowed()
@@ -46,26 +43,56 @@ class SearchViewModel (
 
     fun onClickAllowed() {
        if (mutableIsClickAllowed.value != null) {
-           mutableIsClickAllowed.postValue(false)
-           mainTreadHandler.postDelayed({ mutableIsClickAllowed.postValue(true) }, CLICK_ON_TRACK_DELAY_MILLIS)
+           clickJob = viewModelScope.launch {
+               mutableIsClickAllowed.postValue(false)
+               delay(CLICK_ON_TRACK_DELAY_MILLIS)
+               mutableIsClickAllowed.postValue(true)
+           }
        }
     }
 
     fun startDelaySearch() {
         mutableStatusActivity.postValue(SearchActivityStatus.Loading())
-        mainTreadHandler.removeCallbacks(startMainSearch)
-        mainTreadHandler.postDelayed(startMainSearch, SEARCH_DELAY_2000_MILLIS)
+        searchJob = viewModelScope.launch {
+            searchJob?.cancel()
+            delay(SEARCH_DELAY_2000_MILLIS)
+            startSearchTracks(searchQuery)
+        }
     }
 
     fun removeCallbackSearch() {
-        mainTreadHandler.removeCallbacks(startMainSearch)
+        searchJob?.cancel()
         mutableStatusActivity.postValue(SearchActivityStatus.ShowHistory())
         searchQuery = ""
     }
 
     fun startSearchTracks(query: String) {
         if (query.isNotEmpty()) {
-            tracksInteractor.searchTracks(query,this@SearchViewModel)
+            mutableListTracks.postValue(emptyList())
+            viewModelScope.launch {
+                tracksInteractor
+                    .searchTracks(query)
+                    .collect { pair ->
+                        when (pair.first.isNotEmpty()) {
+                            true -> {
+                                if (pair.second == ResponceStatus.OK) {
+                                    mutableListTracks.postValue(pair.first!!)
+                                    mutableStatusActivity.postValue(SearchActivityStatus.Data(pair.first))
+                                }
+                            }
+                            false -> {
+                                if (pair.second == ResponceStatus.OK) {
+                                    mutableListTracks.postValue(emptyList())
+                                    mutableStatusActivity.postValue(SearchActivityStatus.EmptyData())
+                                } else if (pair.second == ResponceStatus.BAD) {
+                                    mutableListTracks.postValue(emptyList())
+                                    mutableStatusActivity.postValue(SearchActivityStatus.ErrorConnection())
+                                }
+                            }
+                        }
+                    }
+            }
+
         }
     }
 
@@ -73,27 +100,6 @@ class SearchViewModel (
     fun clearSearchHistory() {
         trackHistoryInteractor.clearSearchHistory()
         mutableHistoryListTrack.postValue(readHistorySearchFromShared())
-    }
-
-    override fun accept(t: TrackSearchResponceParams) {
-       mutableListTracks.postValue(emptyList())
-        when (t.tracks.isNotEmpty()) {
-            true -> {
-                if (t.resultResponse == ResponceStatus.OK) {
-                    mutableListTracks.postValue(t.tracks)
-                    mutableStatusActivity.postValue(SearchActivityStatus.Data(t.tracks))
-                }
-            }
-            false -> {
-                if (t.resultResponse == ResponceStatus.OK) {
-                    mutableListTracks.postValue(emptyList())
-                    mutableStatusActivity.postValue(SearchActivityStatus.EmptyData())
-                } else if (t.resultResponse == ResponceStatus.BAD) {
-                    mutableListTracks.postValue(emptyList())
-                    mutableStatusActivity.postValue(SearchActivityStatus.ErrorConnection())
-                }
-            }
-        }
     }
 
   fun addNewTrackInTrackHistory(track: Track) {
