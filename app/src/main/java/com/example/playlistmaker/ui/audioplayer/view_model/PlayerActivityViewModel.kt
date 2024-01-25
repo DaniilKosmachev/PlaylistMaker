@@ -18,7 +18,7 @@ class PlayerActivityViewModel(
 
     private var progressJob: Job? = null
 
-    private lateinit var playerParams: PlayerParams
+    private var playerParams: PlayerParams? = null
 
     private var mutableStatusPlayer = MutableLiveData(PlayerParams(PlayerStatus.DEFAULT,null))
 
@@ -47,7 +47,7 @@ class PlayerActivityViewModel(
 
     fun clickOnPlayButton(track: Track) {
         playerParams = playerInteractor.changePlaybackProgress()
-        when (playerParams.playerState) {
+        when (playerParams!!.playerState) {
             PlayerStatus.PLAYING -> {
                 pausePlay()
                 checkPlaybackProgressAndStatus()
@@ -68,16 +68,16 @@ class PlayerActivityViewModel(
 
     fun checkPlaybackProgressAndStatus() {
         playerParams = playerInteractor.changePlaybackProgress()
-        when (playerParams.playerState) {
+        when (playerParams!!.playerState) {
             PlayerStatus.PLAYING -> {
-                mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.PLAYING, playerParams.currentPosition))
+                mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.PLAYING, playerParams!!.currentPosition))
                 progressJob = viewModelScope.launch {
                     delay(DELAY_CURRENT_TIME_300_MILLIS)
                     checkPlaybackProgressAndStatus()
                 }
             }
             PlayerStatus.PAUSE -> {
-                mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.PAUSE, playerParams.currentPosition))
+                mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.PAUSE, playerParams!!.currentPosition))
                 progressJob?.cancel()
             }
             PlayerStatus.PREPARED -> {
