@@ -7,10 +7,12 @@ import com.example.playlistmaker.domain.search.TracksRepository
 import com.example.playlistmaker.domain.search.model.ResponceStatus
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.domain.search.model.TrackSearchResponceParams
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class TracksRepositoryImpl (private val networkClient: NetworkClient): TracksRepository {
 
-    override fun searchTracks(expression: String): TrackSearchResponceParams {
+    override fun searchTracks(expression: String): Flow<TrackSearchResponceParams> = flow {
         val response = networkClient.doTrackSearchRequest(TrackSearchRequest(expression))
         if (response.resultResponse == ResponceStatus.OK) {
             var trackList: List<Track> = (response as TracksResponse).results.map {
@@ -27,13 +29,13 @@ class TracksRepositoryImpl (private val networkClient: NetworkClient): TracksRep
                     previewUrl = if (it.previewUrl.isNullOrEmpty()) {"Нет данных"} else it.previewUrl
                 )
             }
-            return TrackSearchResponceParams(trackList).apply {
-                resultResponse = ResponceStatus.OK
-            }
+           emit(TrackSearchResponceParams(trackList).apply {
+               resultResponse = ResponceStatus.OK
+           })
         } else {
-            return TrackSearchResponceParams(emptyList()).apply {
-                resultResponse = ResponceStatus.BAD
-            }
+           emit(TrackSearchResponceParams(emptyList()).apply {
+               resultResponse = ResponceStatus.BAD
+           })
         }
     }
 
