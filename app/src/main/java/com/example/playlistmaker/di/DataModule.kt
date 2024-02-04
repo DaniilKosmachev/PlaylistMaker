@@ -2,7 +2,9 @@ package com.example.playlistmaker.di
 
 import android.content.Context
 import android.media.MediaPlayer
+import androidx.room.Room
 import com.example.playlistmaker.App
+import com.example.playlistmaker.data.AppDatabase
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.search.ITunesApi
 import com.example.playlistmaker.data.search.impl.RetrofitNetworkClient
@@ -47,6 +49,11 @@ val dataModule = module {
 
     single(named("context")) {
         App()
+    }
+
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "favouriteTracksDb.db")
+            .build()
     }
 
 
