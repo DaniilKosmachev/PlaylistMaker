@@ -13,7 +13,7 @@ import com.example.playlistmaker.domain.player.model.PlayerStatus
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.audioplayer.view_model.PlayerActivityViewModel
 import com.example.playlistmaker.ui.mapper.TrackMapper
-import com.example.playlistmaker.ui.tracks.TrackAdapter
+import com.example.playlistmaker.ui.search.TrackAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Locale

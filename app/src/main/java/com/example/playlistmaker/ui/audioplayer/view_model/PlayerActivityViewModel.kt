@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.domain.db.FavouriteTracksInteractor
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.model.PlayerParams
 import com.example.playlistmaker.domain.player.model.PlayerStatus
@@ -13,16 +14,23 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class PlayerActivityViewModel(
-    var playerInteractor: PlayerInteractor
+    var playerInteractor: PlayerInteractor,
+    var favouriteTracksInteractor: FavouriteTracksInteractor
 ): ViewModel() {
+
+    private var dbJob: Job? = null
 
     private var progressJob: Job? = null
 
     private var playerParams: PlayerParams? = null
 
+    private var mutableIsFavoriteTrack = MutableLiveData<Boolean>()
+
     private var mutableStatusPlayer = MutableLiveData(PlayerParams(PlayerStatus.DEFAULT,null))
 
     fun getStatusPlayer(): LiveData<PlayerParams> = mutableStatusPlayer
+
+    fun getIsFavoriteTrack(): LiveData<Boolean> = mutableIsFavoriteTrack
 
     fun prepareMediaPlayer(track: Track) {
         playerInteractor.prepareMediaPlayer(track)
@@ -85,6 +93,25 @@ class PlayerActivityViewModel(
             }
             PlayerStatus.DEFAULT -> {
                 mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.DEFAULT, null))
+            }
+        }
+    }
+
+    fun onFavoriteClicked(track: Track) {
+        when (track.isFavorite) {
+            true -> {
+                dbJob = viewModelScope.launch {
+                    favouriteTracksInteractor.deleteTrackInDbFavourite(track)
+                }
+                track.isFavorite = false
+                mutableIsFavoriteTrack.postValue(false)
+            }
+            false -> {
+                dbJob = viewModelScope.launch {
+                    favouriteTracksInteractor.addTrackInDbFavourite(track)
+                }
+                track.isFavorite = true
+                mutableIsFavoriteTrack.postValue(true)
             }
         }
     }

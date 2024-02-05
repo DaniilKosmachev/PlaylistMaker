@@ -2,7 +2,6 @@ package com.example.playlistmaker.data.db.impl
 
 import com.example.playlistmaker.data.AppDatabase
 import com.example.playlistmaker.data.converters.TrackDbConverter
-import com.example.playlistmaker.data.db.entity.TrackEntity
 import com.example.playlistmaker.domain.db.FavouriteTracksRepository
 import com.example.playlistmaker.domain.search.model.Track
 import kotlinx.coroutines.flow.Flow
@@ -13,11 +12,11 @@ class FavouriteTracksRepositoryImpl(
     private val trackDbConverter: TrackDbConverter
 ): FavouriteTracksRepository {
 
-    override fun addTrackInDbFavourite(trackEntity: TrackEntity) {
+    override fun addTrackInDbFavourite(track: Track) {
         TODO("Not yet implemented")
     }
 
-    override fun deleteTrackInDbFavourite(trackEntity: TrackEntity) {
+    override fun deleteTrackInDbFavourite(trackEntity: Track) {
         TODO("Not yet implemented")
     }
 

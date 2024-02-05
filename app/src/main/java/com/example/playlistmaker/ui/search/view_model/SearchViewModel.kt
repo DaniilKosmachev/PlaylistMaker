@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.tracks.view_model
+package com.example.playlistmaker.ui.search.view_model
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,7 +8,7 @@ import com.example.playlistmaker.domain.search.TrackHistoryInteractor
 import com.example.playlistmaker.domain.search.TracksInteractor
 import com.example.playlistmaker.domain.search.model.ResponceStatus
 import com.example.playlistmaker.domain.search.model.Track
-import com.example.playlistmaker.ui.tracks.model.SearchActivityStatus
+import com.example.playlistmaker.ui.search.model.SearchActivityStatus
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

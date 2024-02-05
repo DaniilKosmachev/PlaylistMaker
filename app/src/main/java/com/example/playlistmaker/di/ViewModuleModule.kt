@@ -4,14 +4,14 @@ import com.example.playlistmaker.ui.audioplayer.view_model.PlayerActivityViewMod
 import com.example.playlistmaker.ui.library.view_model.FavoriteTrackFragmentViewModel
 import com.example.playlistmaker.ui.library.view_model.PlaylistsFragmentViewModel
 import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
-import com.example.playlistmaker.ui.tracks.view_model.SearchViewModel
+import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val viewModelModel = module {
 
     viewModel {
-        PlayerActivityViewModel(get())
+        PlayerActivityViewModel(get(), get())
     }
 
     viewModel {
@@ -23,7 +23,7 @@ val viewModelModel = module {
     }
 
     viewModel {
-        FavoriteTrackFragmentViewModel()
+        FavoriteTrackFragmentViewModel(get())
     }
 
     viewModel {

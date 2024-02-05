@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.playlistmaker.ui.tracks.fragments.SearchFragment"
+        android:name="com.example.playlistmaker.ui.search.fragments.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" >
         <action

@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.tracks.fragments
+package com.example.playlistmaker.ui.search.fragments
 
 import android.content.Context
 import android.content.Intent
@@ -19,9 +19,9 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.audioplayer.activity.AudioPlayerActivity
-import com.example.playlistmaker.ui.tracks.TrackAdapter
-import com.example.playlistmaker.ui.tracks.model.SearchActivityStatus
-import com.example.playlistmaker.ui.tracks.view_model.SearchViewModel
+import com.example.playlistmaker.ui.search.TrackAdapter
+import com.example.playlistmaker.ui.search.model.SearchActivityStatus
+import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment: Fragment() {
