@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.db.FavouriteTracksInteractor
 import com.example.playlistmaker.domain.library.favorite_tracks.model.FavoriteTracksState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -16,7 +17,7 @@ class FavoriteTrackFragmentViewModel(
     private var dbJob: Job? = null
 
     init {
-        dbJob = viewModelScope.launch {
+        dbJob = viewModelScope.launch(Dispatchers.IO) {
             favouriteTracksInteractor
                 .selectAllTracksInDbFavourite()
                 .collect { tracks ->
@@ -35,7 +36,5 @@ class FavoriteTrackFragmentViewModel(
     private var mutableStatusFavoriteTracks = MutableLiveData<FavoriteTracksState>()
 
     fun getStatusFavoriteTracks(): LiveData<FavoriteTracksState> = mutableStatusFavoriteTracks
-
-
 
 }

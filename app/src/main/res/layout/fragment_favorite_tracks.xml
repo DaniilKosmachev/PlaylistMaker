@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/empty_media_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
     <ImageView
         android:id="@+id/imageViewEmptyTracksFragment"
         style="@style/empty_list_of_favorite_track_image"
@@ -18,5 +25,22 @@
         android:text="@string/empty_mediatech_list_favorite_track"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"/>
+</LinearLayout>
+    <LinearLayout
+        android:id="@+id/track_recycler_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/favorite_track_recycle_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/track_view"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/main_padding_left_image"
+            android:paddingStart="4dp"/>
+    </LinearLayout>
 
 </LinearLayout>

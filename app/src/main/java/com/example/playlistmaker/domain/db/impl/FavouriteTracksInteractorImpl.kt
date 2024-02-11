@@ -7,15 +7,15 @@ import kotlinx.coroutines.flow.Flow
 
 class FavouriteTracksInteractorImpl(private val repository: FavouriteTracksRepository): FavouriteTracksInteractor {
 
-    override fun addTrackInDbFavourite(track: Track) {
-        TODO("Not yet implemented")
+    override suspend fun addTrackInDbFavourite(track: Track) {
+        repository.addTrackInDbFavourite(track)
     }
 
-    override fun deleteTrackInDbFavourite(track: Track) {
-        TODO("Not yet implemented")
+    override suspend fun deleteTrackInDbFavourite(track: Track) {
+        repository.deleteTrackInDbFavourite(track)
     }
 
-    override fun selectAllTracksInDbFavourite(): Flow<List<Track>> {
+    override suspend fun selectAllTracksInDbFavourite(): Flow<List<Track>> {
         return repository.selectAllTracksInDbFavourite()
     }
 }

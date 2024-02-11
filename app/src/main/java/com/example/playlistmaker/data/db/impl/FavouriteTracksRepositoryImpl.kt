@@ -12,15 +12,16 @@ class FavouriteTracksRepositoryImpl(
     private val trackDbConverter: TrackDbConverter
 ): FavouriteTracksRepository {
 
-    override fun addTrackInDbFavourite(track: Track) {
-        TODO("Not yet implemented")
+
+    override suspend fun addTrackInDbFavourite(track: Track) {
+            appDatabase.trackDao().insertTrack(trackDbConverter.map(track))
     }
 
-    override fun deleteTrackInDbFavourite(trackEntity: Track) {
-        TODO("Not yet implemented")
+    override suspend fun deleteTrackInDbFavourite(track: Track) {
+            appDatabase.trackDao().deleteTrack(trackDbConverter.map(track))
     }
 
-    override fun selectAllTracksInDbFavourite(): Flow<List<Track>> = flow {
+    override suspend fun selectAllTracksInDbFavourite(): Flow<List<Track>> = flow {
         val tracks = appDatabase.trackDao().selectAllTracks()
         emit(tracks.map { trackEntity ->
             trackDbConverter.map(trackEntity) }

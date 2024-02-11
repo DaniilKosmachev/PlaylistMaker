@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_libraryFragment_to_settingsFragment2"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_libraryFragment_to_audioPlayerActivity"
+            app:destination="@id/audioPlayerActivity" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"

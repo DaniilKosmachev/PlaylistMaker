@@ -91,7 +91,12 @@ class AudioPlayerActivity : AppCompatActivity() {
             }
         }
 
+        binding.favoriteButton.setOnClickListener {
+            viewModel.onFavoriteClicked(selectableTrack)
+        }
+
     }
+
 
     private fun setInActivityElementsValueOfTrack() {
         binding.nameOfTrackAudioPlayerActivity.isSelected = true

@@ -9,6 +9,7 @@ import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.model.PlayerParams
 import com.example.playlistmaker.domain.player.model.PlayerStatus
 import com.example.playlistmaker.domain.search.model.Track
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -100,17 +101,17 @@ class PlayerActivityViewModel(
     fun onFavoriteClicked(track: Track) {
         when (track.isFavorite) {
             true -> {
-                dbJob = viewModelScope.launch {
+                dbJob = viewModelScope.launch(Dispatchers.IO) {
                     favouriteTracksInteractor.deleteTrackInDbFavourite(track)
                 }
                 track.isFavorite = false
                 mutableIsFavoriteTrack.postValue(false)
             }
             false -> {
-                dbJob = viewModelScope.launch {
+                track.isFavorite = true
+                dbJob = viewModelScope.launch(Dispatchers.IO) {
                     favouriteTracksInteractor.addTrackInDbFavourite(track)
                 }
-                track.isFavorite = true
                 mutableIsFavoriteTrack.postValue(true)
             }
         }
