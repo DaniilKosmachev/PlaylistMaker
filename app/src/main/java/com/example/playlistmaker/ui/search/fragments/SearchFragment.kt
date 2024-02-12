@@ -6,7 +6,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -46,7 +45,6 @@ class SearchFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View?  {
         _binding = FragmentSearchBinding.inflate(inflater,container,false)
-        Log.d(TEST,"Search Fragment - onCreateView")
         return binding.root
 
     }
@@ -63,17 +61,14 @@ class SearchFragment: Fragment() {
         observeOnSearchLiveData()
         observeOnStatusScreen()
         observeOnIsClickAllowed()
-        Log.d(TEST,"Search Fragment - onViewCreated")
     }
 
     override fun onDestroy() {
         super.onDestroy()
         viewModel.removeCallbackSearch()
-        Log.d(TEST,"Search Fragment - onDestroy")
     }
 
     override fun onDestroyView() {
-        Log.d(TEST,"Search Fragment - onDestroyView")
         super.onDestroyView()
         _binding = null
     }
@@ -85,7 +80,6 @@ class SearchFragment: Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        Log.d(TEST,"Search Fragment - onSaveInstanceState")
         outState.putString(SEARCH_STRING, searchQueryText)
     }
 

@@ -2,6 +2,7 @@ package com.example.playlistmaker.ui.library.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,11 +37,27 @@ class FavoriteTracksFragment: Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.d("TEST","Произошел onDestroyView")
         _binding = null
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("TEST","Произошел onStop - $_binding")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("TEST","Произошел onResume")
+        viewModel.updateListFromDb()
+        initializedComponent()
+        observeOnFavoriteTrack()
+        favoriteTrackAdapter.notifyDataSetChanged()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("TEST", "Произошел onViewCreated")
         initializedComponent()
         observeOnFavoriteTrack()
         favoriteTrackAdapter.notifyDataSetChanged()
@@ -58,7 +75,7 @@ class FavoriteTracksFragment: Fragment() {
                     favoriteTracks.clear()
                     favoriteTracks.addAll(it.tracks)
                     binding.emptyMediaLayout.visibility = View.GONE
-                    favoriteTrackAdapter.notifyDataSetChanged()
+                   favoriteTrackAdapter.notifyDataSetChanged()
                     binding.trackRecyclerLayout.visibility = View.VISIBLE
                 }
             }
@@ -66,6 +83,7 @@ class FavoriteTracksFragment: Fragment() {
     }
 
     fun initializedComponent() {
+        Log.d("TEST", "Адаптер")
         favoriteTrackAdapter = TrackAdapter(favoriteTracks) {
             openAudioPlayerAndReceiveTrackInfo(it)
         }

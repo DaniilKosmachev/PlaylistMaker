@@ -108,8 +108,9 @@ class PlayerActivityViewModel(
                 mutableIsFavoriteTrack.postValue(false)
             }
             false -> {
-                track.isFavorite = true
                 dbJob = viewModelScope.launch(Dispatchers.IO) {
+                    favouriteTracksInteractor.deleteTrackInDbFavourite(track)
+                    track.isFavorite = true
                     favouriteTracksInteractor.addTrackInDbFavourite(track)
                 }
                 mutableIsFavoriteTrack.postValue(true)

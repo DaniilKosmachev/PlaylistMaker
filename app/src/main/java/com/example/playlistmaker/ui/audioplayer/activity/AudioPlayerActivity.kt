@@ -52,6 +52,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         initializeComponents()
         setInActivityElementsValueOfTrack()
         observeOnPlayerStatusLiveData()
+        observeOnIsFavoriteTrack()
         viewModel.prepareMediaPlayer(selectableTrack)
     }
 
@@ -77,7 +78,27 @@ class AudioPlayerActivity : AppCompatActivity() {
             }
         }
 
+    fun observeOnIsFavoriteTrack() {
+        viewModel.getIsFavoriteTrack().observe(this) {
+            when (it) {
+                true -> {
+                    binding.favoriteButton.setImageResource(R.drawable.is_favorite_track)
+                }
+                false -> {
+                    binding.favoriteButton.setImageResource(R.drawable.favoritetrackbutton)
+                }
+            }
+        }
+    }
+
     private fun initializeComponents() {
+
+        if (selectableTrack.isFavorite) {
+            binding.favoriteButton.setImageResource(R.drawable.is_favorite_track)
+        }
+        else {
+            binding.favoriteButton.setImageResource(R.drawable.favoritetrackbutton)
+        }
 
         binding.backButton.setOnClickListener {
             finish()
