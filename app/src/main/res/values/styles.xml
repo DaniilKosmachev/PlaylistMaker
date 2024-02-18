@@ -57,7 +57,7 @@
         <item name="android:background">@color/white</item>
         <item name="android:orientation">horizontal</item>
     </style>
-    <style name="settings_activity_linear_layout_style_top_image_and_text">
+    <style name="settings_activity_linear_layout_style_top_image_and_text">////
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/black</item>
@@ -174,5 +174,8 @@
         <item name="android:background">@color/white</item>
         <item name="itemTextColor">@drawable/nav_view_item</item>
         <item name="itemIconTint">@drawable/nav_view_item</item>
+    </style>
+    <style name="player_activity_image_button">
+        <item name="backgroundTint">@color/white</item>
     </style>
 </resources>

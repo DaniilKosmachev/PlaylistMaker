@@ -2,7 +2,6 @@ package com.example.playlistmaker.ui.search.fragments
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -18,6 +17,8 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.audioplayer.activity.AudioPlayerActivity
+import com.example.playlistmaker.ui.isNightModeOn
+import com.example.playlistmaker.ui.isPortrainSystemOrientatin
 import com.example.playlistmaker.ui.search.TrackAdapter
 import com.example.playlistmaker.ui.search.model.SearchActivityStatus
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
@@ -275,35 +276,13 @@ class SearchFragment: Fragment() {
         inputMethodManager?.hideSoftInputFromWindow(binding.editTextSearchActivity.windowToken, 0)
     }
 
-    private fun isPortrainSystemOrientatin(): Boolean {//true - если портретная
-        return resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-    }
-
-    private fun isNightModeOn(): Boolean {//если дневная - false, ночная - true
-        return when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) { //ВОЗМОЖНО ВО ВЬЮМОДЕЛЬ!
-            Configuration.UI_MODE_NIGHT_YES -> {
-                true
-            }
-
-            Configuration.UI_MODE_NIGHT_NO -> {
-                false
-            }
-
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> {
-                true
-            }
-
-            else -> true
-        }
-    }
-
     private fun setEmptyResponse() { //устанавливает в ErrorLinearLayout картинку и текст по ошибке - пустой ответ
         binding.searchActivityProgressBar.isVisible = false
         binding.trackRecycleView.isVisible = false
         binding.searchActivityErrorLinearLayout.isVisible = true
         updateErrorlayoutParamsForLandscapeOrientation()
         binding.searchActivityErrorText.text = getString(R.string.empty_search)
-        if (isNightModeOn()) {
+        if (requireContext().isNightModeOn()) {
             binding.searchActivityErrorImage.setImageResource(R.drawable.emptyseacrhresultdark)
         } else {
             binding.searchActivityErrorImage.setImageResource(R.drawable.emptysearchresultlight)
@@ -322,7 +301,7 @@ class SearchFragment: Fragment() {
     private fun updateErrorlayoutParamsForLandscapeOrientation() {
         val params: LinearLayout.LayoutParams =
             binding.searchActivityErrorLinearLayout.layoutParams as LinearLayout.LayoutParams
-        params.setMargins(0, dpToPx((if (isPortrainSystemOrientatin()) 102f else 8f), requireContext()), 0, 0)
+        params.setMargins(0, dpToPx((if (requireContext().isPortrainSystemOrientatin()) 102f else 8f), requireContext()), 0, 0)
     }
 
     private fun setNoConnectionError() { //устанавливает в ErrorLinearLayout картинку и текст по ошибке - отсутствует связь
@@ -330,13 +309,13 @@ class SearchFragment: Fragment() {
         binding.trackRecycleView.isVisible = false
         binding.searchActivityErrorLinearLayout.isVisible = true
         updateErrorlayoutParamsForLandscapeOrientation()
-        if (!isPortrainSystemOrientatin()) {//если не портретная ориентация, то заменяю все знаки новой строки, чтобы влезло в книжную ориентацию
+        if (!requireContext().isPortrainSystemOrientatin()) {//если не портретная ориентация, то заменяю все знаки новой строки, чтобы влезло в книжную ориентацию
             binding.searchActivityErrorText.text =
                 getString(R.string.connection_error).replace("\n", " ")
         } else {
             binding.searchActivityErrorText.text = getString(R.string.connection_error)
         }
-        if (isNightModeOn()) {
+        if (requireContext().isNightModeOn()) {
             binding.searchActivityErrorImage.setImageResource(R.drawable.inteneterrordark)
         } else {
             binding.searchActivityErrorImage.setImageResource(R.drawable.interneterrorlight)

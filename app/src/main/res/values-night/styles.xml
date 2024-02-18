@@ -175,4 +175,8 @@
         <item name="itemTextColor">@drawable/nav_view_item_dark</item>
         <item name="itemIconTint">@drawable/nav_view_item_dark</item>
     </style>
+    <style name="player_activity_image_button">
+        <item name="tint">@color/white</item>
+        <item name="android:background">@null</item>
+    </style>
 </resources>

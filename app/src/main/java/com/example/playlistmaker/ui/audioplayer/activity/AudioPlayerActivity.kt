@@ -82,7 +82,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         viewModel.getIsFavoriteTrack().observe(this) {
             when (it) {
                 true -> {
-                    binding.favoriteButton.setImageResource(R.drawable.is_favorite_track)
+                        binding.favoriteButton.setImageResource(R.drawable.is_favorite_track)
                 }
                 false -> {
                     binding.favoriteButton.setImageResource(R.drawable.favoritetrackbutton)
@@ -92,7 +92,6 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun initializeComponents() {
-
         if (selectableTrack.isFavorite) {
             binding.favoriteButton.setImageResource(R.drawable.is_favorite_track)
         }
