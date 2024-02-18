@@ -118,7 +118,7 @@
         app:layout_constraintStart_toStartOf="@id/main_info_left_border"
         app:layout_constraintTop_toTopOf="@id/playButton"
         app:layout_constraintWidth_percent="0.13"
-        app:srcCompat="@drawable/addlibrary" />
+        app:srcCompat="@drawable/test_inlibrary" />
 
     <ImageView
         android:id="@+id/playButton"

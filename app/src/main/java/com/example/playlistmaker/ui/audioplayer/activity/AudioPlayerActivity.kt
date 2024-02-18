@@ -82,10 +82,10 @@ class AudioPlayerActivity : AppCompatActivity() {
         viewModel.getIsFavoriteTrack().observe(this) {
             when (it) {
                 true -> {
-                        binding.favoriteButton.setImageResource(R.drawable.is_favorite_track)
+                        binding.favoriteButton.setImageResource(R.drawable.test_like)
                 }
                 false -> {
-                    binding.favoriteButton.setImageResource(R.drawable.favoritetrackbutton)
+                    binding.favoriteButton.setImageResource(R.drawable.test_unlike)
                 }
             }
         }
@@ -93,10 +93,10 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private fun initializeComponents() {
         if (selectableTrack.isFavorite) {
-            binding.favoriteButton.setImageResource(R.drawable.is_favorite_track)
+            binding.favoriteButton.setImageResource(R.drawable.test_like)
         }
         else {
-            binding.favoriteButton.setImageResource(R.drawable.favoritetrackbutton)
+            binding.favoriteButton.setImageResource(R.drawable.test_unlike)
         }
 
         binding.backButton.setOnClickListener {
