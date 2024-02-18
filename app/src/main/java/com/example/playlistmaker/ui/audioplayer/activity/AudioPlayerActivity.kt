@@ -13,7 +13,7 @@ import com.example.playlistmaker.domain.player.model.PlayerStatus
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.audioplayer.view_model.PlayerActivityViewModel
 import com.example.playlistmaker.ui.mapper.TrackMapper
-import com.example.playlistmaker.ui.tracks.TrackAdapter
+import com.example.playlistmaker.ui.search.TrackAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -52,6 +52,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         initializeComponents()
         setInActivityElementsValueOfTrack()
         observeOnPlayerStatusLiveData()
+        observeOnIsFavoriteTrack()
         viewModel.prepareMediaPlayer(selectableTrack)
     }
 
@@ -77,7 +78,26 @@ class AudioPlayerActivity : AppCompatActivity() {
             }
         }
 
+    fun observeOnIsFavoriteTrack() {
+        viewModel.getIsFavoriteTrack().observe(this) {
+            when (it) {
+                true -> {
+                        binding.favoriteButton.setImageResource(R.drawable.test_like)
+                }
+                false -> {
+                    binding.favoriteButton.setImageResource(R.drawable.test_unlike)
+                }
+            }
+        }
+    }
+
     private fun initializeComponents() {
+        if (selectableTrack.isFavorite) {
+            binding.favoriteButton.setImageResource(R.drawable.test_like)
+        }
+        else {
+            binding.favoriteButton.setImageResource(R.drawable.test_unlike)
+        }
 
         binding.backButton.setOnClickListener {
             finish()
@@ -91,7 +111,12 @@ class AudioPlayerActivity : AppCompatActivity() {
             }
         }
 
+        binding.favoriteButton.setOnClickListener {
+            viewModel.onFavoriteClicked(selectableTrack)
+        }
+
     }
+
 
     private fun setInActivityElementsValueOfTrack() {
         binding.nameOfTrackAudioPlayerActivity.isSelected = true

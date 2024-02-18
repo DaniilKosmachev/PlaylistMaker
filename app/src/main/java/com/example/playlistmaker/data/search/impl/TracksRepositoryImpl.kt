@@ -1,16 +1,23 @@
 package com.example.playlistmaker.data.search.impl
 
+import com.example.playlistmaker.data.AppDatabase
 import com.example.playlistmaker.data.NetworkClient
+import com.example.playlistmaker.data.search.dto.TrackDto
 import com.example.playlistmaker.data.search.dto.TrackSearchRequest
 import com.example.playlistmaker.data.search.dto.TracksResponse
 import com.example.playlistmaker.domain.search.TracksRepository
 import com.example.playlistmaker.domain.search.model.ResponceStatus
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.domain.search.model.TrackSearchResponceParams
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 
-class TracksRepositoryImpl (private val networkClient: NetworkClient): TracksRepository {
+class TracksRepositoryImpl (
+    private val networkClient: NetworkClient,
+    private val appDatabase: AppDatabase
+): TracksRepository {
 
     override fun searchTracks(expression: String): Flow<TrackSearchResponceParams> = flow {
         val response = networkClient.doTrackSearchRequest(TrackSearchRequest(expression))
@@ -26,7 +33,8 @@ class TracksRepositoryImpl (private val networkClient: NetworkClient): TracksRep
                     releaseDate = if (it.releaseDate.isNullOrEmpty()) {"Нет данных"} else it.releaseDate,
                     primaryGenreName = it.primaryGenreName,
                     country = it.country,
-                    previewUrl = if (it.previewUrl.isNullOrEmpty()) {"Нет данных"} else it.previewUrl
+                    previewUrl = if (it.previewUrl.isNullOrEmpty()) {"Нет данных"} else it.previewUrl,
+                    isFavorite = checkFavorite(it)
                 )
             }
            emit(TrackSearchResponceParams(trackList).apply {
@@ -39,4 +47,11 @@ class TracksRepositoryImpl (private val networkClient: NetworkClient): TracksRep
         }
     }
 
+    private suspend fun checkFavorite(track: TrackDto): Boolean {
+       val idList = ArrayList<Int>()
+        withContext(Dispatchers.IO) {
+            idList.addAll(appDatabase.trackDao().selectAllIdTracks())
+        }
+        return if (idList.contains(track.trackId)) true else false
+    }
 }

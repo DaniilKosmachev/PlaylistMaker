@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.tracks
+package com.example.playlistmaker.ui.search
 
 import android.icu.text.SimpleDateFormat
 import android.view.View

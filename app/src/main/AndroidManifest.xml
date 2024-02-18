@@ -29,7 +29,7 @@
             android:name=".ui.library.fragments.LibraryFragment"
             android:exported="false" />
         <activity
-            android:name=".ui.tracks.fragments.SearchFragment"
+            android:name=".ui.search.fragments.SearchFragment"
             android:exported="false" />
         <activity
             android:name=".ui.settings.fragments.SettingsFragment"
