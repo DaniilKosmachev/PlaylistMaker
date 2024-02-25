@@ -32,4 +32,8 @@
     <string name="empty_mediatech_list_favorite_track">Ваша медиатека пуста</string>
     <string name="empty_playlist_list">Вы не создали \n ни одного плейлиста</string>
     <string name="new_playlist">Новый плейлист</string>
+    <string name="create_playlist">Новый плейлист</string>
+    <string name="create">Создать</string>
+    <string name="description">Описание</string>
+    <string name="name">Название*</string>
 </resources>

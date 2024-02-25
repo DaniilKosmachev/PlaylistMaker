@@ -38,6 +38,10 @@
             android:name=".ui.audioplayer.activity.AudioPlayerActivity"
             android:exported="true">
         </activity>
+        <activity android:name=".ui.create_playlist.fragment.CreatePlaylistFragment"
+            android:exported="true"
+            android:windowSoftInputMode="adjustNothing">
+        </activity>
     </application>
 
 </manifest>
