@@ -50,43 +50,73 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="center"
-        android:background="@drawable/add_image_view_corners"
+        android:clickable="true"
         app:layout_constraintDimensionRatio="h, 1:1"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/add_image_view_corners"
         app:layout_constraintTop_toBottomOf="@id/new_playlist_TV"
         app:layout_constraintStart_toEndOf="@id/start_guideline_for_imageview"
         app:layout_constraintEnd_toEndOf="@id/end_guideline_for_imageview"
-        app:layout_constraintBottom_toTopOf="@id/name_ET"
-        android:src="@drawable/add_image"
-        app:tint="@color/YP_gray"/>
-    <EditText
-        android:id="@+id/name_ET"
+        app:layout_constraintBottom_toTopOf="@id/name_TIL"
+        android:src="@drawable/add_image"/>
+    
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/name_TIL"
+        style="@style/text_layout_add_playlist_fragment"
         android:layout_width="0dp"
-        android:paddingVertical="12dp"
-        android:paddingStart="16dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:inputType="text"
+        android:layout_marginTop="40dp"
+        app:layout_constraintStart_toEndOf="@id/start_guideline_for_imageview"
+        app:layout_constraintEnd_toStartOf="@id/end_guideline_for_imageview"
+        app:layout_constraintTop_toBottomOf="@id/playlist_image_IV"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
         android:hint="@string/name"
-        android:fontFamily="@font/ys_display_regular"
-        android:background="@drawable/edit_text_view_corners"
-        app:layout_constraintStart_toEndOf="@id/start_guideline_for_imageview"
-        app:layout_constraintEnd_toStartOf="@id/end_guideline_for_imageview"
-        app:layout_constraintBottom_toTopOf="@id/description_ET"/>
+        app:boxStrokeColor="@color/main_activity_color"
+        app:hintTextColor="@color/main_activity_color">
+        
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/name_ET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:inputType="textCapCharacters"
+            android:textSize="16dp"
+            android:imeOptions="actionDone"
+            android:fontFamily="@font/ys_display_regular"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/description_ET"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/description_TIL"
+        style="@style/text_layout_add_playlist_fragment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="120dp"
-        android:paddingVertical="12dp"
-        android:paddingStart="16dp"
-        android:inputType="text"
-        android:hint="@string/description"
-        android:fontFamily="@font/ys_display_regular"
-        android:background="@drawable/edit_text_view_corners"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toEndOf="@id/start_guideline_for_imageview"
         app:layout_constraintEnd_toStartOf="@id/end_guideline_for_imageview"
-        app:layout_constraintBottom_toTopOf="@id/create_B"/>
+        app:layout_constraintTop_toBottomOf="@id/name_TIL"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        android:hint="@string/description"
+        app:boxStrokeColor="@color/main_activity_color"
+        app:hintTextColor="@color/main_activity_color">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/description_ET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:inputType="textCapCharacters"
+            android:textSize="16dp"
+            android:imeOptions="actionDone"
+            android:fontFamily="@font/ys_display_regular"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/create_B"
@@ -100,7 +130,8 @@
         android:textAllCaps="false"
         android:fontFamily="@font/ys_display_medium"
         android:textSize="@dimen/margin_Top_16"
-        android:backgroundTint="@color/main_activity_color"/>
+        android:backgroundTint="@color/main_activity_color"
+        android:enabled="false"/>
 
     
 

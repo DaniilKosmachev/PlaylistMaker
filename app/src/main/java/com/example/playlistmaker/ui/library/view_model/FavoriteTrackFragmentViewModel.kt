@@ -17,28 +17,6 @@ class FavoriteTrackFragmentViewModel(
 
     private var dbJob: Job? = null
 
-//    init {
-//        dbJob = viewModelScope.launch(Dispatchers.IO) {
-//            favouriteTracksInteractor
-//                .selectAllTracksInDbFavourite()
-//                .collect { tracks ->
-//                    when (tracks.isEmpty()) {
-//                        true -> {
-//                            mutableStatusFavoriteTracks.postValue(FavoriteTracksState.Empty)
-//                        }
-//
-//                        false -> {
-//                            tracks.map { track ->
-//                                track.isFavorite = true
-//                            }
-//                            mutableStatusFavoriteTracks.postValue(FavoriteTracksState.Content(tracks))
-//                        }
-//                    }
-//                }
-//            Log.d("TEST", "В init ViewModel получили треки")
-//        }
-//    }
-
     private var mutableStatusFavoriteTracks = MutableLiveData<FavoriteTracksState>()
 
     fun getStatusFavoriteTracks(): LiveData<FavoriteTracksState> = mutableStatusFavoriteTracks

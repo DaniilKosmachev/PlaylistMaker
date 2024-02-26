@@ -202,10 +202,10 @@ class SearchFragment: Fragment() {
                     binding.searchActivityProgressBar.isVisible = false
                     iTunesTrack.clear()
                     trackAdapter.notifyDataSetChanged()
-                    viewModel.removeCallbackSearch()//*
+                    viewModel.removeCallbackSearch()
                 }
                 else {
-                    viewModel.startDelaySearch()//*
+                    viewModel.startDelaySearch()
                 }
             }
 

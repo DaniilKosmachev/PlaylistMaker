@@ -178,4 +178,8 @@
     <style name="player_activity_image_button">
         <item name="backgroundTint">@color/white</item>
     </style>
+
+    <style name="text_layout_add_playlist_fragment"
+        parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    </style>
 </resources>
