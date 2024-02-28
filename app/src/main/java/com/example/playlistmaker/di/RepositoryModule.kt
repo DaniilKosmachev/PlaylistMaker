@@ -1,5 +1,6 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.data.converters.PlaylistDbConverter
 import com.example.playlistmaker.data.converters.TrackDbConverter
 import com.example.playlistmaker.data.db.impl.FavouriteTracksRepositoryImpl
 import com.example.playlistmaker.data.db.impl.PlaylistsRepositoryImpl
@@ -47,6 +48,10 @@ var repositoryModule = module {
 
     single<FavouriteTracksRepository> {
         FavouriteTracksRepositoryImpl(get(), get())
+    }
+
+    factory {
+        PlaylistDbConverter()
     }
 
     single<PlaylistsRepository> {

@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -86,7 +87,7 @@ class CreatePlaylistFragment: Fragment() {
             var name = binding.nameET.text.toString()
             var description = binding.descriptionET.text.toString()
             if (imageUri != null) {
-                saveImageToPrivateStorage(imageUri!!)
+                saveImageToPrivateStorage(imageUri!!, name)
             }
             if (!name.isNullOrEmpty()) {
                 viewModel.addNewPlaylist(
@@ -101,6 +102,7 @@ class CreatePlaylistFragment: Fragment() {
                 )
             }
             showToast(name)
+            findNavController().navigateUp()
         }
 
     }
@@ -113,7 +115,7 @@ class CreatePlaylistFragment: Fragment() {
         Toast.makeText(requireContext(), "Плейлист $nameOfPlaylist создан", Toast.LENGTH_SHORT).show()
     }
 
-    fun saveImageToPrivateStorage(uri: Uri) {
+    fun saveImageToPrivateStorage(uri: Uri, nameOfPlaylist: String) {
 
         val filePath = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
             NAME_OF_DIR)
@@ -122,7 +124,7 @@ class CreatePlaylistFragment: Fragment() {
             filePath.mkdirs()
         }
 
-        val file = File(filePath,uri.toString() + ".jpg")
+        val file = File(filePath,nameOfPlaylist + ".jpg")
 
         val inputStream = requireActivity().contentResolver.openInputStream(uri)
 
@@ -131,6 +133,8 @@ class CreatePlaylistFragment: Fragment() {
         BitmapFactory
             .decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG,30,outputStream)
+
+        imageUri = file.toUri()
     }
 
     override fun onAttach(context: Context) {
