@@ -99,22 +99,6 @@ class PlayerActivityViewModel(
             }
         }
     }
-//    fun checkTrackInSharedPref(track: Track, boolean: Boolean) {
-//        val sharedHistoryTracks = ArrayList<Track>()
-//        sharedHistoryTracks.addAll(trackHistoryInteractor.getTrackArrayFromShared())
-//        val iterator: MutableIterator<Track> = sharedHistoryTracks.iterator()
-//        while (iterator.hasNext()) {
-//            val currentTrack = iterator.next()
-//            if (currentTrack.trackId == track.trackId) {
-//               currentTrack.isFavorite = boolean
-//                trackHistoryInteractor.clearSearchHistory()
-//                trackHistoryInteractor.writeTrackArrayToShared(sharedHistoryTracks)
-//            } else {
-//
-//            }
-//        }
-//
-//    }
 
     fun onFavoriteClicked(track: Track) {
 

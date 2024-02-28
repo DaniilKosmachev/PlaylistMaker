@@ -1,6 +1,7 @@
 package com.example.playlistmaker.di
 
 import com.example.playlistmaker.ui.audioplayer.view_model.PlayerActivityViewModel
+import com.example.playlistmaker.ui.create_playlist.view_model.CreatePlaylistFragmentViewModel
 import com.example.playlistmaker.ui.library.view_model.FavoriteTrackFragmentViewModel
 import com.example.playlistmaker.ui.library.view_model.PlaylistsFragmentViewModel
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
@@ -28,6 +29,10 @@ val viewModelModel = module {
 
     viewModel {
         PlaylistsFragmentViewModel()
+    }
+
+    viewModel {
+        CreatePlaylistFragmentViewModel(get())
     }
 
 }
