@@ -42,11 +42,6 @@ class FavoriteTracksFragment: Fragment() {
         _binding = null
     }
 
-    override fun onStop() {
-        super.onStop()
-        Log.d("TEST","Произошел onStop - $_binding")
-    }
-
     override fun onResume() {
         super.onResume()
         Log.d("TEST","Произошел onResume")
@@ -84,7 +79,6 @@ class FavoriteTracksFragment: Fragment() {
     }
 
     fun initializedComponent() {
-        Log.d("TEST", "Адаптер")
         favoriteTrackAdapter = TrackAdapter(favoriteTracks) {
             openAudioPlayerAndReceiveTrackInfo(it)
         }

@@ -4,6 +4,8 @@ import com.example.playlistmaker.data.AppDatabase
 import com.example.playlistmaker.data.converters.PlaylistDbConverter
 import com.example.playlistmaker.domain.db.PlaylistsRepository
 import com.example.playlistmaker.domain.library.playlists.model.Playlist
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class PlaylistsRepositoryImpl(
     private val appDatabase: AppDatabase,
@@ -11,5 +13,12 @@ class PlaylistsRepositoryImpl(
 ): PlaylistsRepository {
     override suspend fun createNewPlaylist(playlistEntity: Playlist) {
         appDatabase.playlistDao().createNewPlaylist(playlistDbConverter.map(playlistEntity))
+    }
+
+    override suspend fun selectAllPlaylists(): Flow<List<Playlist>> = flow {
+       val playlistsEntity = appDatabase.playlistDao().selectAllPlaylists()
+        emit( playlistsEntity.map { playlistEntity ->
+            playlistDbConverter.map(playlistEntity)
+        })
     }
 }
