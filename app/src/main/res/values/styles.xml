@@ -195,4 +195,7 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="android:tint">@color/YP_gray</item>
     </style>
+    <style name="bottom_sheet">
+        <item name="background">@color/white</item>
+    </style>
 </resources>

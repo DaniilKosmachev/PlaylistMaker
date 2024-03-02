@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.library.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,10 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentFavoriteTracksBinding
 import com.example.playlistmaker.domain.library.favorite_tracks.model.FavoriteTracksState
 import com.example.playlistmaker.domain.search.model.Track
-import com.example.playlistmaker.ui.audioplayer.activity.AudioPlayerActivity
 import com.example.playlistmaker.ui.library.view_model.FavoriteTrackFragmentViewModel
 import com.example.playlistmaker.ui.search.TrackAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -86,13 +86,17 @@ class FavoriteTracksFragment: Fragment() {
     }
 
     private fun openAudioPlayerAndReceiveTrackInfo(track: Track) {
-        Intent(requireContext(), AudioPlayerActivity::class.java).apply {
-            putExtra(TrackAdapter.SELECTABLE_TRACK, track)
-            startActivity(this)
-        }
+//        Intent(requireContext(), AudioPlayerFragment::class.java).apply {
+//            putExtra(TrackAdapter.SELECTABLE_TRACK, track)
+//            startActivity(this)
+//        }
+        val bundle = Bundle()
+        bundle.putParcelable(RECEIVED_TRACK, track)
+        findNavController().navigate(R.id.action_libraryFragment_to_audioPlayerFragment,bundle)
     }
 
     companion object {
         fun newInstance() = FavoriteTracksFragment()
+        private const val RECEIVED_TRACK = "RECEIVED_TRACK"
     }
 }

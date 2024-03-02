@@ -24,7 +24,7 @@ class RootActivity: AppCompatActivity() {
         binding.bottomNavigationView.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, distination, _ ->
             when(distination.id) {
-                R.id.createPlaylistFragment -> {
+                R.id.createPlaylistFragment, R.id.audioPlayerFragment -> {
                     binding.bottomNavigationView.visibility = View.GONE
                 }
                 else -> {

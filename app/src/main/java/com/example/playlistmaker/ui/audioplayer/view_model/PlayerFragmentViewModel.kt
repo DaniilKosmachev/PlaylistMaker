@@ -5,20 +5,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.db.FavouriteTracksInteractor
+import com.example.playlistmaker.domain.db.PlaylistsInteractor
+import com.example.playlistmaker.domain.library.playlists.model.PlaylistsState
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.model.PlayerParams
 import com.example.playlistmaker.domain.player.model.PlayerStatus
-import com.example.playlistmaker.domain.search.TrackHistoryInteractor
 import com.example.playlistmaker.domain.search.model.Track
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class PlayerActivityViewModel(
+class PlayerFragmentViewModel(
     var playerInteractor: PlayerInteractor,
     var favouriteTracksInteractor: FavouriteTracksInteractor,
-    var trackHistoryInteractor: TrackHistoryInteractor
+    var playlistsInteractor: PlaylistsInteractor
 ): ViewModel() {
 
     private var dbJob: Job? = null
@@ -30,6 +31,10 @@ class PlayerActivityViewModel(
     private var mutableIsFavoriteTrack = MutableLiveData<Boolean>()
 
     private var mutableStatusPlayer = MutableLiveData(PlayerParams(PlayerStatus.DEFAULT,null))
+
+    private var mutablePlaylistStatus = MutableLiveData<PlaylistsState>()
+
+    fun getPlaylistStatus(): LiveData<PlaylistsState> = mutablePlaylistStatus
 
     fun getStatusPlayer(): LiveData<PlayerParams> = mutableStatusPlayer
 
@@ -120,6 +125,20 @@ class PlayerActivityViewModel(
                 //checkTrackInSharedPref(track,true)
                 mutableIsFavoriteTrack.postValue(true)
             }
+        }
+    }
+
+    fun selectAllPlaylistsFromDb() {
+        dbJob = viewModelScope.launch(Dispatchers.IO) {
+            playlistsInteractor
+                .selectAllPlaylists()
+                .collect { playlists ->
+                when(playlists.isEmpty()) {
+                    true -> mutablePlaylistStatus.postValue(PlaylistsState.Empty)
+                    false -> mutablePlaylistStatus.postValue(PlaylistsState.Content(playlists))
+                }
+
+                }
         }
     }
 

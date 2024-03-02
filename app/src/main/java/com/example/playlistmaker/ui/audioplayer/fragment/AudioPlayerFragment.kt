@@ -1,30 +1,40 @@
-package com.example.playlistmaker.ui.audioplayer.activity
+package com.example.playlistmaker.ui.audioplayer.fragment
 
-import android.os.Build
-import android.os.Build.VERSION
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.example.playlistmaker.databinding.FragmentAudioPlayerBinding
+import com.example.playlistmaker.domain.library.playlists.model.Playlist
+import com.example.playlistmaker.domain.library.playlists.model.PlaylistsState
 import com.example.playlistmaker.domain.player.model.PlayerStatus
 import com.example.playlistmaker.domain.search.model.Track
-import com.example.playlistmaker.ui.audioplayer.view_model.PlayerActivityViewModel
+import com.example.playlistmaker.ui.audioplayer.view_model.PlayerFragmentViewModel
+import com.example.playlistmaker.ui.library.model.PlaylistBottomSheetAdapter
 import com.example.playlistmaker.ui.mapper.TrackMapper
-import com.example.playlistmaker.ui.search.TrackAdapter
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class AudioPlayerActivity : AppCompatActivity() {
+class AudioPlayerFragment : Fragment() {
 
-    private lateinit var binding: ActivityAudioPlayerBinding
+    private var _binding: FragmentAudioPlayerBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var selectableTrack: Track
 
-    private val viewModel by viewModel<PlayerActivityViewModel>()
+    private var playlists = ArrayList<Playlist>()
+
+    private var playlistsAdapter: PlaylistBottomSheetAdapter? = null
+
+    private val viewModel by viewModel<PlayerFragmentViewModel>()
 
 
     override fun onPause() {
@@ -40,24 +50,47 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        selectableTrack = if (VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra(TrackAdapter.SELECTABLE_TRACK, Track::class.java)!!
-        } else {
-            intent.getParcelableExtra(TrackAdapter.SELECTABLE_TRACK)!!
-        }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentAudioPlayerBinding.inflate(inflater,container,false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        selectableTrack = arguments?.getParcelable<Track>(RECEIVED_TRACK) as Track
+        playlistsAdapter = PlaylistBottomSheetAdapter(playlists)
+        binding.bottomPlaylistsRV.adapter = playlistsAdapter
         initializeComponents()
         setInActivityElementsValueOfTrack()
         observeOnPlayerStatusLiveData()
         observeOnIsFavoriteTrack()
+        observeOnStatusPlaylists()
         viewModel.prepareMediaPlayer(selectableTrack)
+
+    }
+
+    fun observeOnStatusPlaylists() {
+        viewModel.getPlaylistStatus().observe(viewLifecycleOwner) {
+            when (it) {
+                is PlaylistsState.Empty -> {
+                    binding.bottomPlaylistsRV.visibility = View.GONE
+                }
+                is PlaylistsState.Content -> {
+                    playlists.clear()
+                    playlists.addAll(it.playlists)
+                    playlistsAdapter?.notifyDataSetChanged()
+                    binding.bottomPlaylistsRV.visibility = View.VISIBLE
+                }
+            }
+        }
     }
 
     fun observeOnPlayerStatusLiveData() {
-        viewModel.getStatusPlayer().observe(this) {
+        viewModel.getStatusPlayer().observe(viewLifecycleOwner) {
             when (it.playerState) {
                 PlayerStatus.PLAYING -> {
                     binding.currentTrackTimeAudioPlayer.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(it.currentPosition)
@@ -79,7 +112,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
 
     fun observeOnIsFavoriteTrack() {
-        viewModel.getIsFavoriteTrack().observe(this) {
+        viewModel.getIsFavoriteTrack().observe(viewLifecycleOwner) {
             when (it) {
                 true -> {
                         binding.favoriteButton.setImageResource(R.drawable.test_like)
@@ -100,12 +133,12 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
 
         binding.backButton.setOnClickListener {
-            finish()
+            findNavController().navigateUp()
         }
 
         binding.playButton.setOnClickListener {
             if (selectableTrack.previewUrl.equals(getString(R.string.no_data))) {
-                Toast.makeText(this, getString(R.string.can_not_play), Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), getString(R.string.can_not_play), Toast.LENGTH_LONG).show()
             } else {
                 viewModel.clickOnPlayButton(selectableTrack)
             }
@@ -114,6 +147,37 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.favoriteButton.setOnClickListener {
             viewModel.onFavoriteClicked(selectableTrack)
         }
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        binding.addToLibraryButton.setOnClickListener {
+            binding.overlay.visibility = View.VISIBLE
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+
+        }
+        binding.addNewPlaylist.setOnClickListener {
+            //findNavController().navigate(R.id.action_audioPlayerFragment_to_Create)
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.visibility = View.GONE
+                    }
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        viewModel.selectAllPlaylistsFromDb()
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                binding.overlay.alpha = slideOffset
+            }
+        }
+        )
 
     }
 
@@ -138,6 +202,10 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.genreValueAudioPlayer.text = selectableTrack.primaryGenreName
         binding.artworkValueAudioPlayer.text = if (selectableTrack.collectionName!!.isNotEmpty()) selectableTrack.collectionName else "Нет данных"
         binding.countryValueAudioPlayer.text = selectableTrack.country
+    }
+
+    companion object {
+        private const val RECEIVED_TRACK = "RECEIVED_TRACK"
     }
 
 }
