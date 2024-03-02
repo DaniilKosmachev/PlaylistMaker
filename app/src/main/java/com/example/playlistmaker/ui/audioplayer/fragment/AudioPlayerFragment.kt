@@ -14,6 +14,7 @@ import com.example.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.example.playlistmaker.domain.library.playlists.model.Playlist
 import com.example.playlistmaker.domain.library.playlists.model.PlaylistsState
 import com.example.playlistmaker.domain.player.model.PlayerStatus
+import com.example.playlistmaker.domain.player.model.TracksInPlaylists
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.audioplayer.view_model.PlayerFragmentViewModel
 import com.example.playlistmaker.ui.library.model.PlaylistBottomSheetAdapter
@@ -62,7 +63,9 @@ class AudioPlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         selectableTrack = arguments?.getParcelable<Track>(RECEIVED_TRACK) as Track
-        playlistsAdapter = PlaylistBottomSheetAdapter(playlists)
+        playlistsAdapter = PlaylistBottomSheetAdapter(playlists) {
+            addTrackInPlaylist(it)
+        }
         binding.bottomPlaylistsRV.adapter = playlistsAdapter
         initializeComponents()
         setInActivityElementsValueOfTrack()
@@ -70,7 +73,6 @@ class AudioPlayerFragment : Fragment() {
         observeOnIsFavoriteTrack()
         observeOnStatusPlaylists()
         viewModel.prepareMediaPlayer(selectableTrack)
-
     }
 
     fun observeOnStatusPlaylists() {
@@ -87,6 +89,21 @@ class AudioPlayerFragment : Fragment() {
                 }
             }
         }
+    }
+
+    fun addTrackInPlaylist(playlist: Playlist) {
+        viewModel.insertTrackInPlaylists(
+            TracksInPlaylists(
+                null,
+                selectableTrack.trackId,
+                playlist.id!!
+            )
+        )
+        updateCountTracksInPlaylist(playlist.id)
+    }
+
+    fun updateCountTracksInPlaylist(playlistId: Int) {
+        viewModel.updateCountTracksInPlaylist(playlistId)
     }
 
     fun observeOnPlayerStatusLiveData() {
@@ -158,7 +175,7 @@ class AudioPlayerFragment : Fragment() {
 
         }
         binding.addNewPlaylist.setOnClickListener {
-            //findNavController().navigate(R.id.action_audioPlayerFragment_to_Create)
+            findNavController().navigate(R.id.action_audioPlayerFragment_to_createPlaylistFragment)
         }
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {

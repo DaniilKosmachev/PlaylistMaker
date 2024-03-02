@@ -10,6 +10,7 @@ import com.example.playlistmaker.domain.library.playlists.model.PlaylistsState
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.model.PlayerParams
 import com.example.playlistmaker.domain.player.model.PlayerStatus
+import com.example.playlistmaker.domain.player.model.TracksInPlaylists
 import com.example.playlistmaker.domain.search.model.Track
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -140,8 +141,21 @@ class PlayerFragmentViewModel(
 
                 }
         }
+
+
+    }
+    fun insertTrackInPlaylists(tracksInPlaylists: TracksInPlaylists) {
+        dbJob = viewModelScope.launch(Dispatchers.IO) {
+            playlistsInteractor.insertTrackInPlaylist(tracksInPlaylists)
+        }
+
     }
 
+    fun updateCountTracksInPlaylist(playlistId: Int) {
+        dbJob = viewModelScope.launch(Dispatchers.IO) {
+            playlistsInteractor.updateCountTracksInPlaylist(playlistId)
+        }
+    }
     companion object {
         private const val DELAY_CURRENT_TIME_300_MILLIS = 300L
     }

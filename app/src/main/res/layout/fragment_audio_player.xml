@@ -317,6 +317,7 @@
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="vertical"
+            android:clickable="true"
             tools:listitem="@layout/playlist_bottom_view"
             />
     </LinearLayout>
