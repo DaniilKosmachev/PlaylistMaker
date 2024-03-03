@@ -8,5 +8,6 @@ data class TracksInPlaylistsEntity (
     @PrimaryKey(autoGenerate = true)
     val id: Int?,
     val trackId: Int,
+    val track: String,
     val playlistId: Int
 )

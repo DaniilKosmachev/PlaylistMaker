@@ -25,4 +25,17 @@ class PlaylistsInteractorImpl (
         repository.updateCountTracksInPlaylist(playlistId)
     }
 
+    override suspend fun addNewTrackInPlaylistsTransaction(
+        tracksInPlaylists: TracksInPlaylists,
+        playlistId: Int
+    ) {
+        repository.addNewTrackInPlaylistsTransaction(tracksInPlaylists, playlistId)
+    }
+
+    override suspend fun checkTrackInPlaylist(
+        trackId: Int
+    ): Flow<List<Int>> {
+        return repository.checkTrackInPlaylist(trackId)
+    }
+
 }

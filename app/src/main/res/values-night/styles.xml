@@ -191,4 +191,14 @@
         <item name="android:backgroundTint">@android:color/transparent</item>
         <item name="tint">@color/YP_gray</item>
     </style>
+    <style name="bottom_sheet">
+        <item name="android:background">@drawable/round_corners_16_night</item>
+    </style>
+    <style name="slider_item">
+        <item name="android:background">@drawable/round_all_corners_16_night</item>
+    </style>
+    <style name="text_layout_add_playlist_fragment"
+        parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="tint">@color/white</item>
+    </style>
 </resources>

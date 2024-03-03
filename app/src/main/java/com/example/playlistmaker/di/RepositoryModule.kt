@@ -51,7 +51,7 @@ var repositoryModule = module {
     }
 
     factory {
-        PlaylistDbConverter()
+        PlaylistDbConverter(get())
     }
 
     single<PlaylistsRepository> {

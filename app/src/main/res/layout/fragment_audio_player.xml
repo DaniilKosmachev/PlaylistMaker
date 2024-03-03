@@ -275,14 +275,14 @@
             tools:text="Великобритания" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View android:id="@+id/overlay"
+    <View android:id="@+id/overlayBottomSheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#99000000"
         android:visibility="gone"/>
 
     <LinearLayout
-        android:background="@drawable/round_corners_16"
+        style="@style/bottom_sheet"
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -290,6 +290,14 @@
         app:behavior_hideable="true"
         app:behavior_peekHeight="360dp"
         android:orientation="vertical">
+
+        <View
+            style="@style/slider_item"
+            android:layout_width="50dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            />
         <TextView
             style="@style/main_text_view_audio_player_activity"
             android:layout_width="match_parent"

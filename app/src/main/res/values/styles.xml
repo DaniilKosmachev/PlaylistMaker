@@ -179,8 +179,8 @@
         <item name="backgroundTint">@color/white</item>
     </style>
 
-    <style name="text_layout_add_playlist_fragment"
-        parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="text_layout_add_playlist_fragment" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="backgroundTint">@color/YP_Light_gray</item>
     </style>
 
     <style name="playlist_view_text_style">
@@ -196,6 +196,9 @@
         <item name="android:tint">@color/YP_gray</item>
     </style>
     <style name="bottom_sheet">
-        <item name="background">@color/white</item>
+        <item name="android:background">@drawable/round_corners_16</item>
+    </style>
+    <style name="slider_item">
+        <item name="android:background">@drawable/round_all_corners_16</item>
     </style>
 </resources>

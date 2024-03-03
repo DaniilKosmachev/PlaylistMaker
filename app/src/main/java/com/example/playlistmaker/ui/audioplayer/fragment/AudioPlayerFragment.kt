@@ -33,6 +33,8 @@ class AudioPlayerFragment : Fragment() {
 
     private var playlists = ArrayList<Playlist>()
 
+    private var inPlaylistsState = ArrayList<Int>()
+
     private var playlistsAdapter: PlaylistBottomSheetAdapter? = null
 
     private val viewModel by viewModel<PlayerFragmentViewModel>()
@@ -48,7 +50,6 @@ class AudioPlayerFragment : Fragment() {
         viewModel.removeCallback()
         viewModel.destroyPlayer()
         super.onDestroy()
-
     }
 
     override fun onCreateView(
@@ -63,16 +64,62 @@ class AudioPlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         selectableTrack = arguments?.getParcelable<Track>(RECEIVED_TRACK) as Track
-        playlistsAdapter = PlaylistBottomSheetAdapter(playlists) {
-            addTrackInPlaylist(it)
-        }
-        binding.bottomPlaylistsRV.adapter = playlistsAdapter
         initializeComponents()
+        observeOnCheckTrack()
+        viewModel.selectableTrackIsInPLaylist(selectableTrack.trackId)
         setInActivityElementsValueOfTrack()
         observeOnPlayerStatusLiveData()
         observeOnIsFavoriteTrack()
         observeOnStatusPlaylists()
         viewModel.prepareMediaPlayer(selectableTrack)
+
+        var bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlayBottomSheet.visibility = View.GONE
+                        viewModel.selectableTrackIsInPLaylist(selectableTrack.trackId)
+
+                    }
+                    else -> {
+                        binding.overlayBottomSheet.visibility = View.VISIBLE
+                        viewModel.selectableTrackIsInPLaylist(selectableTrack.trackId)
+                        viewModel.selectAllPlaylistsFromDb()
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) { //ЭТА ХУЙНЯ ВЕДЕТ СЕБЯ НЕ КАК В ДОКУМЕНТАЦИИ!!!
+//                binding.overlayBottomSheet.alpha = 0.0F
+//                binding.overlayBottomSheet.alpha += abs(slideOffset)
+            }
+        }
+        )
+
+        binding.addToLibraryButton.setOnClickListener {
+            binding.overlayBottomSheet.visibility = View.VISIBLE
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+
+        }
+
+        playlistsAdapter = PlaylistBottomSheetAdapter(playlists) {
+            if (inPlaylistsState.contains(it.id!!)) {
+                Toast.makeText(
+                    requireContext(),
+                    "Трек уже добавлен в плейлист ${it.name}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                addTrackInPlaylist(it)
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            }
+
+        }
+        binding.bottomPlaylistsRV.adapter = playlistsAdapter
     }
 
     fun observeOnStatusPlaylists() {
@@ -91,19 +138,35 @@ class AudioPlayerFragment : Fragment() {
         }
     }
 
-    fun addTrackInPlaylist(playlist: Playlist) {
-        viewModel.insertTrackInPlaylists(
-            TracksInPlaylists(
-                null,
-                selectableTrack.trackId,
-                playlist.id!!
-            )
-        )
-        updateCountTracksInPlaylist(playlist.id)
+    fun observeOnCheckTrack() {
+        viewModel.getStatusCheckTrackInPlaylists().observe(viewLifecycleOwner) {
+            when (it.isNullOrEmpty()) {
+                false -> {
+                    inPlaylistsState.clear()
+                    inPlaylistsState.addAll(it)
+                }
+                true -> {
+                    inPlaylistsState.clear()
+                }
+            }
+        }
     }
 
-    fun updateCountTracksInPlaylist(playlistId: Int) {
-        viewModel.updateCountTracksInPlaylist(playlistId)
+    fun addTrackInPlaylist(playlist: Playlist) {
+            viewModel.addNewTrackInPlaylistTransaction(
+                TracksInPlaylists(
+                    null,
+                    selectableTrack.trackId,
+                    selectableTrack,
+                    playlist.id!!
+                ),
+                playlistId = playlist.id
+            )
+            Toast.makeText(
+                    requireContext(),
+            "Добавлено в плейлист ${playlist.name}",
+            Toast.LENGTH_SHORT
+            ).show()
     }
 
     fun observeOnPlayerStatusLiveData() {
@@ -132,7 +195,7 @@ class AudioPlayerFragment : Fragment() {
         viewModel.getIsFavoriteTrack().observe(viewLifecycleOwner) {
             when (it) {
                 true -> {
-                        binding.favoriteButton.setImageResource(R.drawable.test_like)
+                    binding.favoriteButton.setImageResource(R.drawable.test_like)
                 }
                 false -> {
                     binding.favoriteButton.setImageResource(R.drawable.test_unlike)
@@ -165,36 +228,9 @@ class AudioPlayerFragment : Fragment() {
             viewModel.onFavoriteClicked(selectableTrack)
         }
 
-        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet).apply {
-            state = BottomSheetBehavior.STATE_HIDDEN
-        }
-
-        binding.addToLibraryButton.setOnClickListener {
-            binding.overlay.visibility = View.VISIBLE
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-
-        }
         binding.addNewPlaylist.setOnClickListener {
             findNavController().navigate(R.id.action_audioPlayerFragment_to_createPlaylistFragment)
         }
-
-        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                when (newState) {
-                    BottomSheetBehavior.STATE_HIDDEN -> {
-                        binding.overlay.visibility = View.GONE
-                    }
-                    BottomSheetBehavior.STATE_COLLAPSED -> {
-                        viewModel.selectAllPlaylistsFromDb()
-                    }
-                }
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                binding.overlay.alpha = slideOffset
-            }
-        }
-        )
 
     }
 

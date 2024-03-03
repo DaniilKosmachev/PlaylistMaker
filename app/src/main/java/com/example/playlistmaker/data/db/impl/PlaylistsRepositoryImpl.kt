@@ -30,4 +30,18 @@ class PlaylistsRepositoryImpl(
     override suspend fun updateCountTracksInPlaylist(playlistId: Int) {
         appDatabase.playlistDao().updateTrackCountInPlaylist(playlistId)
     }
+
+    override suspend fun addNewTrackInPlaylistsTransaction(
+        tracksInPlaylists: TracksInPlaylists,
+        playlistId: Int
+    ) {
+        appDatabase.playlistDao().addTrackInPlaylistTransaction(playlistDbConverter.map(tracksInPlaylists), playlistId)
+    }
+
+    override suspend fun checkTrackInPlaylist(
+        trackId: Int
+    ): Flow<List<Int>> = flow {
+        val playlistIds = appDatabase.playlistDao().checkTrackInPlaylists(trackId)
+        emit(playlistIds)
+    }
 }

@@ -4,8 +4,10 @@ import com.example.playlistmaker.data.db.entity.PlaylistEntity
 import com.example.playlistmaker.data.db.entity.TracksInPlaylistsEntity
 import com.example.playlistmaker.domain.library.playlists.model.Playlist
 import com.example.playlistmaker.domain.player.model.TracksInPlaylists
+import com.example.playlistmaker.domain.search.model.Track
+import com.google.gson.Gson
 
-class PlaylistDbConverter {
+class PlaylistDbConverter(private var gson: Gson) {
 
     fun map(playlist: Playlist): PlaylistEntity {
         return PlaylistEntity(
@@ -33,6 +35,7 @@ class PlaylistDbConverter {
         return TracksInPlaylistsEntity(
             id = null,
             trackId = tracksInPlaylists.trackId,
+            track = gson.toJson(tracksInPlaylists.track).toString(),
             playlistId = tracksInPlaylists.playlistId
         )
     }
@@ -41,6 +44,7 @@ class PlaylistDbConverter {
         return TracksInPlaylists(
             id = tracksInPlaylists.id,
             trackId = tracksInPlaylists.trackId,
+            track = gson.fromJson(tracksInPlaylists.track, Track::class.java),
             playlistId = tracksInPlaylists.playlistId
         )
     }

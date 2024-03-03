@@ -35,6 +35,10 @@ class PlayerFragmentViewModel(
 
     private var mutablePlaylistStatus = MutableLiveData<PlaylistsState>()
 
+    private var mutableStatusCheckTrackInPlaylist = MutableLiveData<List<Int>>()
+
+    fun getStatusCheckTrackInPlaylists(): LiveData<List<Int>> = mutableStatusCheckTrackInPlaylist
+
     fun getPlaylistStatus(): LiveData<PlaylistsState> = mutablePlaylistStatus
 
     fun getStatusPlayer(): LiveData<PlayerParams> = mutableStatusPlayer
@@ -114,7 +118,6 @@ class PlayerFragmentViewModel(
                     favouriteTracksInteractor.deleteTrackInDbFavourite(track)
                 }
                 track.isFavorite = false
-                //checkTrackInSharedPref(track,false)
                 mutableIsFavoriteTrack.postValue(false)
             }
             false -> {
@@ -123,7 +126,6 @@ class PlayerFragmentViewModel(
                     track.isFavorite = true
                     favouriteTracksInteractor.addTrackInDbFavourite(track)
                 }
-                //checkTrackInSharedPref(track,true)
                 mutableIsFavoriteTrack.postValue(true)
             }
         }
@@ -144,16 +146,24 @@ class PlayerFragmentViewModel(
 
 
     }
-    fun insertTrackInPlaylists(tracksInPlaylists: TracksInPlaylists) {
-        dbJob = viewModelScope.launch(Dispatchers.IO) {
-            playlistsInteractor.insertTrackInPlaylist(tracksInPlaylists)
-        }
 
+    fun selectableTrackIsInPLaylist(trackId: Int) {
+        dbJob = viewModelScope.launch(Dispatchers.IO) {
+            playlistsInteractor
+                .checkTrackInPlaylist(trackId)
+                .collect { trackInDb ->
+                    when(trackInDb.size) {
+                        0 -> mutableStatusCheckTrackInPlaylist.postValue(emptyList())
+                        else -> mutableStatusCheckTrackInPlaylist.postValue(trackInDb)
+                    }
+
+                }
+        }
     }
 
-    fun updateCountTracksInPlaylist(playlistId: Int) {
+    fun addNewTrackInPlaylistTransaction(tracksInPlaylists: TracksInPlaylists, playlistId: Int) {
         dbJob = viewModelScope.launch(Dispatchers.IO) {
-            playlistsInteractor.updateCountTracksInPlaylist(playlistId)
+            playlistsInteractor.addNewTrackInPlaylistsTransaction(tracksInPlaylists, playlistId)
         }
     }
     companion object {

@@ -13,4 +13,8 @@ interface PlaylistsRepository {
     suspend fun insertTrackInPlaylist(tracksInPlaylists: TracksInPlaylists)
 
     suspend fun updateCountTracksInPlaylist(playlistId: Int)
+
+    suspend fun addNewTrackInPlaylistsTransaction(tracksInPlaylists: TracksInPlaylists, playlistId: Int)
+
+    suspend fun checkTrackInPlaylist(trackId: Int): Flow<List<Int>>
 }
