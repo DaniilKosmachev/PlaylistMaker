@@ -1,7 +1,6 @@
 package com.example.playlistmaker.ui.search.fragments
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,10 +12,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.search.model.Track
-import com.example.playlistmaker.ui.audioplayer.activity.AudioPlayerActivity
 import com.example.playlistmaker.ui.isNightModeOn
 import com.example.playlistmaker.ui.isPortrainSystemOrientatin
 import com.example.playlistmaker.ui.search.TrackAdapter
@@ -202,10 +201,10 @@ class SearchFragment: Fragment() {
                     binding.searchActivityProgressBar.isVisible = false
                     iTunesTrack.clear()
                     trackAdapter.notifyDataSetChanged()
-                    viewModel.removeCallbackSearch()//*
+                    viewModel.removeCallbackSearch()
                 }
                 else {
-                    viewModel.startDelaySearch()//*
+                    viewModel.startDelaySearch()
                 }
             }
 
@@ -334,15 +333,14 @@ class SearchFragment: Fragment() {
     }
 
     private fun openAudioPlayerAndReceiveTrackInfo(track: Track) {
-        Intent(requireContext(), AudioPlayerActivity::class.java).apply {
-            putExtra(TrackAdapter.SELECTABLE_TRACK, track)
-            startActivity(this)
-        }
+        val bundle = Bundle()
+        bundle.putParcelable(RECEIVED_TRACK, track)
+        findNavController().navigate(R.id.action_searchFragment_to_audioPlayerFragment,bundle)
 
     }
 
     companion object {
         private const val SEARCH_STRING = "SEARCH_STRING"
-        private const val TEST = "test"
+        private const val RECEIVED_TRACK = "RECEIVED_TRACK"
     }
 }

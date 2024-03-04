@@ -1,13 +1,16 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.data.converters.PlaylistDbConverter
 import com.example.playlistmaker.data.converters.TrackDbConverter
 import com.example.playlistmaker.data.db.impl.FavouriteTracksRepositoryImpl
+import com.example.playlistmaker.data.db.impl.PlaylistsRepositoryImpl
 import com.example.playlistmaker.data.player.impl.PlayerRepositoryImpl
 import com.example.playlistmaker.data.search.impl.TrackHistoryRepositoryImpl
 import com.example.playlistmaker.data.search.impl.TracksRepositoryImpl
 import com.example.playlistmaker.data.settings.impl.AppThemeRepositoryImpl
 import com.example.playlistmaker.data.settings.impl.ExternalSettingsRepositoryImpl
 import com.example.playlistmaker.domain.db.FavouriteTracksRepository
+import com.example.playlistmaker.domain.db.PlaylistsRepository
 import com.example.playlistmaker.domain.player.PlayerRepository
 import com.example.playlistmaker.domain.search.TrackHistoryRepository
 import com.example.playlistmaker.domain.search.TracksRepository
@@ -45,6 +48,14 @@ var repositoryModule = module {
 
     single<FavouriteTracksRepository> {
         FavouriteTracksRepositoryImpl(get(), get())
+    }
+
+    factory {
+        PlaylistDbConverter(get())
+    }
+
+    single<PlaylistsRepository> {
+        PlaylistsRepositoryImpl(get(),get())
     }
 
 }

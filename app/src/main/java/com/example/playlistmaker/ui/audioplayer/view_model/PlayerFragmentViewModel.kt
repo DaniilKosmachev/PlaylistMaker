@@ -5,20 +5,22 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.db.FavouriteTracksInteractor
+import com.example.playlistmaker.domain.db.PlaylistsInteractor
+import com.example.playlistmaker.domain.library.playlists.model.PlaylistsState
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.model.PlayerParams
 import com.example.playlistmaker.domain.player.model.PlayerStatus
-import com.example.playlistmaker.domain.search.TrackHistoryInteractor
+import com.example.playlistmaker.domain.player.model.TracksInPlaylists
 import com.example.playlistmaker.domain.search.model.Track
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class PlayerActivityViewModel(
+class PlayerFragmentViewModel(
     var playerInteractor: PlayerInteractor,
     var favouriteTracksInteractor: FavouriteTracksInteractor,
-    var trackHistoryInteractor: TrackHistoryInteractor
+    var playlistsInteractor: PlaylistsInteractor
 ): ViewModel() {
 
     private var dbJob: Job? = null
@@ -27,17 +29,25 @@ class PlayerActivityViewModel(
 
     private var playerParams: PlayerParams? = null
 
-    private var mutableIsFavoriteTrack = MutableLiveData<Boolean>()
+    private var _IsFavoriteTrack = MutableLiveData<Boolean>()
 
-    private var mutableStatusPlayer = MutableLiveData(PlayerParams(PlayerStatus.DEFAULT,null))
+    private var _StatusPlayer = MutableLiveData(PlayerParams(PlayerStatus.DEFAULT,null))
 
-    fun getStatusPlayer(): LiveData<PlayerParams> = mutableStatusPlayer
+    private var _PlaylistStatus = MutableLiveData<PlaylistsState>()
 
-    fun getIsFavoriteTrack(): LiveData<Boolean> = mutableIsFavoriteTrack
+    private var _StatusCheckTrackInPlaylist = MutableLiveData<List<Int>>()
+
+    fun getStatusCheckTrackInPlaylists(): LiveData<List<Int>> = _StatusCheckTrackInPlaylist
+
+    fun getPlaylistStatus(): LiveData<PlaylistsState> = _PlaylistStatus
+
+    fun getStatusPlayer(): LiveData<PlayerParams> = _StatusPlayer
+
+    fun getIsFavoriteTrack(): LiveData<Boolean> = _IsFavoriteTrack
 
     fun prepareMediaPlayer(track: Track) {
         playerInteractor.prepareMediaPlayer(track)
-        mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.PREPARED,null))
+        _StatusPlayer.postValue(PlayerParams(PlayerStatus.PREPARED,null))
     }
 
     fun startPlay() {
@@ -81,40 +91,24 @@ class PlayerActivityViewModel(
         playerParams = playerInteractor.changePlaybackProgress()
         when (playerParams!!.playerState) {
             PlayerStatus.PLAYING -> {
-                mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.PLAYING, playerParams!!.currentPosition))
+                _StatusPlayer.postValue(PlayerParams(PlayerStatus.PLAYING, playerParams!!.currentPosition))
                 progressJob = viewModelScope.launch {
                     delay(DELAY_CURRENT_TIME_300_MILLIS)
                     checkPlaybackProgressAndStatus()
                 }
             }
             PlayerStatus.PAUSE -> {
-                mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.PAUSE, playerParams!!.currentPosition))
+                _StatusPlayer.postValue(PlayerParams(PlayerStatus.PAUSE, playerParams!!.currentPosition))
                 progressJob?.cancel()
             }
             PlayerStatus.PREPARED -> {
-                mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.PREPARED, null))
+                _StatusPlayer.postValue(PlayerParams(PlayerStatus.PREPARED, null))
             }
             PlayerStatus.DEFAULT -> {
-                mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.DEFAULT, null))
+                _StatusPlayer.postValue(PlayerParams(PlayerStatus.DEFAULT, null))
             }
         }
     }
-//    fun checkTrackInSharedPref(track: Track, boolean: Boolean) {
-//        val sharedHistoryTracks = ArrayList<Track>()
-//        sharedHistoryTracks.addAll(trackHistoryInteractor.getTrackArrayFromShared())
-//        val iterator: MutableIterator<Track> = sharedHistoryTracks.iterator()
-//        while (iterator.hasNext()) {
-//            val currentTrack = iterator.next()
-//            if (currentTrack.trackId == track.trackId) {
-//               currentTrack.isFavorite = boolean
-//                trackHistoryInteractor.clearSearchHistory()
-//                trackHistoryInteractor.writeTrackArrayToShared(sharedHistoryTracks)
-//            } else {
-//
-//            }
-//        }
-//
-//    }
 
     fun onFavoriteClicked(track: Track) {
 
@@ -124,8 +118,7 @@ class PlayerActivityViewModel(
                     favouriteTracksInteractor.deleteTrackInDbFavourite(track)
                 }
                 track.isFavorite = false
-                //checkTrackInSharedPref(track,false)
-                mutableIsFavoriteTrack.postValue(false)
+                _IsFavoriteTrack.postValue(false)
             }
             false -> {
                 dbJob = viewModelScope.launch(Dispatchers.IO) {
@@ -133,12 +126,46 @@ class PlayerActivityViewModel(
                     track.isFavorite = true
                     favouriteTracksInteractor.addTrackInDbFavourite(track)
                 }
-                //checkTrackInSharedPref(track,true)
-                mutableIsFavoriteTrack.postValue(true)
+                _IsFavoriteTrack.postValue(true)
             }
         }
     }
 
+    fun selectAllPlaylistsFromDb() {
+        dbJob = viewModelScope.launch(Dispatchers.IO) {
+            playlistsInteractor
+                .selectAllPlaylists()
+                .collect { playlists ->
+                when(playlists.isEmpty()) {
+                    true -> _PlaylistStatus.postValue(PlaylistsState.Empty)
+                    false -> _PlaylistStatus.postValue(PlaylistsState.Content(playlists))
+                }
+
+                }
+        }
+
+
+    }
+
+    fun selectableTrackIsInPLaylist(trackId: Int) {
+        dbJob = viewModelScope.launch(Dispatchers.IO) {
+            playlistsInteractor
+                .checkTrackInPlaylist(trackId)
+                .collect { trackInDb ->
+                    when(trackInDb.size) {
+                        0 -> _StatusCheckTrackInPlaylist.postValue(emptyList())
+                        else -> _StatusCheckTrackInPlaylist.postValue(trackInDb)
+                    }
+
+                }
+        }
+    }
+
+    fun addNewTrackInPlaylistTransaction(tracksInPlaylists: TracksInPlaylists, playlistId: Int) {
+        dbJob = viewModelScope.launch(Dispatchers.IO) {
+            playlistsInteractor.addNewTrackInPlaylistsTransaction(tracksInPlaylists, playlistId)
+        }
+    }
     companion object {
         private const val DELAY_CURRENT_TIME_300_MILLIS = 300L
     }
