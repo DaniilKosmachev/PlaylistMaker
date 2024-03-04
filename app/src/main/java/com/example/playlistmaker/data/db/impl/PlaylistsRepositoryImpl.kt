@@ -16,11 +16,13 @@ class PlaylistsRepositoryImpl(
         appDatabase.playlistDao().createNewPlaylist(playlistDbConverter.map(playlistEntity))
     }
 
-    override suspend fun selectAllPlaylists(): Flow<List<Playlist>> = flow {
-       val playlistsEntity = appDatabase.playlistDao().selectAllPlaylists()
-        emit( playlistsEntity.map { playlistEntity ->
-            playlistDbConverter.map(playlistEntity)
-        })
+    override suspend fun selectAllPlaylists(): Flow<List<Playlist>> {
+        return flow {
+            val playlistsEntity = appDatabase.playlistDao().selectAllPlaylists()
+            emit(playlistsEntity.map { playlistEntity ->
+                playlistDbConverter.map(playlistEntity)
+            })
+        }
     }
 
     override suspend fun insertTrackInPlaylist(tracksInPlaylists: TracksInPlaylists) {
@@ -40,8 +42,10 @@ class PlaylistsRepositoryImpl(
 
     override suspend fun checkTrackInPlaylist(
         trackId: Int
-    ): Flow<List<Int>> = flow {
-        val playlistIds = appDatabase.playlistDao().checkTrackInPlaylists(trackId)
-        emit(playlistIds)
+    ): Flow<List<Int>>  {
+        return flow {
+            val playlistIds = appDatabase.playlistDao().checkTrackInPlaylists(trackId)
+            emit(playlistIds)
+        }
     }
 }

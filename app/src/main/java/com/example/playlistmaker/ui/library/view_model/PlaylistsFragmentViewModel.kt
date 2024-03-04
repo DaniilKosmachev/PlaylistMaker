@@ -16,9 +16,9 @@ class PlaylistsFragmentViewModel(
 
     private var dbJob: Job? = null
 
-    private var mutableStatusPlaylist = MutableLiveData<PlaylistsState>()
+    private var _StatusPlaylist = MutableLiveData<PlaylistsState>()
 
-    fun getStatusAllPlaylists(): LiveData<PlaylistsState> = mutableStatusPlaylist
+    fun getStatusAllPlaylists(): LiveData<PlaylistsState> = _StatusPlaylist
 
     fun updateListPlaylistsFromDb() {
         dbJob = viewModelScope.launch(Dispatchers.IO) {
@@ -27,8 +27,8 @@ class PlaylistsFragmentViewModel(
                 .collect {
                     playlists ->
                     when(playlists.isEmpty()) {
-                        true -> mutableStatusPlaylist.postValue(PlaylistsState.Empty)
-                        false -> mutableStatusPlaylist.postValue(PlaylistsState.Content(playlists))
+                        true -> _StatusPlaylist.postValue(PlaylistsState.Empty)
+                        false -> _StatusPlaylist.postValue(PlaylistsState.Content(playlists))
                     }
                 }
         }

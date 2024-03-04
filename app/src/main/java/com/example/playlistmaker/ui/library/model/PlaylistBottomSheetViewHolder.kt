@@ -16,7 +16,7 @@ class PlaylistBottomSheetViewHolder(itemView: View): RecyclerView.ViewHolder(ite
 
     fun bind(item: Playlist) {
         playlistName.text = item.name
-        countTracks.text = item.count.toString() + " треков"
+        countTracks.text = itemView.context.resources.getQuantityString(R.plurals.plurals_track_count, item.count!!, item.count!!)//item.count.toString() + " треков"
         Glide.with(itemView)
             .load(item.uri?.toUri())
             .placeholder(R.drawable.placeholder)

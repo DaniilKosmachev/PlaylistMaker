@@ -1,10 +1,8 @@
 package com.example.playlistmaker.domain.player.model
 
 sealed interface TracksInPlaylistsState {
-    data class inPlaylist(
-        var data: List<TracksInPlaylists>
+    data class tracksInPlaylist(
+        val data: List<TracksInPlaylists>
     ): TracksInPlaylistsState
-
-    object notInPlaylist: TracksInPlaylistsState
-
+    object noTracksInPlaylist: TracksInPlaylistsState
 }

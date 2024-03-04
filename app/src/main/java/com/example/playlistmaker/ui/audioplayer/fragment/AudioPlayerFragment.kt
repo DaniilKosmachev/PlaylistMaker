@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -29,7 +30,7 @@ class AudioPlayerFragment : Fragment() {
     private var _binding: FragmentAudioPlayerBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var selectableTrack: Track
+    private var selectableTrack: Track? = null
 
     private var playlists = ArrayList<Playlist>()
 
@@ -66,12 +67,12 @@ class AudioPlayerFragment : Fragment() {
         selectableTrack = arguments?.getParcelable<Track>(RECEIVED_TRACK) as Track
         initializeComponents()
         observeOnCheckTrack()
-        viewModel.selectableTrackIsInPLaylist(selectableTrack.trackId)
+        viewModel.selectableTrackIsInPLaylist(selectableTrack!!.trackId)
         setInActivityElementsValueOfTrack()
         observeOnPlayerStatusLiveData()
         observeOnIsFavoriteTrack()
         observeOnStatusPlaylists()
-        viewModel.prepareMediaPlayer(selectableTrack)
+        viewModel.prepareMediaPlayer(selectableTrack!!)
 
         var bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
@@ -81,13 +82,13 @@ class AudioPlayerFragment : Fragment() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
-                        binding.overlayBottomSheet.visibility = View.GONE
-                        viewModel.selectableTrackIsInPLaylist(selectableTrack.trackId)
+                        binding.overlayBottomSheet.isVisible = false
+                        viewModel.selectableTrackIsInPLaylist(selectableTrack!!.trackId)
 
                     }
                     else -> {
-                        binding.overlayBottomSheet.visibility = View.VISIBLE
-                        viewModel.selectableTrackIsInPLaylist(selectableTrack.trackId)
+                        binding.overlayBottomSheet.isVisible = true
+                        viewModel.selectableTrackIsInPLaylist(selectableTrack!!.trackId)
                         viewModel.selectAllPlaylistsFromDb()
                     }
                 }
@@ -156,8 +157,8 @@ class AudioPlayerFragment : Fragment() {
             viewModel.addNewTrackInPlaylistTransaction(
                 TracksInPlaylists(
                     null,
-                    selectableTrack.trackId,
-                    selectableTrack,
+                    selectableTrack!!.trackId,
+                    selectableTrack!!,
                     playlist.id!!
                 ),
                 playlistId = playlist.id
@@ -205,7 +206,7 @@ class AudioPlayerFragment : Fragment() {
     }
 
     private fun initializeComponents() {
-        if (selectableTrack.isFavorite) {
+        if (selectableTrack!!.isFavorite) {
             binding.favoriteButton.setImageResource(R.drawable.test_like)
         }
         else {
@@ -217,15 +218,15 @@ class AudioPlayerFragment : Fragment() {
         }
 
         binding.playButton.setOnClickListener {
-            if (selectableTrack.previewUrl.equals(getString(R.string.no_data))) {
+            if (selectableTrack!!.previewUrl.equals(getString(R.string.no_data))) {
                 Toast.makeText(requireContext(), getString(R.string.can_not_play), Toast.LENGTH_LONG).show()
             } else {
-                viewModel.clickOnPlayButton(selectableTrack)
+                viewModel.clickOnPlayButton(selectableTrack!!)
             }
         }
 
         binding.favoriteButton.setOnClickListener {
-            viewModel.onFavoriteClicked(selectableTrack)
+            viewModel.onFavoriteClicked(selectableTrack!!)
         }
 
         binding.addNewPlaylist.setOnClickListener {
@@ -237,24 +238,24 @@ class AudioPlayerFragment : Fragment() {
 
     private fun setInActivityElementsValueOfTrack() {
         binding.nameOfTrackAudioPlayerActivity.isSelected = true
-        binding.nameOfTrackAudioPlayerActivity.text = selectableTrack.trackName
-        binding.nameOfArtistAudioPlayerActovity.text = selectableTrack.artistName
-        binding.trackTimeValueAudioPlayer.text = TrackMapper.getSimpleDateFormat(selectableTrack)
+        binding.nameOfTrackAudioPlayerActivity.text = selectableTrack!!.trackName
+        binding.nameOfArtistAudioPlayerActovity.text = selectableTrack!!.artistName
+        binding.trackTimeValueAudioPlayer.text = TrackMapper.getSimpleDateFormat(selectableTrack!!)
 
-        binding.yearValueAudioPlayer.text = if (selectableTrack.releaseDate.equals(getString(R.string.no_data))) {
+        binding.yearValueAudioPlayer.text = if (selectableTrack!!.releaseDate.equals(getString(R.string.no_data))) {
             getString(R.string.no_data)
         } else {
-            TrackMapper.getLocalDateTime(selectableTrack)
+            TrackMapper.getLocalDateTime(selectableTrack!!)
         }
         Glide.with(binding.coverArtWorkImage)
-            .load(TrackMapper.getCoverArtWork(selectableTrack))
+            .load(TrackMapper.getCoverArtWork(selectableTrack!!))
             .placeholder(R.drawable.placeholder)
             .centerCrop()
             .transform(RoundedCorners(binding.coverArtWorkImage.resources.getDimensionPixelSize(R.dimen.image_artwork_corner_radius_audio_player)))
             .into(binding.coverArtWorkImage)
-        binding.genreValueAudioPlayer.text = selectableTrack.primaryGenreName
-        binding.artworkValueAudioPlayer.text = if (selectableTrack.collectionName!!.isNotEmpty()) selectableTrack.collectionName else "Нет данных"
-        binding.countryValueAudioPlayer.text = selectableTrack.country
+        binding.genreValueAudioPlayer.text = selectableTrack!!.primaryGenreName
+        binding.artworkValueAudioPlayer.text = if (selectableTrack!!.collectionName!!.isNotEmpty()) selectableTrack!!.collectionName else "Нет данных"
+        binding.countryValueAudioPlayer.text = selectableTrack!!.country
     }
 
     companion object {

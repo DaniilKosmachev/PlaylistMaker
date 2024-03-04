@@ -29,25 +29,25 @@ class PlayerFragmentViewModel(
 
     private var playerParams: PlayerParams? = null
 
-    private var mutableIsFavoriteTrack = MutableLiveData<Boolean>()
+    private var _IsFavoriteTrack = MutableLiveData<Boolean>()
 
-    private var mutableStatusPlayer = MutableLiveData(PlayerParams(PlayerStatus.DEFAULT,null))
+    private var _StatusPlayer = MutableLiveData(PlayerParams(PlayerStatus.DEFAULT,null))
 
-    private var mutablePlaylistStatus = MutableLiveData<PlaylistsState>()
+    private var _PlaylistStatus = MutableLiveData<PlaylistsState>()
 
-    private var mutableStatusCheckTrackInPlaylist = MutableLiveData<List<Int>>()
+    private var _StatusCheckTrackInPlaylist = MutableLiveData<List<Int>>()
 
-    fun getStatusCheckTrackInPlaylists(): LiveData<List<Int>> = mutableStatusCheckTrackInPlaylist
+    fun getStatusCheckTrackInPlaylists(): LiveData<List<Int>> = _StatusCheckTrackInPlaylist
 
-    fun getPlaylistStatus(): LiveData<PlaylistsState> = mutablePlaylistStatus
+    fun getPlaylistStatus(): LiveData<PlaylistsState> = _PlaylistStatus
 
-    fun getStatusPlayer(): LiveData<PlayerParams> = mutableStatusPlayer
+    fun getStatusPlayer(): LiveData<PlayerParams> = _StatusPlayer
 
-    fun getIsFavoriteTrack(): LiveData<Boolean> = mutableIsFavoriteTrack
+    fun getIsFavoriteTrack(): LiveData<Boolean> = _IsFavoriteTrack
 
     fun prepareMediaPlayer(track: Track) {
         playerInteractor.prepareMediaPlayer(track)
-        mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.PREPARED,null))
+        _StatusPlayer.postValue(PlayerParams(PlayerStatus.PREPARED,null))
     }
 
     fun startPlay() {
@@ -91,21 +91,21 @@ class PlayerFragmentViewModel(
         playerParams = playerInteractor.changePlaybackProgress()
         when (playerParams!!.playerState) {
             PlayerStatus.PLAYING -> {
-                mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.PLAYING, playerParams!!.currentPosition))
+                _StatusPlayer.postValue(PlayerParams(PlayerStatus.PLAYING, playerParams!!.currentPosition))
                 progressJob = viewModelScope.launch {
                     delay(DELAY_CURRENT_TIME_300_MILLIS)
                     checkPlaybackProgressAndStatus()
                 }
             }
             PlayerStatus.PAUSE -> {
-                mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.PAUSE, playerParams!!.currentPosition))
+                _StatusPlayer.postValue(PlayerParams(PlayerStatus.PAUSE, playerParams!!.currentPosition))
                 progressJob?.cancel()
             }
             PlayerStatus.PREPARED -> {
-                mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.PREPARED, null))
+                _StatusPlayer.postValue(PlayerParams(PlayerStatus.PREPARED, null))
             }
             PlayerStatus.DEFAULT -> {
-                mutableStatusPlayer.postValue(PlayerParams(PlayerStatus.DEFAULT, null))
+                _StatusPlayer.postValue(PlayerParams(PlayerStatus.DEFAULT, null))
             }
         }
     }
@@ -118,7 +118,7 @@ class PlayerFragmentViewModel(
                     favouriteTracksInteractor.deleteTrackInDbFavourite(track)
                 }
                 track.isFavorite = false
-                mutableIsFavoriteTrack.postValue(false)
+                _IsFavoriteTrack.postValue(false)
             }
             false -> {
                 dbJob = viewModelScope.launch(Dispatchers.IO) {
@@ -126,7 +126,7 @@ class PlayerFragmentViewModel(
                     track.isFavorite = true
                     favouriteTracksInteractor.addTrackInDbFavourite(track)
                 }
-                mutableIsFavoriteTrack.postValue(true)
+                _IsFavoriteTrack.postValue(true)
             }
         }
     }
@@ -137,8 +137,8 @@ class PlayerFragmentViewModel(
                 .selectAllPlaylists()
                 .collect { playlists ->
                 when(playlists.isEmpty()) {
-                    true -> mutablePlaylistStatus.postValue(PlaylistsState.Empty)
-                    false -> mutablePlaylistStatus.postValue(PlaylistsState.Content(playlists))
+                    true -> _PlaylistStatus.postValue(PlaylistsState.Empty)
+                    false -> _PlaylistStatus.postValue(PlaylistsState.Content(playlists))
                 }
 
                 }
@@ -153,8 +153,8 @@ class PlayerFragmentViewModel(
                 .checkTrackInPlaylist(trackId)
                 .collect { trackInDb ->
                     when(trackInDb.size) {
-                        0 -> mutableStatusCheckTrackInPlaylist.postValue(emptyList())
-                        else -> mutableStatusCheckTrackInPlaylist.postValue(trackInDb)
+                        0 -> _StatusCheckTrackInPlaylist.postValue(emptyList())
+                        else -> _StatusCheckTrackInPlaylist.postValue(trackInDb)
                     }
 
                 }

@@ -15,7 +15,7 @@ class PlaylistViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     private val artworkPlaylist: ImageView = itemView.findViewById(R.id.playlist_artwork_IV)
     fun bind(item: Playlist) {
         playlistName.text = item.name
-        countTracksInPlaylist.text = item.count.toString() + " треков"
+        countTracksInPlaylist.text = itemView.context.resources.getQuantityString(R.plurals.plurals_track_count, item.count!!, item.count!!)
         Glide.with(itemView)
             .load(item.uri?.toUri())
             .placeholder(R.drawable.placeholder)

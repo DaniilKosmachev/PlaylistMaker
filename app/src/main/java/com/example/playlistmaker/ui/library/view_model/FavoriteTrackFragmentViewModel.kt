@@ -17,9 +17,9 @@ class FavoriteTrackFragmentViewModel(
 
     private var dbJob: Job? = null
 
-    private var mutableStatusFavoriteTracks = MutableLiveData<FavoriteTracksState>()
+    private var _StatusFavoriteTracks = MutableLiveData<FavoriteTracksState>()
 
-    fun getStatusFavoriteTracks(): LiveData<FavoriteTracksState> = mutableStatusFavoriteTracks
+    fun getStatusFavoriteTracks(): LiveData<FavoriteTracksState> = _StatusFavoriteTracks
 
 
     fun updateListFromDb() {
@@ -29,14 +29,14 @@ class FavoriteTrackFragmentViewModel(
                 .collect { tracks ->
                     when (tracks.isEmpty()) {
                         true -> {
-                            mutableStatusFavoriteTracks.postValue(FavoriteTracksState.Empty)
+                            _StatusFavoriteTracks.postValue(FavoriteTracksState.Empty)
                         }
 
                         false -> {
                             tracks.map { track ->
                                 track.isFavorite = true
                             }
-                            mutableStatusFavoriteTracks.postValue(FavoriteTracksState.Content(tracks))
+                            _StatusFavoriteTracks.postValue(FavoriteTracksState.Content(tracks))
                         }
                     }
                 }

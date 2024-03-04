@@ -11,16 +11,16 @@ class SettingsViewModel(
     val appThemeInteractor: AppThemeInteractor
 ): ViewModel() {
 
-    private val themeStatusMutable = MutableLiveData<Boolean>()
+    private val _themeStatus = MutableLiveData<Boolean>()
 
-    val themeStatus: LiveData<Boolean> = themeStatusMutable
+    val themeStatus: LiveData<Boolean> = _themeStatus
 
     init {
-        themeStatusMutable.value = appThemeInteractor.getStatusSwitchFromShared()
+        _themeStatus.value = appThemeInteractor.getStatusSwitchFromShared()
     }
 
     fun writeToSharedStatusThemeApp(checked: Boolean) {
-        themeStatusMutable.value = checked
+        _themeStatus.value = checked
         appThemeInteractor.writeStatusSwitchToShared(checked)
     }
 
