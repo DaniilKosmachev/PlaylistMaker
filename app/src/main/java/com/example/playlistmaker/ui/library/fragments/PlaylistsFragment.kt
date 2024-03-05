@@ -51,7 +51,9 @@ class PlaylistsFragment: Fragment() {
         observeOnStatusAllPlaylists()
         viewModel.updateListPlaylistsFromDb()
 
-        playlistsAdapter = PlaylistAdapter(playlists)
+        playlistsAdapter = PlaylistAdapter(playlists) {
+            openPlaylistFragmentAndReceivePlaylist(it)
+        }
         binding.playlistRV.adapter = playlistsAdapter
 
         playlistsAdapter?.notifyDataSetChanged()
@@ -79,7 +81,14 @@ class PlaylistsFragment: Fragment() {
         }
     }
 
+    private fun openPlaylistFragmentAndReceivePlaylist(playlist: Playlist) {
+        val bundle = Bundle()
+        bundle.putParcelable(RECEIVED_PLAYLIST, playlist)
+        findNavController().navigate(R.id.action_libraryFragment_to_playlistFragment,bundle)
+    }
+
     companion object {
         fun newInstance() = PlaylistsFragment()
+        const val RECEIVED_PLAYLIST = "RECEIVED_PLAYLIST"
     }
 }

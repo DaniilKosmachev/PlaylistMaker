@@ -5,6 +5,7 @@ import com.example.playlistmaker.data.converters.PlaylistDbConverter
 import com.example.playlistmaker.domain.db.PlaylistsRepository
 import com.example.playlistmaker.domain.library.playlists.model.Playlist
 import com.example.playlistmaker.domain.player.model.TracksInPlaylists
+import com.example.playlistmaker.domain.search.model.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -46,6 +47,15 @@ class PlaylistsRepositoryImpl(
         return flow {
             val playlistIds = appDatabase.playlistDao().checkTrackInPlaylists(trackId)
             emit(playlistIds)
+        }
+    }
+
+    override suspend fun selectAllTracksInPlaylist(playlistId: Int): Flow<List<Track>> {
+        return flow {
+            val tracks = appDatabase.playlistDao().selectAllTracksInPlaylist(playlistId)
+            emit(tracks.map {
+                tracksInPlaylistsEntity -> playlistDbConverter.mapOnTrack(tracksInPlaylistsEntity)
+            })
         }
     }
 }

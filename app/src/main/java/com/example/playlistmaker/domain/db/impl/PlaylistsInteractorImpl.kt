@@ -4,6 +4,7 @@ import com.example.playlistmaker.domain.db.PlaylistsInteractor
 import com.example.playlistmaker.domain.db.PlaylistsRepository
 import com.example.playlistmaker.domain.library.playlists.model.Playlist
 import com.example.playlistmaker.domain.player.model.TracksInPlaylists
+import com.example.playlistmaker.domain.search.model.Track
 import kotlinx.coroutines.flow.Flow
 
 class PlaylistsInteractorImpl (
@@ -36,6 +37,10 @@ class PlaylistsInteractorImpl (
         trackId: Int
     ): Flow<List<Int>> {
         return repository.checkTrackInPlaylist(trackId)
+    }
+
+    override suspend fun selectAllTracksInPlaylist(playlistId: Int): Flow<List<Track>> {
+        return repository.selectAllTracksInPlaylist(playlistId)
     }
 
 }

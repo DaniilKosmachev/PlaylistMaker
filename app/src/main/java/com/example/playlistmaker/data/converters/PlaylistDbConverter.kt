@@ -48,4 +48,20 @@ class PlaylistDbConverter(private var gson: Gson) {
             playlistId = tracksInPlaylists.playlistId
         )
     }
+
+    fun mapOnTrack(tracksInPlaylistsEntity: TracksInPlaylistsEntity): Track {
+        var track = gson.fromJson(tracksInPlaylistsEntity.track, Track::class.java)
+        return Track(
+            trackId = track.trackId,
+            artworkUrl100 = track.artworkUrl100,
+            trackName = track.trackName,
+            artistName = track.artistName,
+            collectionName = track.collectionName,
+            releaseDate = track.releaseDate,
+            primaryGenreName = track.primaryGenreName,
+            country = track.country,
+            trackTimeMillis = track.trackTimeMillis,
+            previewUrl = track.previewUrl
+        )
+    }
 }
