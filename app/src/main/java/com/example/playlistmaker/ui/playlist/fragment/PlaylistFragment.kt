@@ -16,6 +16,7 @@ import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.playlist.view_model.PlaylistFragmentViewModel
 import com.example.playlistmaker.ui.search.TrackAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.concurrent.TimeUnit
 
 class PlaylistFragment: Fragment() {
 
@@ -39,15 +40,13 @@ class PlaylistFragment: Fragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.selectAllTrackInPlaylist(selectablePlaylist?.id!!)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         selectablePlaylist = arguments?.getParcelable<Playlist>(RECEIVED_PLAYLIST) as Playlist
+
+        viewModel.selectAllTrackInPlaylist(selectablePlaylist?.id!!)
 
         selectablePlaylist!!.id?.let {
             viewModel.selectAllTrackInPlaylist(it)
@@ -63,6 +62,7 @@ class PlaylistFragment: Fragment() {
                 is FavoriteTracksState.Content -> {
                     tracksInPlaylist.clear()
                     tracksInPlaylist.addAll(it.tracks)
+                    binding.durationOfPlaylistTV.text = requireContext().resources.getQuantityString(R.plurals.plurals_tracks_duration, durationAllTracks(it.tracks).toInt(), durationAllTracks(it.tracks))
                     tracksAdapter!!.notifyDataSetChanged()
                     binding.bottomTracksRV.isVisible = true
                 }
@@ -79,11 +79,20 @@ class PlaylistFragment: Fragment() {
 
     }
 
+    private fun durationAllTracks(tracks: List<Track>): Long {
+        var sumLong = 0L
+        tracks.forEach {
+            track -> sumLong += track.trackTimeMillis ?: 0
+        }
+        var minutes = TimeUnit.MILLISECONDS.toMinutes(sumLong)
+        return minutes
+    }
+
     private fun render(playlist: Playlist) {
         binding.nameOfPlaylistTV.text = playlist.name
         binding.descriptionOfPlaylistTV.text = if (playlist.description.isNullOrEmpty()) "Нет данных" else playlist.description
-        binding.countOfTracksInPlaylistTV.text = requireContext().resources.getQuantityString(R.plurals.plurals_track_count, tracksInPlaylist.count(), tracksInPlaylist.count())
-        binding.durationOfPlaylistTV.text = "ТЕСТ"
+        binding.countOfTracksInPlaylistTV.text = requireContext().resources.getQuantityString(R.plurals.plurals_track_count,
+            selectablePlaylist?.count ?: 0, selectablePlaylist?.count ?: 0)
         Glide.with(binding.coverArtWorkImageIV)
             .load(selectablePlaylist?.uri?.toUri())
             .placeholder(R.drawable.placeholder)

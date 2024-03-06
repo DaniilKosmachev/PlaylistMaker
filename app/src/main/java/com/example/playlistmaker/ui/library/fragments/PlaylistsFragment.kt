@@ -18,8 +18,12 @@ class PlaylistsFragment: Fragment() {
 
     private var playlists = ArrayList<Playlist>()
 
+    //private var tracksInPlaylists = ArrayList<TracksInPlaylists>()
+
     private var _binding: FragmentPlaylistsBinding? = null
     private val binding get() = _binding!!
+
+    //private var bundleForListTracks: Bundle? = null
 
     private val viewModel by viewModel<PlaylistsFragmentViewModel>()
 

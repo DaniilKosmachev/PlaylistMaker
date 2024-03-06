@@ -112,7 +112,32 @@
         android:id="@+id/count_of_tracks_in_playlist_TV"
         app:layout_constraintTop_toBottomOf="@id/description_of_playlist_TV"
         app:layout_constraintStart_toEndOf="@id/duration_of_playlist_TV"/>
+
+    <ImageButton
+        android:id="@+id/shareButton_IB"
+        style="@style/settings_activity_linear_layout_style_top_image_and_text"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:src="@drawable/share"
+        app:layout_constraintTop_toBottomOf="@id/duration_of_playlist_TV"
+        app:tint="@color/black" />
+
+    <ImageButton
+        android:id="@+id/menuButton_IB"
+        style="@style/settings_activity_linear_layout_style_top_image_and_text"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:src="@drawable/more_24"
+        app:layout_constraintTop_toBottomOf="@id/duration_of_playlist_TV"
+        app:layout_constraintStart_toEndOf="@id/shareButton_IB"
+        app:tint="@color/black" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
     <View android:id="@+id/overlayBottomSheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
