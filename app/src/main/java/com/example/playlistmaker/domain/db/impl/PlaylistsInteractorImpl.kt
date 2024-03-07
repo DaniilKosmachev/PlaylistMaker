@@ -43,4 +43,8 @@ class PlaylistsInteractorImpl (
         return repository.selectAllTracksInPlaylist(playlistId)
     }
 
+    override suspend fun removeTrackFromPlaylistTransaction(trackId: Int, playlistId: Int) {
+        repository.removeTrackFromPlaylistTransaction(trackId, playlistId)
+    }
+
 }

@@ -34,6 +34,20 @@ interface PlaylistDao {
     @Query("SELECT playlistId FROM tracks_in_playlists_table WHERE trackId = :trackId")
     fun checkTrackInPlaylists(trackId: Int): List<Int>
 
+
     @Query("SELECT * FROM tracks_in_playlists_table WHERE playlistId = :playListId")
     fun selectAllTracksInPlaylist(playListId: Int): List<TracksInPlaylistsEntity>
+
+
+    @Query("DELETE FROM tracks_in_playlists_table WHERE trackId = :trackId and playlistId = :playListId")
+    fun removeTrackFromPlaylist(trackId: Int, playListId: Int)
+
+    @Transaction
+    fun deleteTrackFromDbTransaction(
+        trackId: Int,
+        playListId: Int
+    ) {
+        removeTrackFromPlaylist(trackId,playListId)
+        updateTrackCountInPlaylist(playListId)
+    }
 }

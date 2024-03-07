@@ -21,4 +21,6 @@ interface PlaylistsInteractor {
 
     suspend fun selectAllTracksInPlaylist(playlistId: Int): Flow<List<Track>>
 
+    suspend fun removeTrackFromPlaylistTransaction(trackId: Int, playlistId: Int)
+
 }

@@ -142,7 +142,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#99000000"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <LinearLayout
         style="@style/bottom_sheet"
@@ -166,11 +166,26 @@
             android:id="@+id/bottom_tracks_RV"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/margin_12"
+            android:layout_marginTop="16dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="vertical"
             android:clickable="true"
             tools:listitem="@layout/track_view"
-            />
+            android:visibility="gone" />
+
+        <TextView
+        style="@style/main_text_view_audio_player_activity"
+        android:text="Нет добавленных треков"
+        android:fontFamily="@font/ys_display_regular"
+        android:textSize="18dp"
+        android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:id="@+id/empty_tracks_list_TV"/>
+
+
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

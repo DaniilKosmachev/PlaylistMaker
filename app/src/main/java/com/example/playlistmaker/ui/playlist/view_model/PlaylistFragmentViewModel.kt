@@ -33,4 +33,11 @@ class PlaylistFragmentViewModel(
                 }
         }
     }
+
+    fun deleteTrackFromDb(trackId: Int, playlistId: Int) {
+        dbJob = viewModelScope.launch(Dispatchers.IO) {
+            playlistsInteractor.removeTrackFromPlaylistTransaction(trackId, playlistId)
+            selectAllTrackInPlaylist(playlistId)
+        }
+    }
 }

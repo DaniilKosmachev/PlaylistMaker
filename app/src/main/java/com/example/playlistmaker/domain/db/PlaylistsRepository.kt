@@ -20,4 +20,6 @@ interface PlaylistsRepository {
     suspend fun checkTrackInPlaylist(trackId: Int): Flow<List<Int>>
 
     suspend fun selectAllTracksInPlaylist(playlistId: Int): Flow<List<Track>>
+
+    suspend fun removeTrackFromPlaylistTransaction(trackId: Int, playlistId: Int)
 }
