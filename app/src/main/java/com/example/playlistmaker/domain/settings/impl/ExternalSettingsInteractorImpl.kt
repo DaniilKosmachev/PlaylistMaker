@@ -16,4 +16,8 @@ class ExternalSettingsInteractorImpl(private val repository: ExternalSettingsRep
     override fun userContract() {
         repository.userContract()
     }
+
+    override fun sharePlaylist(messageString: String) {
+        repository.sharePlaylist(messageString)
+    }
 }

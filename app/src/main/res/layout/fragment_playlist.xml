@@ -151,7 +151,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="180dp"
+        app:behavior_peekHeight="240dp"
         android:orientation="vertical">
 
         <View
@@ -186,6 +186,66 @@
         android:maxLines="1"
         android:id="@+id/empty_tracks_list_TV"/>
 
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/bottom_sheet"
+        android:id="@+id/bottom_sheet_playlist_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="320dp"
+        android:orientation="vertical">
+
+        <View
+            style="@style/slider_item"
+            android:layout_width="50dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/bottom_playlist_menu_RV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="vertical"
+            android:clickable="true"
+            tools:itemCount="1"
+            tools:listitem="@layout/playlist_bottom_view"
+            android:visibility="visible"/>
+        <LinearLayout
+            android:id="@+id/linearSharePlaylist"
+            style="@style/settings_activity_linear_layout_style">
+
+            <TextView
+                style="@style/settings_activity_text_style"
+                android:text="Поделиться"
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/editPlaylistInformation"
+            style="@style/settings_activity_linear_layout_style">
+
+            <TextView
+                style="@style/settings_activity_text_style"
+                android:text="Редактировать информацию"
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/deletePlaylist"
+            style="@style/settings_activity_linear_layout_style">
+
+            <TextView
+                style="@style/settings_activity_text_style"
+                android:text="Удалить плейлист"
+                android:textSize="16sp"/>
+        </LinearLayout>
 
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

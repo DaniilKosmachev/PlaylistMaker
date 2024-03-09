@@ -23,4 +23,6 @@ interface PlaylistsInteractor {
 
     suspend fun removeTrackFromPlaylistTransaction(trackId: Int, playlistId: Int)
 
+    suspend fun removePlaylistFromDb(playlistId: Int)
+
 }

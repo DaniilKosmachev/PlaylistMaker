@@ -39,4 +39,12 @@ class ExternalSettingsRepositoryImpl(private val context: Context): ExternalSett
         }
     }
 
+    override fun sharePlaylist(messageString: String) {
+            Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, messageString)
+                context.startActivity(this.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            }
+    }
+
 }

@@ -1,9 +1,11 @@
 package com.example.playlistmaker.ui.playlist.fragment
 
+import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -14,10 +16,13 @@ import com.example.playlistmaker.databinding.FragmentPlaylistBinding
 import com.example.playlistmaker.domain.library.favorite_tracks.model.FavoriteTracksState
 import com.example.playlistmaker.domain.library.playlists.model.Playlist
 import com.example.playlistmaker.domain.search.model.Track
+import com.example.playlistmaker.ui.library.model.PlaylistBottomSheetAdapter
 import com.example.playlistmaker.ui.playlist.view_model.PlaylistFragmentViewModel
 import com.example.playlistmaker.ui.search.TrackAdapter
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class PlaylistFragment: Fragment() {
@@ -30,6 +35,8 @@ class PlaylistFragment: Fragment() {
     private val viewModel by viewModel<PlaylistFragmentViewModel>()
 
     private var tracksAdapter: TrackAdapter? = null
+
+    private var playlistAdapter: PlaylistBottomSheetAdapter? = null
 
     private var selectablePlaylist: Playlist? = null
 
@@ -80,6 +87,11 @@ class PlaylistFragment: Fragment() {
             }
         }
 
+        playlistAdapter = PlaylistBottomSheetAdapter(listOf(selectablePlaylist!!)) {
+
+        }
+        binding.bottomPlaylistMenuRV.adapter = playlistAdapter
+
         tracksAdapter = TrackAdapter(tracksInPlaylist, {
             openAudioPlayerAndReceiveTrackInfo(it)
         }, {
@@ -88,8 +100,57 @@ class PlaylistFragment: Fragment() {
 
         binding.bottomTracksRV.adapter = tracksAdapter
 
+        binding.shareButtonIB.setOnClickListener {
+            sharePlaylist()
+        }
+
+        var bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetPlaylistMenu).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        binding.menuButtonIB.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+        binding.linearSharePlaylist.setOnClickListener {
+            sharePlaylist()
+        }
+
+        binding.deletePlaylist.setOnClickListener {
+            deletePlaylist()
+        }
+
         render(selectablePlaylist!!)
 
+    }
+
+    private fun sharePlaylist() {
+        if (!tracksInPlaylist.isNullOrEmpty()) {
+            var message =
+                "${selectablePlaylist!!.name}" +
+                        "\n${if (selectablePlaylist!!.description.isNullOrEmpty()) "Нет описания" else selectablePlaylist!!.description}" +
+                        "\n${requireContext().resources.getQuantityString(R.plurals.plurals_track_count, tracksInPlaylist.size, tracksInPlaylist.size)}"
+            tracksInPlaylist.forEach { track ->
+                message += "\n ${tracksInPlaylist.indexOf(track)+1}. ${track.artistName} - ${track.trackName} (${SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)})"
+            }
+            viewModel.sharePlaylist(message)
+        } else {
+            Toast.makeText(requireContext(), "В этом плейлисте нет списка треков, которым можно поделиться", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun deletePlaylist() {
+        informationDialog = MaterialAlertDialogBuilder(requireContext()).apply {
+            setTitle("Хотите удалить плейлист \"${selectablePlaylist!!.name}\"?")
+            setPositiveButton("Да") { _,_ ->
+                viewModel.deletePlaylist(selectablePlaylist!!.id!!)
+                findNavController().navigateUp()
+            }
+            setNegativeButton("Нет") { _,_ ->
+
+            }
+        }
+        informationDialog!!.show()
     }
 
     private fun durationAllTracks(tracks: List<Track>): Long {

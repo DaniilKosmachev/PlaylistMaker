@@ -50,4 +50,16 @@ interface PlaylistDao {
         removeTrackFromPlaylist(trackId,playListId)
         updateTrackCountInPlaylist(playListId)
     }
+
+    @Query("DELETE FROM TRACKS_IN_PLAYLISTS_TABLE WHERE playlistId = :playListId")
+    fun removeAllTracksInPlaylist(playListId: Int)
+
+    @Query("DELETE FROM playlists_table where playlist_id = :playListId")
+    fun removePlaylist(playListId: Int)
+
+    @Transaction
+    fun deletePlaylistTransaction(playListId: Int) {
+        removeAllTracksInPlaylist(playListId)
+        removePlaylist(playListId)
+    }
 }

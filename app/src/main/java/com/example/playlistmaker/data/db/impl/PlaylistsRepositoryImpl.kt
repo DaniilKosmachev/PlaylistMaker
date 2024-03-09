@@ -62,4 +62,8 @@ class PlaylistsRepositoryImpl(
     override suspend fun removeTrackFromPlaylistTransaction(trackId: Int, playlistId: Int) {
         appDatabase.playlistDao().deleteTrackFromDbTransaction(trackId, playlistId)
     }
+
+    override suspend fun removePlaylistFromDb(playlistId: Int) {
+        appDatabase.playlistDao().deletePlaylistTransaction(playlistId)
+    }
 }
