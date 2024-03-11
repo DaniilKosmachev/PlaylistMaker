@@ -47,7 +47,7 @@ interface PlaylistDao {
         trackId: Int,
         playListId: Int
     ) {
-        removeTrackFromPlaylist(trackId,playListId)
+        removeTrackFromPlaylist(trackId, playListId)
         updateTrackCountInPlaylist(playListId)
     }
 
@@ -65,4 +65,8 @@ interface PlaylistDao {
 
     @Query("UPDATE playlists_table SET playlist_name = :name, playlist_description = :description,  playlist_artwork_uri = :imageUri WHERE playlist_id = :playListId")
     fun updatePlaylistInfo(playListId: Int, name: String, description: String?, imageUri: String?)
+
+
+    @Query("SELECT * FROM PLAYLISTS_TABLE WHERE playlist_id = :playListId")
+    fun updatePlaylistInfo(playListId: Int): PlaylistEntity
 }

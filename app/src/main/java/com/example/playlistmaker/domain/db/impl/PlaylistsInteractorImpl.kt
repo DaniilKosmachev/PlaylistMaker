@@ -60,4 +60,8 @@ class PlaylistsInteractorImpl (
         repository.editPlaylistInfo(playlistId, name, description, imageUri)
     }
 
+    override suspend fun updatePlaylistInfo(playlistId: Int): Flow<Playlist> {
+        return repository.updatePlaylistInfo(playlistId)
+    }
+
 }

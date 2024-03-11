@@ -75,4 +75,11 @@ class PlaylistsRepositoryImpl(
     ) {
         appDatabase.playlistDao().updatePlaylistInfo(playlistId, name, description, imageUri)
     }
+
+    override suspend fun updatePlaylistInfo(playlistId: Int): Flow<Playlist> {
+        return flow {
+            val playlistEntity = appDatabase.playlistDao().updatePlaylistInfo(playlistId)
+            emit(playlistDbConverter.map(playlistEntity))
+        }
+    }
 }

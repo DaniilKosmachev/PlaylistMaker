@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.db.PlaylistsInteractor
 import com.example.playlistmaker.domain.library.favorite_tracks.model.FavoriteTracksState
+import com.example.playlistmaker.domain.library.playlists.model.PlaylistsState
 import com.example.playlistmaker.domain.settings.ExternalSettingsInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,6 +21,12 @@ class PlaylistFragmentViewModel(
 
     fun statusTracksInPlaylist(): LiveData<FavoriteTracksState> {
         return _StatusTracksInPlaylist
+    }
+
+    private var _StatusUpdatedPlaylist = MutableLiveData<PlaylistsState>()
+
+    fun statusUpdatedPlaylist(): LiveData<PlaylistsState> {
+        return _StatusUpdatedPlaylist
     }
 
     var dbJob: Job? = null
@@ -50,6 +57,16 @@ class PlaylistFragmentViewModel(
     fun deletePlaylist(playlistId: Int) {
         dbJob = viewModelScope.launch(Dispatchers.IO) {
             playlistsInteractor.removePlaylistFromDb(playlistId)
+        }
+    }
+
+    fun updatePlaylistInfo(playlistId: Int) {
+        dbJob = viewModelScope.launch(Dispatchers.IO) {
+            playlistsInteractor
+                .updatePlaylistInfo(playlistId)
+                .collect {
+                    _StatusUpdatedPlaylist.postValue(PlaylistsState.Content(listOf(it)))
+                }
         }
     }
 

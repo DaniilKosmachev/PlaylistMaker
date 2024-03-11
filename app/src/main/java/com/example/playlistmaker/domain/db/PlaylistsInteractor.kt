@@ -27,4 +27,6 @@ interface PlaylistsInteractor {
 
     suspend fun editPlaylistInfo(playlistId: Int, name: String, description: String?, imageUri: String?)
 
+    suspend fun updatePlaylistInfo(playlistId: Int): Flow<Playlist>
+
 }

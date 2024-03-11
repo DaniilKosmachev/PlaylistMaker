@@ -15,6 +15,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistBinding
 import com.example.playlistmaker.domain.library.favorite_tracks.model.FavoriteTracksState
 import com.example.playlistmaker.domain.library.playlists.model.Playlist
+import com.example.playlistmaker.domain.library.playlists.model.PlaylistsState
 import com.example.playlistmaker.domain.search.model.Track
 import com.example.playlistmaker.ui.library.model.PlaylistBottomSheetAdapter
 import com.example.playlistmaker.ui.playlist.view_model.PlaylistFragmentViewModel
@@ -62,6 +63,27 @@ class PlaylistFragment: Fragment() {
         selectablePlaylist!!.id?.let {
             viewModel.selectAllTrackInPlaylist(it)
         }
+
+        viewModel.statusUpdatedPlaylist().observe(viewLifecycleOwner) {
+            when(it) {
+                is PlaylistsState.Content -> {
+                    render(it.playlists.get(0))
+                    selectablePlaylist = it.playlists[0]
+                    Glide.with(binding.coverArtWorkImageIV)
+                        .load(selectablePlaylist?.uri?.toUri())
+                        .placeholder(R.drawable.placeholder)
+                        .centerCrop()
+                        .into(binding.coverArtWorkImageIV)
+                }
+
+                else -> {
+
+                }
+            }
+        }
+
+        viewModel.updatePlaylistInfo(selectablePlaylist!!.id!!)
+
 
 
         viewModel.statusTracksInPlaylist().observe(viewLifecycleOwner) {
@@ -190,11 +212,6 @@ class PlaylistFragment: Fragment() {
     private fun render(playlist: Playlist) {
         binding.nameOfPlaylistTV.text = playlist.name
         binding.descriptionOfPlaylistTV.text = if (playlist.description.isNullOrEmpty()) "Нет данных" else playlist.description
-        Glide.with(binding.coverArtWorkImageIV)
-            .load(selectablePlaylist?.uri?.toUri())
-            .placeholder(R.drawable.placeholder)
-            .centerCrop()
-            .into(binding.coverArtWorkImageIV)
     }
 
     private fun openAudioPlayerAndReceiveTrackInfo(track: Track) {
