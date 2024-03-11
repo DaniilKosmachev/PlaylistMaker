@@ -79,13 +79,15 @@ class EditPlaylistFragment: CreatePlaylistFragment() {
         }
 
 
-        if (!receivedPlaylist!!.uri.isNullOrEmpty()) binding.playlistImageIV.apply {
+        if (!receivedPlaylist!!.uri.equals("null")) binding.playlistImageIV.apply {
             setImageURI(receivedPlaylist!!.uri!!.toUri())
             scaleType = ImageView.ScaleType.CENTER_CROP
             imageUri = receivedPlaylist!!.uri!!.toUri()
         }
         else {
-            binding.playlistImageIV.setImageResource(R.drawable.add_image)
+            binding.playlistImageIV.apply {
+                setImageResource(R.drawable.add_image)
+            }
         }
 
 
