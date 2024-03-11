@@ -66,4 +66,13 @@ class PlaylistsRepositoryImpl(
     override suspend fun removePlaylistFromDb(playlistId: Int) {
         appDatabase.playlistDao().deletePlaylistTransaction(playlistId)
     }
+
+    override suspend fun editPlaylistInfo(
+        playlistId: Int,
+        name: String,
+        description: String?,
+        imageUri: String?
+    ) {
+        appDatabase.playlistDao().updatePlaylistInfo(playlistId, name, description, imageUri)
+    }
 }

@@ -51,4 +51,13 @@ class PlaylistsInteractorImpl (
         repository.removePlaylistFromDb(playlistId)
     }
 
+    override suspend fun editPlaylistInfo(
+        playlistId: Int,
+        name: String,
+        description: String?,
+        imageUri: String?
+    ) {
+        repository.editPlaylistInfo(playlistId, name, description, imageUri)
+    }
+
 }

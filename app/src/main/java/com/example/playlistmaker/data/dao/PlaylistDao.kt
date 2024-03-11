@@ -62,4 +62,7 @@ interface PlaylistDao {
         removeAllTracksInPlaylist(playListId)
         removePlaylist(playListId)
     }
+
+    @Query("UPDATE playlists_table SET playlist_name = :name, playlist_description = :description,  playlist_artwork_uri = :imageUri WHERE playlist_id = :playListId")
+    fun updatePlaylistInfo(playListId: Int, name: String, description: String?, imageUri: String?)
 }

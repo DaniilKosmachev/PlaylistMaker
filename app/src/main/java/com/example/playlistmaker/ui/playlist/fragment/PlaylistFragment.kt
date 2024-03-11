@@ -64,7 +64,6 @@ class PlaylistFragment: Fragment() {
         }
 
 
-
         viewModel.statusTracksInPlaylist().observe(viewLifecycleOwner) {
             when(it) {
                 is FavoriteTracksState.Empty -> {
@@ -83,6 +82,10 @@ class PlaylistFragment: Fragment() {
                     tracksAdapter!!.notifyDataSetChanged()
                     binding.bottomTracksRV.isVisible = true
                     binding.emptyTracksListTV.isVisible = false
+                }
+
+                else -> {
+
                 }
             }
         }
@@ -120,8 +123,17 @@ class PlaylistFragment: Fragment() {
             deletePlaylist()
         }
 
-        render(selectablePlaylist!!)
+        binding.editPlaylistInformation.setOnClickListener {
+            openEditPlaylistFragmentAndReceivedPlaylist()
+        }
 
+        render(selectablePlaylist!!)
+    }
+
+    private fun openEditPlaylistFragmentAndReceivedPlaylist() {
+        val bundle = Bundle()
+        bundle.putParcelable(RECEIVED_PLAYLIST, selectablePlaylist!!)
+        findNavController().navigate(R.id.action_playlistFragment_to_editPlaylistFragment, bundle)
     }
 
     private fun sharePlaylist() {

@@ -25,4 +25,6 @@ interface PlaylistsInteractor {
 
     suspend fun removePlaylistFromDb(playlistId: Int)
 
+    suspend fun editPlaylistInfo(playlistId: Int, name: String, description: String?, imageUri: String?)
+
 }
