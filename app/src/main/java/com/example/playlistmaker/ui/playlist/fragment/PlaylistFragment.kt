@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.playlist.fragment
 
-import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,13 +16,13 @@ import com.example.playlistmaker.domain.library.favorite_tracks.model.FavoriteTr
 import com.example.playlistmaker.domain.library.playlists.model.Playlist
 import com.example.playlistmaker.domain.library.playlists.model.PlaylistsState
 import com.example.playlistmaker.domain.search.model.Track
+import com.example.playlistmaker.domain.settings.model.StatusSharePlaylist
 import com.example.playlistmaker.ui.library.model.PlaylistBottomSheetAdapter
 import com.example.playlistmaker.ui.playlist.view_model.PlaylistFragmentViewModel
 import com.example.playlistmaker.ui.search.TrackAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class PlaylistFragment: Fragment() {
@@ -129,7 +128,7 @@ class PlaylistFragment: Fragment() {
             sharePlaylist()
         }
 
-        var bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetPlaylistMenu).apply {
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetPlaylistMenu).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
         }
 
@@ -149,6 +148,21 @@ class PlaylistFragment: Fragment() {
             openEditPlaylistFragmentAndReceivedPlaylist()
         }
 
+        binding.backButtonIB.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        viewModel.statusSharePlaylist().observe(viewLifecycleOwner) {
+            when(it) {
+                StatusSharePlaylist.OK -> {
+
+                }
+                StatusSharePlaylist.ERROR -> {
+                    Toast.makeText(requireContext(), getString(R.string.No_tracks_in_playlist), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
         render(selectablePlaylist!!)
     }
 
@@ -159,23 +173,12 @@ class PlaylistFragment: Fragment() {
     }
 
     private fun sharePlaylist() {
-        if (!tracksInPlaylist.isNullOrEmpty()) {
-            var message =
-                "${selectablePlaylist!!.name}" +
-                        "\n${if (selectablePlaylist!!.description.isNullOrEmpty()) "Нет описания" else selectablePlaylist!!.description}" +
-                        "\n${requireContext().resources.getQuantityString(R.plurals.plurals_track_count, tracksInPlaylist.size, tracksInPlaylist.size)}"
-            tracksInPlaylist.forEach { track ->
-                message += "\n ${tracksInPlaylist.indexOf(track)+1}. ${track.artistName} - ${track.trackName} (${SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)})"
-            }
-            viewModel.sharePlaylist(message)
-        } else {
-            Toast.makeText(requireContext(), "В этом плейлисте нет списка треков, которым можно поделиться", Toast.LENGTH_SHORT).show()
-        }
+            selectablePlaylist?.let { viewModel.sharePlaylist(it, tracksInPlaylist) }
     }
 
     private fun deletePlaylist() {
         informationDialog = MaterialAlertDialogBuilder(requireContext()).apply {
-            setTitle("Хотите удалить плейлист \"${selectablePlaylist!!.name}\"?")
+            setTitle(getString(R.string.wont_delete_playlist, selectablePlaylist!!.name))
             setPositiveButton("Да") { _,_ ->
                 viewModel.deletePlaylist(selectablePlaylist!!.id!!)
                 findNavController().navigateUp()
@@ -198,7 +201,7 @@ class PlaylistFragment: Fragment() {
 
     private fun showDialogAlet(track: Track) {
         informationDialog = MaterialAlertDialogBuilder(requireContext()).apply {
-            setTitle("Хотите удалить трек?")
+            setTitle(getString(R.string.wont_delete_track))
             setPositiveButton("Да") { _,_ ->
                 selectablePlaylist?.id?.let { viewModel.deleteTrackFromDb(track.trackId, it) }
             }

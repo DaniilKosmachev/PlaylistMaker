@@ -2,6 +2,7 @@ package com.example.playlistmaker.ui.root
 
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -26,9 +27,11 @@ class RootActivity: AppCompatActivity() {
             when(distination.id) {
                 R.id.createPlaylistFragment, R.id.audioPlayerFragment, R.id.playlistFragment, R.id.editPlaylistFragment -> {
                     binding.bottomNavigationView.visibility = View.GONE
+                    window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
                 }
                 else -> {
                     binding.bottomNavigationView.visibility = View.VISIBLE
+                    window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
                 }
             }
         }

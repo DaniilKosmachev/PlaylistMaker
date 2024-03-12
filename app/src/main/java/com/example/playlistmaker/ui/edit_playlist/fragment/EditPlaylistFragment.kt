@@ -6,9 +6,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
@@ -31,14 +29,6 @@ class EditPlaylistFragment: CreatePlaylistFragment() {
     private var receivedPlaylist: Playlist? = null
 
     private val viewModel by viewModel<EditPlaylistViewModel>()
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -67,19 +57,25 @@ class EditPlaylistFragment: CreatePlaylistFragment() {
         }
 
         binding.createB.setOnClickListener {
-            var name = binding.nameET.text.toString()
-            var description = binding.descriptionET.text.toString()
+            val name = binding.nameET.text.toString()
+            val description = binding.descriptionET.text.toString()
             if (imageUri != null) {
                 saveImageToPrivateStorage(imageUri!!, name)
             }
-            if (!name.isNullOrEmpty()) {
-                viewModel.editNewPlaylist(receivedPlaylist!!.id!!, name, description, imageUri.toString())
+            if (name.isNotEmpty()) {
+                receivedPlaylist?.id?.let {
+                        it1 -> viewModel.editNewPlaylist(it1, name, description, imageUri.toString())
+                }
             }
             findNavController().navigateUp()
         }
 
+        binding.backButtonIB.setOnClickListener {
+            findNavController().navigateUp()
+        }
 
-        if (!receivedPlaylist!!.uri.equals("null")) binding.playlistImageIV.apply {
+
+        if (receivedPlaylist?.uri != null) binding.playlistImageIV.apply {
             setImageURI(receivedPlaylist!!.uri!!.toUri())
             scaleType = ImageView.ScaleType.CENTER_CROP
             imageUri = receivedPlaylist!!.uri!!.toUri()
@@ -91,8 +87,8 @@ class EditPlaylistFragment: CreatePlaylistFragment() {
         }
 
 
-        binding.createB.text = "Сохранить"
-        binding.newPlaylistTV.text = "Редактировать"
+        binding.createB.text = getString(R.string.save_button)
+        binding.newPlaylistTV.text = getString(R.string.edit_playlist)
         binding.nameET.setText(receivedPlaylist!!.name)
         if (receivedPlaylist?.description.isNullOrEmpty()) binding.descriptionET.setText("") else binding.descriptionET.setText(receivedPlaylist!!.description)
 
@@ -101,7 +97,7 @@ class EditPlaylistFragment: CreatePlaylistFragment() {
     override fun saveImageToPrivateStorage(uri: Uri, nameOfPlaylist: String) {
 
         val filePath = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-            CreatePlaylistFragment.NAME_OF_DIR
+            NAME_OF_DIR
         )
 
         if (!filePath.exists()) {
@@ -133,4 +129,5 @@ class EditPlaylistFragment: CreatePlaylistFragment() {
     companion object {
         const val NAME_OF_DIR = "playlist_pick"
     }
+
 }

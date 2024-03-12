@@ -110,7 +110,7 @@ open class CreatePlaylistFragment: Fragment() {
                         null,
                         name = name,
                         description = description,
-                        uri = imageUri.toString(),
+                        uri = if (imageUri != null) imageUri.toString() else null,
                         "",
                         0
                         )

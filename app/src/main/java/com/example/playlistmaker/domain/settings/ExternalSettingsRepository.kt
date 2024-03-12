@@ -8,5 +8,5 @@ interface ExternalSettingsRepository {
 
     fun userContract()
 
-    fun sharePlaylist(messageText: String)
+    fun sharePlaylist(mainPlaylistInfo: String,trackCount: Int, formattingListTracks: String)
 }

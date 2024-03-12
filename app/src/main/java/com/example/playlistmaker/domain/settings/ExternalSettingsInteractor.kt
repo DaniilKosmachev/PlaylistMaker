@@ -7,5 +7,5 @@ interface ExternalSettingsInteractor {
 
     fun userContract()
 
-    fun sharePlaylist(messageString: String)
+    fun sharePlaylist(mainPlaylistInfo: String,trackCount: Int, formattingListTracks: String)
 }
