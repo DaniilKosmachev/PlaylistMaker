@@ -35,7 +35,7 @@ interface PlaylistDao {
     fun checkTrackInPlaylists(trackId: Int): List<Int>
 
 
-    @Query("SELECT * FROM tracks_in_playlists_table WHERE playlistId = :playListId")
+    @Query("SELECT * FROM tracks_in_playlists_table WHERE playlistId = :playListId ORDER BY id desc")
     fun selectAllTracksInPlaylist(playListId: Int): List<TracksInPlaylistsEntity>
 
 
