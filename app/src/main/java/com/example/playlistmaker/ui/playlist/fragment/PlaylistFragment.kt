@@ -73,6 +73,8 @@ class PlaylistFragment: Fragment() {
                         .placeholder(R.drawable.placeholder)
                         .fitCenter()
                         .into(binding.coverArtWorkImageIV)
+                    binding.backButtonIB.bringToFront()
+                    binding.backButtonIB.setBackgroundResource(R.drawable.round_corners_full)
                 }
 
                 else -> {

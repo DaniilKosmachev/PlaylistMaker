@@ -25,7 +25,6 @@
         app:layout_constraintGuide_begin="360dp"/>
 
     <ImageButton
-        android:foregroundGravity="top"
         android:id="@+id/backButton_IB"
         style="@style/settings_activity_linear_layout_style_top_image_and_text"
         android:layout_gravity="center"
@@ -139,8 +138,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#99000000"
-        android:visibility="gone"/>
-
+        android:visibility="visible"/>
     <LinearLayout
         style="@style/bottom_sheet"
         android:id="@+id/bottom_sheet_tracks"
@@ -192,9 +190,9 @@
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         app:behavior_hideable="true"
-        app:behavior_peekHeight="320dp"
+        app:behavior_peekHeight="250dp"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <View
             style="@style/slider_item"
@@ -216,7 +214,8 @@
             android:visibility="visible"/>
         <LinearLayout
             android:id="@+id/linearSharePlaylist"
-            style="@style/settings_activity_linear_layout_style">
+            style="@style/settings_activity_linear_layout_style"
+            android:layout_height="wrap_content">
 
             <TextView
                 style="@style/settings_activity_text_style"
