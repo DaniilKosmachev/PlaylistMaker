@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
@@ -41,6 +42,8 @@ class PlaylistFragment: Fragment() {
     private var selectablePlaylist: Playlist? = null
 
     private var informationDialog: MaterialAlertDialogBuilder? = null
+
+    private var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -130,12 +133,12 @@ class PlaylistFragment: Fragment() {
             sharePlaylist()
         }
 
-        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetPlaylistMenu).apply {
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetPlaylistMenu).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
         }
 
         binding.menuButtonIB.setOnClickListener {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
         binding.linearSharePlaylist.setOnClickListener {
@@ -157,10 +160,11 @@ class PlaylistFragment: Fragment() {
         viewModel.statusSharePlaylist().observe(viewLifecycleOwner) {
             when(it) {
                 StatusSharePlaylist.OK -> {
-
+                    bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
                 }
                 StatusSharePlaylist.ERROR -> {
                     Toast.makeText(requireContext(), getString(R.string.No_tracks_in_playlist), Toast.LENGTH_SHORT).show()
+                    bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
                 }
             }
         }
@@ -197,7 +201,7 @@ class PlaylistFragment: Fragment() {
         tracks.forEach {
             track -> sumLong += track.trackTimeMillis ?: 0
         }
-        var minutes = TimeUnit.MILLISECONDS.toMinutes(sumLong)
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(sumLong)
         return minutes
     }
 
