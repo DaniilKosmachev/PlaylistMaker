@@ -25,6 +25,7 @@
         app:layout_constraintGuide_begin="360dp"/>
 
     <ImageButton
+        android:foregroundGravity="top"
         android:id="@+id/backButton_IB"
         style="@style/settings_activity_linear_layout_style_top_image_and_text"
         android:layout_gravity="center"
@@ -39,26 +40,28 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@id/bottom_guide_for_artwork_image"
+        android:layout_marginBottom="18dp"
+        android:layout_marginHorizontal="1dp"
+        app:layout_constraintDimensionRatio="w, 1:1"
+        app:layout_constraintBottom_toTopOf="@id/name_of_playlist_TV"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/placeholder" />
+        android:src="@drawable/placeholder" />
 
     <TextView
         android:id="@+id/name_of_playlist_TV"
         style="@style/main_text_view_audio_player_activity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_24"
+        android:layout_marginBottom="12dp"
         android:ellipsize="marquee"
         android:focusable="false"
         android:marqueeRepeatLimit="marquee_forever"
         android:scrollHorizontally="true"
         android:singleLine="true"
         android:textSize="24dp"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintTop_toBottomOf="@id/cover_art_work_image_IV"
+        app:layout_constraintBottom_toTopOf="@id/description_of_playlist_TV"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/main_info_left_border"
         tools:text="New playlist" />
@@ -68,7 +71,7 @@
         style="@style/main_text_view_audio_player_activity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="12dp"
         android:ellipsize="marquee"
         android:focusable="false"
         android:marqueeRepeatLimit="marquee_forever"
@@ -76,8 +79,7 @@
         android:singleLine="true"
         android:fontFamily="@font/ys_display_regular"
         android:textSize="18dp"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintTop_toBottomOf="@id/name_of_playlist_TV"
+        app:layout_constraintBottom_toTopOf="@id/duration_of_playlist_TV"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/main_info_left_border"
         tools:text="2024 epte" />
@@ -89,14 +91,13 @@
         tools:text="300 минут"
         android:fontFamily="@font/ys_display_regular"
         android:textSize="18dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:id="@+id/duration_of_playlist_TV"
-        app:layout_constraintTop_toBottomOf="@id/description_of_playlist_TV"
+        app:layout_constraintBottom_toTopOf="@id/shareButton_IB"
         app:layout_constraintStart_toStartOf="@id/main_info_left_border"
         android:drawableEnd="@drawable/dot"
-        android:drawableTint="@color/black"
         tools:ignore="UseCompatTextViewDrawableXml" />
 
     <TextView
@@ -104,37 +105,33 @@
         tools:text="50 треков"
         android:fontFamily="@font/ys_display_regular"
         android:textSize="18dp"
-        android:layout_marginTop="8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
         android:id="@+id/count_of_tracks_in_playlist_TV"
-        app:layout_constraintTop_toBottomOf="@id/description_of_playlist_TV"
+        app:layout_constraintBottom_toBottomOf="@id/duration_of_playlist_TV"
         app:layout_constraintStart_toEndOf="@id/duration_of_playlist_TV"/>
 
     <ImageButton
         android:id="@+id/shareButton_IB"
         style="@style/settings_activity_linear_layout_style_top_image_and_text"
         android:layout_gravity="center"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="170dp"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
-        android:src="@drawable/share"
-        app:layout_constraintTop_toBottomOf="@id/duration_of_playlist_TV"
-        app:tint="@color/black" />
+        android:src="@drawable/share_playlist"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ImageButton
         android:id="@+id/menuButton_IB"
         style="@style/settings_activity_linear_layout_style_top_image_and_text"
         android:layout_gravity="center"
-        android:layout_marginTop="16dp"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
         android:src="@drawable/more_24"
-        app:layout_constraintTop_toBottomOf="@id/duration_of_playlist_TV"
         app:layout_constraintStart_toEndOf="@id/shareButton_IB"
-        app:tint="@color/black" />
+        app:layout_constraintBottom_toBottomOf="@id/shareButton_IB"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -142,7 +139,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#99000000"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
     <LinearLayout
         style="@style/bottom_sheet"
@@ -151,8 +148,9 @@
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="240dp"
-        android:orientation="vertical">
+        app:behavior_peekHeight="170dp"
+        android:orientation="vertical"
+        android:visibility="visible">
 
         <View
             style="@style/slider_item"
@@ -185,8 +183,6 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:id="@+id/empty_tracks_list_TV"/>
-
-
     </LinearLayout>
 
     <LinearLayout
@@ -197,7 +193,8 @@
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         app:behavior_hideable="true"
         app:behavior_peekHeight="320dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <View
             style="@style/slider_item"

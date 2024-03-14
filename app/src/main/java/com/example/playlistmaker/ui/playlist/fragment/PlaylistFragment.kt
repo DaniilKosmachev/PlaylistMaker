@@ -71,7 +71,7 @@ class PlaylistFragment: Fragment() {
                     Glide.with(binding.coverArtWorkImageIV)
                         .load(selectablePlaylist?.uri?.toUri())
                         .placeholder(R.drawable.placeholder)
-                        .centerCrop()
+                        .fitCenter()
                         .into(binding.coverArtWorkImageIV)
                 }
 
