@@ -162,20 +162,25 @@ class SearchFragment: Fragment() {
     }
 
     private fun initializeComponents() {
-        trackAdapter = TrackAdapter(iTunesTrack) {
+        trackAdapter = TrackAdapter(iTunesTrack, {
             if (isClickedAllowed != false) {
                 openAudioPlayerAndReceiveTrackInfo(it)
                 viewModel.addNewTrackInTrackHistory(it)
                 trackHistoryAdapter.notifyDataSetChanged()
             }
-        }//адаптер для текущего поискового запроса
+        }, {
+             //то есть ничего))
+        })
+        //адаптер для текущего поискового запроса
         binding.trackRecycleView.adapter = trackAdapter//устанавливаем для RecyclerView текущего результата поиска адаптер
-        trackHistoryAdapter = TrackAdapter(iTunesTrackSearchHistory) {
+        trackHistoryAdapter = TrackAdapter(iTunesTrackSearchHistory, {
             if (isClickedAllowed != false) {
                 openAudioPlayerAndReceiveTrackInfo(it)
                 viewModel.updateHistoryListAfterSelectItemHistoryTrack(it)
             }
-        }//адптер для истории поиска
+        }, {
+
+        }) //адптер для истории поиска
         binding.searchActivityHistoryRecyclerView.adapter = trackHistoryAdapter//устанавливаем для RecyclerView истории поиска адаптер
     }
 
@@ -336,7 +341,6 @@ class SearchFragment: Fragment() {
         val bundle = Bundle()
         bundle.putParcelable(RECEIVED_TRACK, track)
         findNavController().navigate(R.id.action_searchFragment_to_audioPlayerFragment,bundle)
-
     }
 
     companion object {

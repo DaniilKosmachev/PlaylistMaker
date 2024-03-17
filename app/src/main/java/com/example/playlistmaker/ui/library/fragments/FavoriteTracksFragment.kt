@@ -79,17 +79,15 @@ class FavoriteTracksFragment: Fragment() {
     }
 
     fun initializedComponent() {
-        favoriteTrackAdapter = TrackAdapter(favoriteTracks) {
+        favoriteTrackAdapter = TrackAdapter(favoriteTracks, {
             openAudioPlayerAndReceiveTrackInfo(it)
-        }
+        }, {
+
+        })
         binding.favoriteTrackRecycleView.adapter = favoriteTrackAdapter
     }
 
     private fun openAudioPlayerAndReceiveTrackInfo(track: Track) {
-//        Intent(requireContext(), AudioPlayerFragment::class.java).apply {
-//            putExtra(TrackAdapter.SELECTABLE_TRACK, track)
-//            startActivity(this)
-//        }
         val bundle = Bundle()
         bundle.putParcelable(RECEIVED_TRACK, track)
         findNavController().navigate(R.id.action_libraryFragment_to_audioPlayerFragment,bundle)

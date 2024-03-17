@@ -23,8 +23,6 @@ class PlayerFragmentViewModel(
     var playlistsInteractor: PlaylistsInteractor
 ): ViewModel() {
 
-    private var dbJob: Job? = null
-
     private var progressJob: Job? = null
 
     private var playerParams: PlayerParams? = null
@@ -114,14 +112,14 @@ class PlayerFragmentViewModel(
 
         when (track.isFavorite) {
             true -> {
-                dbJob = viewModelScope.launch(Dispatchers.IO) {
+                viewModelScope.launch(Dispatchers.IO) {
                     favouriteTracksInteractor.deleteTrackInDbFavourite(track)
                 }
                 track.isFavorite = false
                 _IsFavoriteTrack.postValue(false)
             }
             false -> {
-                dbJob = viewModelScope.launch(Dispatchers.IO) {
+                viewModelScope.launch(Dispatchers.IO) {
                     favouriteTracksInteractor.deleteTrackInDbFavourite(track)
                     track.isFavorite = true
                     favouriteTracksInteractor.addTrackInDbFavourite(track)
@@ -132,7 +130,7 @@ class PlayerFragmentViewModel(
     }
 
     fun selectAllPlaylistsFromDb() {
-        dbJob = viewModelScope.launch(Dispatchers.IO) {
+       viewModelScope.launch(Dispatchers.IO) {
             playlistsInteractor
                 .selectAllPlaylists()
                 .collect { playlists ->
@@ -148,7 +146,7 @@ class PlayerFragmentViewModel(
     }
 
     fun selectableTrackIsInPLaylist(trackId: Int) {
-        dbJob = viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             playlistsInteractor
                 .checkTrackInPlaylist(trackId)
                 .collect { trackInDb ->
@@ -162,7 +160,7 @@ class PlayerFragmentViewModel(
     }
 
     fun addNewTrackInPlaylistTransaction(tracksInPlaylists: TracksInPlaylists, playlistId: Int) {
-        dbJob = viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             playlistsInteractor.addNewTrackInPlaylistsTransaction(tracksInPlaylists, playlistId)
         }
     }

@@ -1,6 +1,9 @@
 package com.example.playlistmaker.ui.create_playlist.fragment
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -25,15 +28,25 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
 
-class CreatePlaylistFragment: Fragment() {
+open class CreatePlaylistFragment: Fragment() {
 
     private var _binding: FragmentCreatePlaylistBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
     private val viewModel by viewModel<CreatePlaylistFragmentViewModel>()
 
     private var informationDialog: MaterialAlertDialogBuilder? = null
 
     private var imageUri: Uri? = null
+
+    @SuppressLint("WrongConstant")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            val selectedUri: Uri = data?.data ?: return
+            val takeFlags = data.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            requireActivity().contentResolver.takePersistableUriPermission(selectedUri, takeFlags)
+        }
+    }
 
 
     override fun onCreateView(
@@ -47,6 +60,8 @@ class CreatePlaylistFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
 
         informationDialog = MaterialAlertDialogBuilder(requireContext()).apply {
             setTitle("Завершить создание плейлиста?")
@@ -95,7 +110,7 @@ class CreatePlaylistFragment: Fragment() {
                         null,
                         name = name,
                         description = description,
-                        uri = imageUri.toString(),
+                        uri = if (imageUri != null) imageUri.toString() else null,
                         "",
                         0
                         )
@@ -115,7 +130,7 @@ class CreatePlaylistFragment: Fragment() {
         Toast.makeText(requireContext(), "Плейлист $nameOfPlaylist создан", Toast.LENGTH_SHORT).show()
     }
 
-    fun saveImageToPrivateStorage(uri: Uri, nameOfPlaylist: String) {
+    open fun saveImageToPrivateStorage(uri: Uri, nameOfPlaylist: String) {
 
         val filePath = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
             NAME_OF_DIR)
@@ -124,7 +139,7 @@ class CreatePlaylistFragment: Fragment() {
             filePath.mkdirs()
         }
 
-        val file = File(filePath,nameOfPlaylist + ".jpg")
+        val file = File(filePath,nameOfPlaylist + System.currentTimeMillis().toString() + ".jpg")
 
         val inputStream = requireActivity().contentResolver.openInputStream(uri)
 

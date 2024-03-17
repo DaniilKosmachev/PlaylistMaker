@@ -9,6 +9,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.settings.ExternalSettingsRepository
 
 class ExternalSettingsRepositoryImpl(private val context: Context): ExternalSettingsRepository {
+
     override fun shareApp() {
         Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
@@ -37,6 +38,19 @@ class ExternalSettingsRepositoryImpl(private val context: Context): ExternalSett
         Intent(Intent.ACTION_VIEW, Uri.parse(context.getString(R.string.user_contract_url))).apply {
             context.startActivity(this.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         }
+    }
+
+    override fun sharePlaylist(
+        mainPlaylistInfo: String,
+        trackCount: Int,
+        formattingListTracks: String
+    ) {
+        val message = mainPlaylistInfo + "\n${context.resources.getQuantityString(R.plurals.plurals_track_count, trackCount, trackCount)}" + formattingListTracks
+            Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, message)
+                context.startActivity(this.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            }
     }
 
 }
